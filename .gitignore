@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build
+dist/
+dist-ssr/
+*.local
+
+# Data (本地优先,数据不入库)
+server/data/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-journal
+
+# 密钥文件(预防性:目前无 git,但加入后必须排除)
+.api_token
+.master_key
+*.pem
+*.key
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# 临时测试脚本/产物
+_test_report.json
+_verify_*.cjs
+_check_*.cjs
+_screenshots/
+docker/web/i18n_screenshots/
+docker/web/*.py
+docker/web/i18n_*.png
+docker/web/check_*.py
+docker/web/verify_*.py
+
+# 备份目录(已由 data/ 覆盖,显式再写一条防 data/ 规则被改)
+**/data/backup/
+
+# Claude/Cursor agent 配置(如出现)
+.claude/
+.cursor/

@@ -1,0 +1,19 @@
+{
+  "name": "interviewx-server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "mammoth": "^1.8.0",
+    "multer": "^1.4.5-lts.1",
+    "nanoid": "^5.0.7",
+    "pdf-parse": "^1.1.1"
+  }
+}

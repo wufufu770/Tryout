@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# InterviewX pre-commit hook
+# 启用方式: git config core.hooksPath .githooks
+# 作用: 1) 阻止提交敏感文件  2) 对暂存的 server/*.js 做语法检查
+set -euo pipefail
+
+# ========== 1. 敏感文件拦截 ==========
+# 模式列表:任一命中即拒绝提交
+SENSITIVE_PATTERNS=(
+  '\.env$'
+  '\.env\.local$'
+  '\.env\..*\.local$'
+  '\.api_token$'
+  '\.master_key$'
+  '\.pem$'
+  '\.key$'
+  '\.db$'
+  '\.db-journal$'
+  '\.db-shm$'
+  '\.db-wal$'
+  '\.sqlite$'
+  '\.sqlite-journal$'
+  'data/backup/'
+  '^server/data/'
+  '^docker/server/data/'
+)
+
+# 获取暂存区文件列表(仅新增/修改,排除删除)
+STAGED=$(git diff --cached --name-only --diff-filter=ACM -- ':!third_party/' || true)
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+VIOLATIONS=""
+while IFS= read -r file; do
+  for pat in "${SENSITIVE_PATTERNS[@]}"; do
+    if echo "$file" | grep -qE "$pat"; then
+      VIOLATIONS="${VIOLATIONS}\n  - $file  (匹配规则: $pat)"
+      break
+    fi
+  done
+done <<< "$STAGED"
+
+if [ -n "$VIOLATIONS" ]; then
+  echo "==================================================" >&2
+  echo "[pre-commit] 拒绝提交:检测到敏感文件" >&2
+  echo "==================================================" >&2
+  echo -e "违规文件:$VIOLATIONS" >&2
+  echo "" >&2
+  echo "如确需提交(不推荐),使用: git commit --no-verify" >&2
+  echo "==================================================" >&2
+  exit 1
+fi
+
+# ========== 2. JS 语法检查 ==========
+# 仅检查 server/ 目录下被暂存的 .js 文件
+JS_FILES=$(echo "$STAGED" | grep -E '^(server|docker/server)/.*\.js$' || true)
+if [ -n "$JS_FILES" ]; then
+  SYNTAX_ERRORS=""
+  while IFS= read -r f; do
+    # 文件可能已被删除(diff-filter=ACM 已排除 D,但保险起见再检查)
+    [ -f "$f" ] || continue
+    if ! node --check "$f" 2>/dev/null; then
+      ERR=$(node --check "$f" 2>&1 || true)
+      SYNTAX_ERRORS="${SYNTAX_ERRORS}\n  - $f\n${ERR}"
+    fi
+  done <<< "$JS_FILES"
+
+  if [ -n "$SYNTAX_ERRORS" ]; then
+    echo "==================================================" >&2
+    echo "[pre-commit] 拒绝提交:JS 语法错误" >&2
+    echo "==================================================" >&2
+    echo -e "错误详情:$SYNTAX_ERRORS" >&2
+    echo "" >&2
+    echo "修复后再提交,或使用 git commit --no-verify 跳过(不推荐)" >&2
+    echo "==================================================" >&2
+    exit 1
+  fi
+fi
+
+# ========== 3. 大文件警告(非阻断) ==========
+# 单文件超过 1MB 时警告
+while IFS= read -r file; do
+  if [ -f "$file" ]; then
+    SIZE=$(wc -c < "$file" 2>/dev/null || echo 0)
+    if [ "$SIZE" -gt 1048576 ]; then
+      echo "[pre-commit] 警告: $file 体积 $((SIZE / 1024 / 1024))MB > 1MB" >&2
+    fi
+  fi
+done <<< "$STAGED"
+
+exit 0

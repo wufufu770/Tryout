@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === 全局字体:Inter(UI)+ JetBrains Mono(等宽),IDE 终端风格 === */
+/* 多语言回退:覆盖拉丁/中文/日文/韩文/阿拉伯文/印地文/孟加拉文/西里尔 */
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "PingFang SC", "Microsoft YaHei", "Hiragino Sans", "Noto Sans JP", "Noto Sans KR",
+    "Noto Sans Arabic", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans",
+    sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* 等宽区域:代码/终端/日志 */
+code, pre, .font-mono, [class*="font-mono"] {
+  font-family: "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, monospace;
+}
+
+/* === RTL(阿拉伯语等)布局兼容 === */
+/* 当 <html dir="rtl"> 时,Tailwind 的 left/right 不会自动翻转,
+   这里用逻辑属性 + rtl: 变体兜底关键位置 */
+[dir="rtl"] {
+  text-align: right;
+}
+/* 代码块/等宽内容保持左对齐,不受 RTL 全局 text-align 影响 */
+pre, code {
+  text-align: left;
+}
+/* 防止长文本(俄语/德语等)撑破容器:所有 flex 子项默认 min-width:0 */
+*, *::before, *::after {
+  min-width: 0;
+}
+/* 但保留一些需要固定宽度的元素(如表单 checkbox) */
+input[type="checkbox"], input[type="radio"] {
+  min-width: auto;
+}
+
+
+/* === 主题系统:CSS 变量 + data-theme 覆盖 === */
+:root {
+  --ide-bg: #0d1117;
+  --ide-bg-alt: #161b22;
+  --ide-bg-active: #21262d;
+  --ide-border: #30363d;
+  --ide-border-active: #7ee787;
+  --ide-fg: #e6edf3;
+  --ide-fg-muted: #8b949e;
+  --ide-accent: #7ee787;
+  --ide-accent-hover: #56d364;
+  --ide-accent-fg: #0d1117;
+  --ide-danger: #f85149;
+  --ide-warning: #d29922;
+  --ide-success: #7ee787;
+  --ide-info: #58a6ff;
+  --bubble-assistant: #161b22;
+  --bubble-user: #7ee787;
+  --bubble-system: #21262d;
+  color-scheme: dark;
+}
+
+[data-theme="github-light"] {
+  --ide-bg: #ffffff;
+  --ide-bg-alt: #f6f8fa;
+  --ide-bg-active: #eaeef2;
+  --ide-border: #d0d7de;
+  --ide-border-active: #0969da;
+  --ide-fg: #24292f;
+  --ide-fg-muted: #57606a;
+  --ide-accent: #0969da;
+  --ide-accent-hover: #0860c5;
+  --ide-accent-fg: #ffffff;
+  --ide-danger: #cf222e;
+  --ide-warning: #9a6700;
+  --ide-success: #1a7f37;
+  --ide-info: #0969da;
+  --bubble-assistant: #f6f8fa;
+  --bubble-user: #0969da;
+  --bubble-system: #eaeef2;
+  color-scheme: light;
+}
+
+[data-theme="muted-warm"] {
+  --ide-bg: #1e1b16;
+  --ide-bg-alt: #26221c;
+  --ide-bg-active: #2e2922;
+  --ide-border: #3d362c;
+  --ide-border-active: #d4a05a;
+  --ide-fg: #d6cfc2;
+  --ide-fg-muted: #8c8478;
+  --ide-accent: #d4a05a;
+  --ide-accent-hover: #e0b06a;
+  --ide-accent-fg: #1e1b16;
+  --ide-danger: #c8553d;
+  --ide-warning: #d4a05a;
+  --ide-success: #8ab17d;
+  --ide-info: #6a9fb5;
+  --bubble-assistant: #26221c;
+  --bubble-user: #d4a05a;
+  --bubble-system: #2e2922;
+  color-scheme: dark;
+}
+
+[data-theme="cyber"] {
+  --ide-bg: #0a0a14;
+  --ide-bg-alt: #12121f;
+  --ide-bg-active: #1a1a2e;
+  --ide-border: #2a2a4a;
+  --ide-border-active: #ff2d95;
+  --ide-fg: #e0e0ff;
+  --ide-fg-muted: #7878a0;
+  --ide-accent: #ff2d95;
+  --ide-accent-hover: #ff4fa8;
+  --ide-accent-fg: #0a0a14;
+  --ide-danger: #ff3860;
+  --ide-warning: #ffcc00;
+  --ide-success: #00ff9f;
+  --ide-info: #00d4ff;
+  --bubble-assistant: #12121f;
+  --bubble-user: #ff2d95;
+  --bubble-system: #1a1a2e;
+  color-scheme: dark;
+}
+
+@layer base {
+  :root { color-scheme: dark; }
+  html, body, #root { height: 100%; margin: 0; overflow: hidden; }
+  /* UI 字体(Inter)+ 高对比;等宽字体仅在 code/pre/.font-mono 元素生效 */
+  body {
+    background: var(--ide-bg);
+    color: var(--ide-fg);
+    @apply font-sans text-[13px] antialiased;
+    user-select: none;
+    letter-spacing: 0.01em;
+  }
+  /* 终端风格细滚动条 */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--ide-border); border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ide-fg-muted); }
+  /* 焦点环 */
+  *:focus-visible { outline: 1px solid var(--ide-accent); outline-offset: -1px; }
+}
+
+@layer components {
+  .editable { user-select: text; }
+  /* 流式消息:左侧色条 + 无圆角 + 淡背景 */
+  .bubble {
+    @apply max-w-[88%] px-3 py-1.5 whitespace-pre-wrap break-words;
+    border-radius: 0;
+  }
+  .bubble-assistant {
+    background: var(--bubble-assistant);
+    color: var(--ide-fg);
+    border-left: 2px solid var(--ide-accent);
+  }
+  .bubble-user {
+    color: var(--ide-accent);
+    border-left: 2px solid var(--ide-accent);
+    /* fallback:旧浏览器不支持 color-mix 时退化为半透明 accent 变量 */
+    background: var(--bubble-user);
+    background: color-mix(in srgb, var(--ide-accent) 8%, transparent);
+  }
+  .bubble-system {
+    color: var(--ide-fg-muted);
+    @apply italic text-xs;
+    border-left: 2px solid var(--ide-border);
+  }
+  /* 输入提示符 */
+  .prompt-cursor {
+    @apply inline-block;
+    animation: blink 1s step-end infinite;
+  }
+}
+
+/* 光标闪烁 */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+/* 会议室脉冲动画 */
+/* fallback:不支持 color-mix 的浏览器使用 var(--ide-accent) 直接值 */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 var(--ide-accent); }
+  70% { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+/* 支持 color-mix 时覆盖为更柔和的半透明扩散效果 */
+@supports (color: color-mix(in srgb, red, blue)) {
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ide-accent) 50%, transparent); }
+    70% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--ide-accent) 0%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ide-accent) 0%, transparent); }
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 1.5s infinite;
+  border-radius: 9999px;
+}
+
+@keyframes bubble-pop {
+  0% { transform: translateY(2px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.bubble-pop {
+  animation: bubble-pop 0.15s ease-out;
+}

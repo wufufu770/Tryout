@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InterviewX - AI 面试模拟平台</title>
+    <!-- PWA:允许安装到桌面 + 离线使用 -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#7aa2f7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="InterviewX" />
+    <!-- 字体:Inter(UI)+ JetBrains Mono(等宽),IDE 终端风格 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // FOUC 防闪:首绘前从 localStorage 应用主题,避免深色一闪
+      try {
+        var t = localStorage.getItem('interviewx:theme');
+        if (['interviewx-dark','github-light','muted-warm','cyber'].indexOf(t) >= 0)
+          document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
+  </head>
+  <body class="bg-ide-bg text-ide-fg">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- 注册 Service Worker:仅生产环境(localhost 下 SW 缓存会干扰调试) -->
+    <script>
+      if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((e) => {
+            console.warn('[sw] 注册失败', e);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
