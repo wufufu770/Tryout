@@ -43,7 +43,7 @@ function sanitizeFileName(name: string): string {
       .replace(/[<>:"/\\|?*\x00-\x1f]/g, "_")
       .replace(/\s+/g, " ")
       .trim()
-      .slice(0, 80) || "interviewx-report"
+      .slice(0, 80) || "tryout-report"
   );
 }
 

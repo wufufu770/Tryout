@@ -70,4 +70,4 @@
 
 ---
 
-[InterviewX Docker 版](https://github.com/wufufu770/interviewx-docker) 提供同等功能,通过 Docker 一键部署。
+[Tryout Docker 版](https://github.com/wufufu770/tryout-docker) 提供同等功能,通过 Docker 一键部署。

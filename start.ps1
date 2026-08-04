@@ -1,4 +1,4 @@
-# InterviewX 启动脚本(非 Docker 版)
+# Tryout 启动脚本(非 Docker 版)
 # 用法:在项目根目录执行 .\start.ps1
 # 前置:需自行安装 Node.js v20+(https://nodejs.org/)
 # 首次运行自动安装依赖 + 下载 better-sqlite3 预编译二进制

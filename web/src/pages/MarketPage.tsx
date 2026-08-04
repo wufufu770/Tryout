@@ -377,7 +377,7 @@ export function MarketPage() {
         </div>
         <div className="mt-1.5 flex items-center gap-3 text-[11px]">
           <a
-            href="https://github.com/topics/interviewx-agents"
+            href="https://github.com/topics/tryout-agents"
             target="_blank"
             rel="noopener noreferrer"
             className="text-ide-accent hover:underline"

@@ -50,7 +50,7 @@ const messageCache: Partial<Record<Locale, Record<string, string>>> = {
   "zh-CN": zhCN as any,
 };
 
-const STORAGE_KEY = "interviewx:locale";
+const STORAGE_KEY = "tryout:locale";
 
 function detectInitialLocale(): Locale {
   // 1. localStorage

@@ -22,7 +22,7 @@ export function AboutPage() {
           {/* 终端样式 Logo */}
           <div className="flex items-center gap-2 font-mono text-2xl font-bold">
             <span className="text-ide-accent">$</span>
-            <span className="text-ide-fg">InterviewX</span>
+            <span className="text-ide-fg">Tryout</span>
             <span className="prompt-cursor inline-block h-5 w-2 bg-ide-accent" aria-hidden />
           </div>
           <p className="mt-3 text-sm text-ide-fg-muted">
@@ -89,13 +89,13 @@ export function AboutPage() {
           <div className="flex items-start gap-3">
             <Github size={16} className="mt-0.5 shrink-0 text-ide-fg" />
             <div className="text-xs leading-relaxed text-ide-fg-muted">
-              <div className="font-semibold text-ide-fg">InterviewX · MIT License</div>
+              <div className="font-semibold text-ide-fg">Tryout · MIT License</div>
               <p className="mt-1">
                 {t("about.licenseDesc")}
                 <Heart size={11} className="mx-0.5 inline-block text-ide-danger" />。
               </p>
               <p className="mt-2 text-ide-fg-muted">
-                © 2026 InterviewX Contributors. Built with React · TypeScript · Vite · Tailwind.
+                © 2026 Tryout Contributors. Built with React · TypeScript · Vite · Tailwind.
               </p>
             </div>
           </div>

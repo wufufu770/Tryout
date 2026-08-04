@@ -99,6 +99,12 @@ export function EmptyStateHome({ onPickScenario, recentSessions = [], evaluation
             <span className="text-ide-fg">{t("empty.hero.title")}</span>
           </div>
           <p className="text-sm text-ide-fg-muted">{t("empty.hero.subtitle")}</p>
+          {/* 终端彩蛋:品牌命令横幅 */}
+          <div className="mx-auto mt-4 inline-flex max-w-full items-center gap-1 overflow-x-auto rounded border border-ide-border bg-ide-bg-alt px-3 py-1.5 font-mono text-xs text-ide-fg-muted whitespace-nowrap">
+            <span className="text-ide-accent">$</span>
+            <span>tryout --stage=hr --difficulty=hell</span>
+            <span className="prompt-cursor h-3 w-1.5 bg-ide-accent" />
+          </div>
         </div>
 
         {/* === 快速开始:推荐剧本 === */}

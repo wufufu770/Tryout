@@ -1,6 +1,6 @@
 // 主题系统:通过 data-theme 属性 + CSS 变量实现多主题切换
 // 主题定义集中在此,便于扩展
-export type ThemeId = "interviewx-dark" | "github-light" | "muted-warm" | "cyber";
+export type ThemeId = "tryout-dark" | "github-light" | "muted-warm" | "cyber";
 
 export interface ThemeMeta {
   id: ThemeId;
@@ -13,11 +13,11 @@ export interface ThemeMeta {
 
 export const THEMES: ThemeMeta[] = [
   {
-    id: "interviewx-dark",
+    id: "tryout-dark",
     name: "深色终端",
-    nameKey: "theme.interviewx-dark.name",
+    nameKey: "theme.tryout-dark.name",
     description: "GitHub Dark 深黑 + 绿色强调,默认主题",
-    descKey: "theme.interviewx-dark.desc",
+    descKey: "theme.tryout-dark.desc",
     swatch: ["#0d1117", "#7ee787", "#e6edf3"],
   },
   {
@@ -46,10 +46,10 @@ export const THEMES: ThemeMeta[] = [
   },
 ];
 
-const STORAGE_KEY = "interviewx:theme";
+const STORAGE_KEY = "tryout:theme";
 
 export function getStoredTheme(): ThemeId {
-  const DEFAULT: ThemeId = "interviewx-dark";
+  const DEFAULT: ThemeId = "tryout-dark";
   try {
     if (typeof localStorage === "undefined") return DEFAULT;
     const raw = localStorage.getItem(STORAGE_KEY);

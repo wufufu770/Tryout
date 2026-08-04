@@ -635,11 +635,11 @@ export function seedDefaultProviders() {
 export const DEFAULT_MATERIALS = [
   {
     sourceRef: "builtin_guide",
-    title: "InterviewX 使用说明",
+    title: "Tryout 使用说明",
     type: "markdown",
-    rawText: `# InterviewX 使用说明
+    rawText: `# Tryout 使用说明
 
-InterviewX 是一个本地优先的 AI 面试模拟平台。所有数据存储在你自己的机器上(Docker 卷),不依赖云端账号。它支持多 Agent 协同面试、群面模拟、STAR 评估和成长追踪。
+Tryout 是一个本地优先的 AI 面试模拟平台。所有数据存储在你自己的机器上(Docker 卷),不依赖云端账号。它支持多 Agent 协同面试、群面模拟、STAR 评估和成长追踪。
 
 ## 快速开始(3 步)
 
@@ -690,7 +690,7 @@ InterviewX 是一个本地优先的 AI 面试模拟平台。所有数据存储�
 
 ## 数据与隐私
 
-- 所有数据存在 Docker 卷 interviewx-data,不上传任何外部服务器。
+- 所有数据存在 Docker 卷 tryout-data,不上传任何外部服务器。
 - 消息和资料入库前自动做 PII 脱敏(手机号/邮箱/身份证)。
 - LLM 调用直接从浏览器→你的后端→模型供应商,不经过第三方。
 - 清理数据:可在设置页删除会话/资料,或直接重置 Docker 卷。
@@ -748,7 +748,7 @@ InterviewX 是一个本地优先的 AI 面试模拟平台。所有数据存储�
 
 1. 列出简历上每个项目,为每个项目准备 2-3 个 STAR 故事。
 2. 每个故事覆盖一个能力:领导力/协作/抗压/创新/复盘。
-3. 对着镜子或用 InterviewX 模拟练,把"我们"全改成"我"。
+3. 对着镜子或用 Tryout 模拟练,把"我们"全改成"我"。
 4. 准备关键数据:耗时、人数、QPS、收益、失败率。`,
   },
   {
@@ -792,7 +792,7 @@ InterviewX 是一个本地优先的 AI 面试模拟平台。所有数据存储�
 - **错别字/格式乱**:直接出局。PDF 导出后自己看一遍。
 - **虚标职级/数据**:背调或追问会露馅。可以包装,不能造假。
 
-## 用 InterviewX 练
+## 用 Tryout 练
 
 1. 把简历上传到「资料中心」。
 2. 新建面试,勾选简历作为上下文。
@@ -851,7 +851,7 @@ InterviewX 是一个本地优先的 AI 面试模拟平台。所有数据存储�
 4. **指出权衡**:没有完美方案,说出你选 A 不选 B 的理由。
 5. **扩展性**:如何水平扩展?单点故障如何兜底?
 
-## 用 InterviewX 练
+## 用 Tryout 练
 
 选"严苛技术官"+ 地狱难度,它会基于这些题连续追问 4 轮,逼出你的知识边界。`,
   },

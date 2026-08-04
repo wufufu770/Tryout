@@ -3,7 +3,7 @@
 // - 静态资源(JS/CSS/字体/图片):Cache First,失败回退网络
 // - API 请求(/api/*):Network First,失败回退缓存(离线时用上次数据)
 // - HTML 导航请求:Network First,失败回退缓存的 index.html(离线可打开应用)
-const CACHE_VERSION = "interviewx-v1";
+const CACHE_VERSION = "tryout-v1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 

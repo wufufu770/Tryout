@@ -108,7 +108,7 @@ interface ConnectDragState {
   my: number;
 }
 
-const STORAGE_KEY = "interviewx:flow_state";
+const STORAGE_KEY = "tryout:flow_state";
 
 // localStorage 持久化:保存/加载流程状态
 function saveFlowState(nodes: FlowNode[], edges: FlowEdge[]) {
@@ -500,7 +500,7 @@ export const FlowEditor = forwardRef<FlowEditorHandle, {
         const pngUrl = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = pngUrl;
-        a.download = "interviewx-flow.png";
+        a.download = "tryout-flow.png";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -814,7 +814,7 @@ export const FlowEditor = forwardRef<FlowEditorHandle, {
   };
 
   const handleExport = () => {
-    const payload = { version: "interviewx-flow-2", nodes, edges };
+    const payload = { version: "tryout-flow-2", nodes, edges };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

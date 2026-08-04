@@ -1,18 +1,18 @@
-# InterviewX
+# Tryout
 
 > 终端风格的本地优先 AI 面试模拟平台
 
-[![CI](https://github.com/wufufu770/interviewx/actions/workflows/ci.yml/badge.svg)](https://github.com/wufufu770/interviewx/actions/workflows/ci.yml)
+[![CI](https://github.com/wufufu770/tryout/actions/workflows/ci.yml/badge.svg)](https://github.com/wufufu770/tryout/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org/)
-[![GitHub stars](https://img.shields.io/github/stars/wufufu770/interviewx?style=social)](https://github.com/wufufu770/interviewx/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/wufufu770/interviewx?style=social)](https://github.com/wufufu770/interviewx/network/members)
+[![GitHub stars](https://img.shields.io/github/stars/wufufu770/tryout?style=social)](https://github.com/wufufu770/tryout/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/wufufu770/tryout?style=social)](https://github.com/wufufu770/tryout/network/members)
 
 **版本:v1.0.0**
 
 > 如果这个项目对你有帮助,请点个 ⭐ Star 支持一下,谢谢!
 
-InterviewX 是一个本地优先(Local-First)的 AI 面试模拟工具。所有数据存储在你自己的机器上,不依赖云端账号。它支持多 Agent 协同面试、群面模拟、STAR 评估和成长追踪,界面采用终端风格(深黑 + 绿色 + 等宽字体)。
+Tryout 是一个本地优先(Local-First)的 AI 面试模拟工具。所有数据存储在你自己的机器上,不依赖云端账号。它支持多 Agent 协同面试、群面模拟、STAR 评估和成长追踪,界面采用终端风格(深黑 + 绿色 + 等宽字体)。
 
 ## 功能特性
 
@@ -135,7 +135,7 @@ cd ../web && npm run dev          # 前端
 ## 目录结构
 
 ```
-InterviewX/
+Tryout/
 ├── server/              # 后端
 │   ├── db.js            # SQLite 数据访问层
 │   ├── index.js         # Express 路由 + 种子注入

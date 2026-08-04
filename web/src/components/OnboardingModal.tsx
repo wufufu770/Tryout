@@ -5,8 +5,8 @@ import { useModalA11y } from "@/lib/useModalA11y";
 
 // C3:目标画像采集 - 首次访问弹出 3 问(岗位/公司/截止日期)
 // 持久化到 localStorage,刷新不再弹出
-const COMPLETED_KEY = "interviewx:onboarding:completed";
-const PROFILE_KEY = "interviewx:onboarding:profile";
+const COMPLETED_KEY = "tryout:onboarding:completed";
+const PROFILE_KEY = "tryout:onboarding:profile";
 
 export interface OnboardingProfile {
   position: string;
@@ -68,7 +68,7 @@ export function OnboardingModal() {
     } catch {}
     setOpen(false);
     // 通知其他组件(如首屏推荐可根据画像定制)
-    window.dispatchEvent(new CustomEvent("interviewx:onboarding-completed", { detail: { skipped: skip } }));
+    window.dispatchEvent(new CustomEvent("tryout:onboarding-completed", { detail: { skipped: skip } }));
   };
 
   // v10.2.6(D3):hooks 必须在条件 return 之前调用,传 active 控制副作用执行时机

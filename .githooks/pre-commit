@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# InterviewX pre-commit hook
+# Tryout pre-commit hook
 # 启用方式: git config core.hooksPath .githooks
 # 作用: 1) 阻止提交敏感文件  2) 对暂存的 server/*.js 做语法检查
 set -euo pipefail

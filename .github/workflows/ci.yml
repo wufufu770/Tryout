@@ -31,7 +31,7 @@ jobs:
       - name: Test
         run: npm test
         env:
-          DB_DIR: /tmp/interviewx-test
+          DB_DIR: /tmp/tryout-test
           INTERVIEWX_AUTH_DISABLED: '1'
 
   frontend:

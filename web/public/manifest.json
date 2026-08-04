@@ -1,6 +1,6 @@
 {
-  "name": "InterviewX - AI 面试模拟平台",
-  "short_name": "InterviewX",
+  "name": "Tryout - AI 面试模拟平台",
+  "short_name": "Tryout",
   "description": "开源 AI 模拟面试平台,本地优先、隐私保护、全链路成长追踪",
   "start_url": "/",
   "display": "standalone",

@@ -17,13 +17,13 @@ import {
 
 // ============== localStorage 持久化 helper ==============
 
-const OBSIDIAN_KEY = "interviewx:integration:obsidian";
-const WEBHOOK_KEY = "interviewx:integration:webhook";
+const OBSIDIAN_KEY = "tryout:integration:obsidian";
+const WEBHOOK_KEY = "tryout:integration:webhook";
 
 const DEFAULT_OBSIDIAN: ObsidianConfig = {
   baseURL: "http://127.0.0.1:27124",
   token: "",
-  defaultPath: "InterviewX/",
+  defaultPath: "Tryout/",
 };
 
 const DEFAULT_WEBHOOK: WebhookConfig = {
@@ -204,7 +204,7 @@ export function IntegrationSettings() {
     try {
       const ok = await webhookAdapter.push(
         t("integration.webhook.testMessage"),
-        { event: "test", source: "interviewx-settings" },
+        { event: "test", source: "tryout-settings" },
       );
       setWebhookStatus(ok ? "success" : "failure");
     } catch {
@@ -266,7 +266,7 @@ export function IntegrationSettings() {
                 type="text"
                 value={obsidian.defaultPath || ""}
                 onChange={(e) => setObsidian({ ...obsidian, defaultPath: e.target.value })}
-                placeholder="InterviewX/"
+                placeholder="Tryout/"
                 className={cn(inputCls, "font-mono")}
               />
             </div>
@@ -322,7 +322,7 @@ export function IntegrationSettings() {
               <textarea
                 value={webhookHeadersText}
                 onChange={(e) => setWebhookHeadersText(e.target.value)}
-                placeholder={'{\n  "Authorization": "Bearer xxx",\n  "X-Source": "interviewx"\n}'}
+                placeholder={'{\n  "Authorization": "Bearer xxx",\n  "X-Source": "tryout"\n}'}
                 rows={4}
                 className={cn(
                   "w-full border border-ide-border bg-ide-bg px-2 py-1 font-mono text-xs text-ide-fg placeholder-ide-fg-muted focus:border-ide-accent focus:outline-none",

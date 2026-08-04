@@ -79,17 +79,17 @@ export function IdeLayout() {
       if (e.ctrlKey && e.shiftKey && (e.key === "N" || e.key === "n")) {
         e.preventDefault();
         navigate("/interview");
-        window.dispatchEvent(new CustomEvent("interviewx:new-session"));
+        window.dispatchEvent(new CustomEvent("tryout:new-session"));
         return;
       }
       if (!e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
       const key = e.key.toLowerCase();
       if (key === "enter") {
         e.preventDefault();
-        window.dispatchEvent(new CustomEvent("interviewx:send"));
+        window.dispatchEvent(new CustomEvent("tryout:send"));
       } else if (key === "m") {
         e.preventDefault();
-        window.dispatchEvent(new CustomEvent("interviewx:focus-model"));
+        window.dispatchEvent(new CustomEvent("tryout:focus-model"));
       }
     };
     window.addEventListener("keydown", handler);
@@ -110,7 +110,7 @@ export function IdeLayout() {
           shortcut: "Ctrl+Shift+N",
           onClick: () => {
             navigate("/interview");
-            window.dispatchEvent(new CustomEvent("interviewx:new-session"));
+            window.dispatchEvent(new CustomEvent("tryout:new-session"));
           },
         },
         {
@@ -128,11 +128,11 @@ export function IdeLayout() {
       items: [
         {
           label: t("interview.end"),
-          onClick: () => window.dispatchEvent(new CustomEvent("interviewx:new-session")),
+          onClick: () => window.dispatchEvent(new CustomEvent("tryout:new-session")),
         },
         {
           label: t("common.retry"),
-          onClick: () => window.dispatchEvent(new CustomEvent("interviewx:retry")),
+          onClick: () => window.dispatchEvent(new CustomEvent("tryout:retry")),
         },
       ],
     },
@@ -155,7 +155,7 @@ export function IdeLayout() {
       name: t("menu.help"),
       items: [
         { label: t("menu.shortcuts"), onClick: () => setShowHelp(true) },
-        { label: t("menu.aboutInterviewX"), onClick: () => setShowAbout(true) },
+        { label: t("menu.aboutTryout"), onClick: () => setShowAbout(true) },
       ],
     },
   ];
@@ -168,7 +168,7 @@ export function IdeLayout() {
         {/* 顶部标题栏 */}
         <header className="relative flex h-7 shrink-0 items-center justify-between bg-ide-bg-alt px-3 text-xs text-ide-fg select-none">
           <div className="flex items-center gap-3">
-            <span className="font-semibold text-ide-accent">InterviewX</span>
+            <span className="font-semibold text-ide-accent">Tryout</span>
             <nav ref={menuRef} className="flex items-center gap-0.5 text-ide-fg-muted">
               {menus.map((m) => (
                 <div key={m.name} className="relative">
@@ -281,7 +281,7 @@ export function IdeLayout() {
         {showAbout && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4" onClick={() => setShowAbout(false)}>
             <div className="w-full max-w-[380px] border border-ide-border bg-ide-bg-alt p-5 text-sm text-ide-fg" onClick={(e) => e.stopPropagation()}>
-              <div className="mb-2 text-lg font-semibold text-ide-accent">InterviewX</div>
+              <div className="mb-2 text-lg font-semibold text-ide-accent">Tryout</div>
               <div className="text-xs text-ide-fg-muted">{t("about.appTagline")}</div>
               <div className="mt-3 space-y-1 text-xs">
                 <div>{t("about.feature1")}</div>
