@@ -16,10 +16,12 @@ import { MessageInput } from "@/components/interview/MessageInput";
 import { SessionConfigPanel } from "@/components/interview/SessionConfigPanel";
 import { AgentAvatar } from "@/components/AgentAvatar";
 import { SessionReviewCard } from "@/components/SessionReviewCard";
+import { AnswerFeedbackPanel } from "@/components/AnswerFeedbackPanel";
 import { MeetingRoomView, type MeetingMessage } from "@/components/MeetingRoomView";
 import { VoicePanel, type AgentVoiceConfig } from "@/components/VoicePanel";
 import { EmptyStateHome } from "@/components/EmptyStateHome";
 import { voiceManager } from "@/lib/voiceManager";
+import { registerLocalWhisper, setWhisperContext } from "@/lib/asr/localWhisper";
 import { buildReviewPrompt, parseReviewResult } from "@/lib/reviewGenerator";
 import {
   Loader2, AlertCircle, Paperclip, X, RotateCcw, BookOpen,
@@ -168,18 +170,18 @@ export function InterviewPage() {
   // 方案 10:语音对话系统(L0 浏览器原生 Web Speech API)
   // autoSpeak / voiceConfigs 持久化到 localStorage,刷新后保留用户偏好
   const [autoSpeak, setAutoSpeakState] = useState<boolean>(() => {
-    try { return JSON.parse(localStorage.getItem("interviewx:voice:autoSpeak") || "false"); }
+    try { return JSON.parse(localStorage.getItem("tryout:voice:autoSpeak") || "false"); }
     catch { return false; }
   });
   const setAutoSpeak = useCallback((v: boolean) => {
     // 关闭时停止当前正在朗读的 utterance,避免 autoSpeak 关闭后仍在播放
     if (!v) voiceManager.stop();
     setAutoSpeakState(v);
-    try { localStorage.setItem("interviewx:voice:autoSpeak", JSON.stringify(v)); } catch (e) { console.warn("Failed to persist autoSpeak:", e); }
+    try { localStorage.setItem("tryout:voice:autoSpeak", JSON.stringify(v)); } catch (e) { console.warn("Failed to persist autoSpeak:", e); }
   }, []);
 
   const [voiceConfigs, setVoiceConfigsState] = useState<Record<string, AgentVoiceConfig>>(() => {
-    try { return JSON.parse(localStorage.getItem("interviewx:voice:configs") || "{}"); }
+    try { return JSON.parse(localStorage.getItem("tryout:voice:configs") || "{}"); }
     catch { return {}; }
   });
   // 兼容直接赋值与函数式更新两种用法(setVoiceConfigs(prev => ...))
@@ -187,13 +189,19 @@ export function InterviewPage() {
     (v: Record<string, AgentVoiceConfig> | ((prev: Record<string, AgentVoiceConfig>) => Record<string, AgentVoiceConfig>)) => {
       setVoiceConfigsState((prev) => {
         const next = typeof v === "function" ? (v as (p: Record<string, AgentVoiceConfig>) => Record<string, AgentVoiceConfig>)(prev) : v;
-        try { localStorage.setItem("interviewx:voice:configs", JSON.stringify(next)); } catch (e) { console.warn("Failed to persist voiceConfigs:", e); }
+        try { localStorage.setItem("tryout:voice:configs", JSON.stringify(next)); } catch (e) { console.warn("Failed to persist voiceConfigs:", e); }
         return next;
       });
     },
     []
   );
   const lastSpokenMsgIdRef = useRef<string | null>(null);
+
+  // v11:注册本地 whisper ASR(服务端转写)为默认识别引擎
+  // 页面挂载即注册,依赖 VoicePanel 内部 asrRegistry.getDefault() 在渲染时读取
+  useEffect(() => {
+    registerLocalWhisper();
+  }, []);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastUserContentRef = useRef<string>("");
@@ -266,6 +274,45 @@ export function InterviewPage() {
   const currentModel = resolveAgentModel(activeAgent);
   const currentProvider = providers.find((p) => p.id === currentModel);
 
+  // 方案 10:最近一条面试官消息(供 VoicePanel 手动播放 / 自动朗读)
+  const lastAssistantText = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const m = messages[i] as Message;
+      if (m.role === "assistant") {
+        // 多 Agent 组合消息:拼接各角色内容
+        if (m.isMultiAgentGroup && m.groupItems) {
+          return m.groupItems.map((g) => g.content).join("。");
+        }
+        return m.content;
+      }
+    }
+    return "";
+  }, [messages]);
+
+  // v11:最近一轮问答(供逐题评分) - 最后一条面试官问题 + 最后一条用户回答
+  const lastExchangeForScore = useMemo<{ question: string; answer: string } | null>(() => {
+    let question = "";
+    let answer = "";
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const m = messages[i] as Message;
+      const content = m.isMultiAgentGroup && m.groupItems
+        ? m.groupItems.map((g) => g.content).join("。")
+        : m.content;
+      if (!answer && m.role === "user" && content.trim()) {
+        answer = content;
+      } else if (!question && m.role === "assistant" && content.trim()) {
+        question = content;
+      }
+      if (answer && question) break;
+    }
+    return answer && question ? { question, answer } : null;
+  }, [messages]);
+
+  // v11:同步语音上下文(当前会话 + 最新面试官提问)供 whisper 转写入库
+  useEffect(() => {
+    setWhisperContext(currentSession?.sessionId || null, lastAssistantText);
+  }, [currentSession, lastAssistantText]);
+
   // 同步状态栏
   // 注:t 加入依赖,切换语言后状态栏文字也会更新
   useEffect(() => {
@@ -282,21 +329,6 @@ export function InterviewPage() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, streamingContent]);
-
-  // 方案 10:最近一条面试官消息(供 VoicePanel 手动播放 / 自动朗读)
-  const lastAssistantText = useMemo(() => {
-    for (let i = messages.length - 1; i >= 0; i--) {
-      const m = messages[i] as Message;
-      if (m.role === "assistant") {
-        // 多 Agent 组合消息:拼接各角色内容
-        if (m.isMultiAgentGroup && m.groupItems) {
-          return m.groupItems.map((g) => g.content).join("。");
-        }
-        return m.content;
-      }
-    }
-    return "";
-  }, [messages]);
 
   // 方案 10:自动朗读面试官消息(autoSpeak 开启时,新 assistant 消息到达即朗读)
   useEffect(() => {
@@ -831,13 +863,13 @@ export function InterviewPage() {
       setPendingScenario(null);
       lastUserContentRef.current = "";
     };
-    window.addEventListener("interviewx:send", handleSend);
-    window.addEventListener("interviewx:new-session", handleNewSession);
-    window.addEventListener("interviewx:retry", handleRetryEvent);
+    window.addEventListener("tryout:send", handleSend);
+    window.addEventListener("tryout:new-session", handleNewSession);
+    window.addEventListener("tryout:retry", handleRetryEvent);
     return () => {
-      window.removeEventListener("interviewx:send", handleSend);
-      window.removeEventListener("interviewx:new-session", handleNewSession);
-      window.removeEventListener("interviewx:retry", handleRetryEvent);
+      window.removeEventListener("tryout:send", handleSend);
+      window.removeEventListener("tryout:new-session", handleNewSession);
+      window.removeEventListener("tryout:retry", handleRetryEvent);
     };
   }, [sendMessage, handleRetry, agents, setSession, setMessages, clearMaterials, setDifficulty, setError]);
 
@@ -1288,6 +1320,15 @@ export function InterviewPage() {
 
         {/* C8:思考计时器 - 已抽出到 TimerWidget 子组件,内部管理启停与 tick */}
         <TimerWidget messages={messages} />
+
+        {/* v11:逐题反馈面板(语音答题闭环的反馈层,展示/评分/错题) */}
+        {currentSession && messages.length > 0 && (
+          <AnswerFeedbackPanel
+            sessionId={currentSession.sessionId}
+            provider={currentModel}
+            lastExchange={lastExchangeForScore}
+          />
+        )}
 
         {/* 方案 10:语音控制面板(可折叠,默认折叠) */}
         {!(viewMode === "room" && currentSession && messages.length > 0) && (

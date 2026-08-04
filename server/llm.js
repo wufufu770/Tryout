@@ -4,7 +4,9 @@
 // v9:30s 超时 + 5xx 重试 1 次 + 流式错误事件 + 结构化日志
 // v10:DNS Rebinding 防护(fetch 前 re-resolve)+ 流式首 token 30s 超时 + tokens_total 修复
 import dns from "dns";
-import { Agent } from "undici";
+// v11.1:统一用 undici 的 fetch + Agent(Node 24 原生 fetch 无法识别外部 undici Agent 的 dispatcher,
+// 导致 SSRF 防护 Agent 静默失效,所有 LLM 请求报 "fetch failed")
+import { Agent, fetch as undiciFetch } from "undici";
 import { getProvider, getActiveProvider, getFailoverQueue, getApiKey, listProviders } from "./db.js";
 import { redactPii, restorePii } from "./pii.js";
 import { logger } from "./logger.js";
@@ -304,7 +306,7 @@ async function sendRequest(provider, payload, stream, res, ctx = {}, onUsage) {
   try {
     // v10.2.4(P0-4):传入 undici Agent,在 TCP connect 时做最终 IP 校验(关闭 TOCTOU 窗口)
     const dispatcher = provider.isLocal ? safeAgentLocal : safeAgentNonLocal;
-    resp = await fetch(url, {
+    resp = await undiciFetch(url, {
       method: "POST",
       headers,
       body: JSON.stringify(payload),
@@ -673,7 +675,7 @@ export async function testProviderLatency(providerId) {
       if (provider.apiKey && provider.apiKey !== "ollama") {
         headers["x-api-key"] = provider.apiKey;
       }
-      const resp = await fetch(url, {
+      const resp = await undiciFetch(url, {
         method: "POST",
         headers,
         body: JSON.stringify({
@@ -707,7 +709,7 @@ export async function testProviderLatency(providerId) {
     if (provider.apiKey && provider.apiKey !== "ollama") {
       headers["Authorization"] = `Bearer ${provider.apiKey}`;
     }
-    const resp = await fetch(url, { method: "GET", headers, signal: AbortSignal.timeout(5000), dispatcher, ...NO_REDIRECT_FETCH_INIT });
+    const resp = await undiciFetch(url, { method: "GET", headers, signal: AbortSignal.timeout(5000), dispatcher, ...NO_REDIRECT_FETCH_INIT });
     const elapsed = Date.now() - start;
     if (resp.status >= 300 && resp.status < 400) {
       return {

@@ -1,7 +1,7 @@
 // 语音控制面板组件
 // 嵌入 InterviewPage,提供:Agent 语音配置、自动朗读、连续识别 + 自动提交、波形可视化
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Volume2, VolumeX, Mic, MicOff, Play, Square, ChevronDown, ChevronRight, Radio } from "lucide-react";
+import { Volume2, VolumeX, Mic, MicOff, Play, Square, ChevronDown, ChevronRight, Radio, AlertCircle } from "lucide-react";
 import { voiceManager, isSpeechSupported } from "@/lib/voiceManager";
 import { asrRegistry } from "@/lib/asrAdapter";
 import { createVoiceVisualizer, type VisualizerHandle } from "@/lib/voiceVisualizer";
@@ -54,6 +54,8 @@ export function VoicePanel({
   const [continuousMode, setContinuousMode] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(true);
   const [asrSupported, setAsrSupported] = useState(false);
+  const [asrError, setAsrError] = useState<string | null>(null);
+  const [asrLabel, setAsrLabel] = useState("Local");
   const asrRef = useRef(asrRegistry.getDefault());
   const vizCanvasRef = useRef<HTMLCanvasElement>(null);
   const vizRef = useRef<VisualizerHandle | null>(null);
@@ -85,7 +87,11 @@ export function VoicePanel({
 
   // ASR 支持检测
   useEffect(() => {
-    setAsrSupported(asrRef.current.isSupported());
+    const adapter = asrRef.current;
+    setAsrSupported(adapter.isSupported());
+    // 引擎标识:本地 whisper(服务端转写) vs 浏览器原生识别
+    const name = adapter.constructor?.name || "";
+    setAsrLabel(name === "ServerWhisperAdapter" ? "Local Whisper" : "Browser");
   }, []);
 
   // 停止识别(在 expanded effect 之前定义,以便 effect 依赖)
@@ -166,6 +172,7 @@ export function VoicePanel({
       interimResults: true,
       continuous,
       onResult: (text, isFinal) => {
+        setAsrError(null);
         onRecognize(text);
         if (isFinal && text.trim()) {
           lastFinalTextRef.current = text;
@@ -183,7 +190,8 @@ export function VoicePanel({
           }
         }
       },
-      onError: () => {
+      onError: (e) => {
+        setAsrError(e?.message || t("voice.asrError"));
         setListening(false);
         micStreamRef.current?.getTracks().forEach((tr) => tr.stop());
         micStreamRef.current = null;
@@ -237,10 +245,10 @@ export function VoicePanel({
         {/* 状态指示 */}
         <span className="ml-1 flex items-center gap-1 text-[10px]">
           {!ttsSupported && <span className="text-ide-warning">{t("voice.notSupported")}</span>}
-          {ttsSupported && !asrSupported && <span className="text-ide-warning">ASR N/A</span>}
-          {ttsSupported && asrSupported && <span className="text-ide-fg-muted">{t("status.ready")}</span>}
-          {speaking && <span className="text-ide-accent">· {t("interview.speaking")}</span>}
-          {listening && <span className="text-ide-danger">· {t("interview.listening")}</span>}
+        {ttsSupported && <span className="text-ide-fg-muted">{t("status.ready")}</span>}
+        {ttsSupported && asrSupported && <span className="text-ide-fg-muted">ASR:{asrLabel}</span>}
+        {speaking && <span className="text-ide-accent">· {t("interview.speaking")}</span>}
+        {listening && <span className="text-ide-danger">· {t("interview.listening")}</span>}
         </span>
         <span className="ml-auto text-[10px] text-ide-fg-muted">
           {agentId ? `${agentId.slice(0, 8)}` : "—"}
@@ -257,6 +265,14 @@ export function VoicePanel({
             className="w-full"
             style={{ height: 32 }}
           />
+
+          {/* ASR 错误提示(local-whisper 模型缺失等) */}
+          {asrError && (
+            <div className="flex items-start gap-1 border border-ide-danger/40 bg-ide-danger/10 px-2 py-1 text-[11px] text-ide-danger">
+              <AlertCircle size={12} className="mt-0.5 shrink-0" />
+              <span>{asrError}</span>
+            </div>
+          )}
 
           {/* 自动朗读 + 连续模式 + 自动提交 */}
           <div className="flex flex-wrap items-center gap-3">

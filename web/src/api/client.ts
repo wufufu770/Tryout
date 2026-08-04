@@ -283,6 +283,31 @@ export const api = {
   listAllEvaluations: () => request<Evaluation[]>("/evaluations/all"),
   analyzeWeakness: (limit = 5) => request<WeaknessAnalysis>(`/analysis/weakness?limit=${limit}`),
 
+  // ---- v11:语音转写(本地 whisper) ----
+  transcribeAudio: (blob: Blob, data: { sessionId: string; question?: string; agentId?: string; durationMs?: number; language?: string }) => {
+    const form = new FormData();
+    form.append("audio", blob, "answer.webm");
+    form.append("sessionId", data.sessionId);
+    if (data.question) form.append("question", data.question);
+    if (data.agentId) form.append("agentId", data.agentId);
+    if (data.durationMs) form.append("durationMs", String(data.durationMs));
+    if (data.language) form.append("language", data.language);
+    return uploadFile("/transcribe", form, 120_000);
+  },
+  listRecordings: (sessionId: string) => request<any[]>(`/sessions/${sessionId}/recordings`),
+
+  // ---- v11:逐题反馈 ----
+  scoreAnswer: (sessionId: string, data: { provider: string; question: string; answer: string }) =>
+    request<any>(`/sessions/${sessionId}/answers/score`, { method: "POST", body: JSON.stringify(data) }),
+  listAnswers: (sessionId: string) => request<any[]>(`/sessions/${sessionId}/answers`),
+  markAnswerMissed: (feedbackId: string, isMissed: boolean) =>
+    request<{ ok: true }>(`/answers/${feedbackId}/missed`, { method: "PUT", body: JSON.stringify({ isMissed }) }),
+  deleteAnswer: (feedbackId: string) => request<{ ok: true }>(`/answers/${feedbackId}`, { method: "DELETE" }),
+
+  // ---- v11:简历押题 ----
+  predictQuestions: (data: { provider: string; materialId?: string; resumeText?: string; jdText?: string }) =>
+    request<any>("/analysis/predict-questions", { method: "POST", body: JSON.stringify(data) }),
+
   // ---- Providers ----
   listProviders: async (): Promise<Provider[]> => {
     const list = await request<any[]>("/providers");

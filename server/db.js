@@ -328,6 +328,36 @@ addColumnIfMissing("session_groups", "deleted_at", "TEXT");
 addColumnIfMissing("sessions", "tokens_total", "INTEGER NOT NULL DEFAULT 0");
 addColumnIfMissing("sessions", "cost_usd", "REAL NOT NULL DEFAULT 0");
 
+// ---- v11:语音答题与逐题反馈(ALPHA 新增表,向后兼容,老库自动创建) ----
+db.exec(`
+CREATE TABLE IF NOT EXISTS answer_recordings (
+  recording_id TEXT PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  agent_id TEXT,
+  question TEXT NOT NULL,
+  audio_path TEXT,
+  transcript TEXT NOT NULL DEFAULT '',
+  wpm REAL NOT NULL DEFAULT 0,
+  duration_ms INTEGER NOT NULL DEFAULT 0,
+  model TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_answer_recordings_session ON answer_recordings(session_id, created_at);
+CREATE TABLE IF NOT EXISTS question_feedback (
+  feedback_id TEXT PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  question TEXT NOT NULL,
+  answer TEXT NOT NULL DEFAULT '',
+  score REAL,
+  weakness_tags TEXT NOT NULL DEFAULT '[]',
+  improvement TEXT,
+  better_answer TEXT,
+  is_missed INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_question_feedback_session ON question_feedback(session_id, created_at);
+`);
+
 // ---- agents 索引(依赖上面的迁移列 agent_kind,必须放在迁移之后) ----
 db.exec(`CREATE INDEX IF NOT EXISTS idx_agents_kind ON agents(agent_kind, is_template, created_at DESC);`);
 // v9:软删除过滤索引(常用查询 WHERE deleted_at IS NULL)
@@ -405,9 +435,9 @@ function camelize(row) {
   const out = {};
   for (const [k, v] of Object.entries(row)) {
     const camelKey = k.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
-    if (["is_template", "is_degraded", "is_active", "in_failover_queue"].includes(k)) {
+    if (["is_template", "is_degraded", "is_active", "in_failover_queue", "is_missed"].includes(k)) {
       out[camelKey] = !!v;
-    } else if (["focus_areas", "parsed_json", "strengths", "weaknesses", "improvements", "group_config"].includes(k) && typeof v === "string") {
+    } else if (["focus_areas", "parsed_json", "strengths", "weaknesses", "improvements", "group_config", "weakness_tags"].includes(k) && typeof v === "string") {
       try { out[camelKey] = JSON.parse(v); } catch { out[camelKey] = v; }
     } else if (k === "api_key" && typeof v === "string") {
       // 解密:ENC:: 前缀自动解,明文原样返回(向后兼容)
@@ -996,8 +1026,7 @@ export function listApiKeyProviders() {
 
 // ---- 自定义错误类 ----
 // v10.2:ValidationError 携带 code + i18nKey + i18nParams(供前端 i18n 映射)
-export class ValidationError extends Error {
-  constructor(message, opts = {}) {
+export class ValidationError extends Error {  constructor(message, opts = {}) {
     super(message);
     this.name = "ValidationError";
     this.code = opts.code;
@@ -1011,4 +1040,59 @@ export class NotFoundError extends Error {
     super(`${resource}不存在`);
     this.name = "NotFoundError";
   }
+}
+
+// ---- v11:语音答题与逐题反馈 ----
+export function createAnswerRecording(input) {
+  const { sessionId, agentId, question, audioPath, transcript, wpm, durationMs, model } = input;
+  const id = genId("rec");
+  db.prepare(
+    `INSERT INTO answer_recordings (recording_id, session_id, agent_id, question, audio_path, transcript, wpm, duration_ms, model)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(id, sessionId, agentId || null, question, audioPath || null, transcript || "", wpm || 0, durationMs || 0, model || "");
+  return { recordingId: id };
+}
+
+export function listAnswerRecordings(sessionId) {
+  return db.prepare(
+    `SELECT recording_id, session_id, agent_id, question, audio_path, transcript, wpm, duration_ms, model, created_at
+     FROM answer_recordings WHERE session_id = ? ORDER BY created_at ASC`
+  ).all(sessionId);
+}
+
+export function createQuestionFeedback(input) {
+  const { sessionId, question, answer, score, weaknessTags, improvement, betterAnswer, isMissed } = input;
+  const id = genId("fb");
+  db.prepare(
+    `INSERT INTO question_feedback (feedback_id, session_id, question, answer, score, weakness_tags, improvement, better_answer, is_missed)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(
+    id, sessionId, question || "", answer || "",
+    score ?? null, JSON.stringify(weaknessTags || []),
+    improvement || null, betterAnswer || null, isMissed ? 1 : 0
+  );
+  return { feedbackId: id };
+}
+
+export function listQuestionFeedback(sessionId) {
+  return camelizeAll(
+    db.prepare(
+      `SELECT feedback_id, session_id, question, answer, score, weakness_tags, improvement, better_answer, is_missed, created_at
+       FROM question_feedback WHERE session_id = ? ORDER BY created_at ASC`
+    ).all(sessionId)
+  ).map((r) => ({
+    ...r,
+    // camelize 已处理 weakness_tags(JSON)与 is_missed(bool),此处兜底保证形状稳定
+    weakness_tags: undefined,
+  }));
+}
+
+export function setQuestionMissed(feedbackId, isMissed) {
+  db.prepare(`UPDATE question_feedback SET is_missed = ? WHERE feedback_id = ?`).run(isMissed ? 1 : 0, feedbackId);
+  return { ok: true };
+}
+
+export function deleteQuestionFeedback(feedbackId) {
+  db.prepare(`DELETE FROM question_feedback WHERE feedback_id = ?`).run(feedbackId);
+  return { ok: true };
 }

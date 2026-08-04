@@ -29,6 +29,7 @@ import {
   getTodayTokenUsage, getDb, recordTokenUsage,
 } from "./db.js";
 import { listAllProviders, chatProxy, testProviderLatency } from "./llm.js";
+import analysisRouter from "./routes/analysis.js";
 import { DEFAULT_AGENT_TEMPLATES, seedIfEmpty, seedDefaultProviders, seedBuiltinMaterials } from "./seed.js";
 import { authMiddleware, isAuthEnabled } from "./auth.js";
 import { requestLogger, logger, logError } from "./logger.js";
@@ -138,6 +139,8 @@ function createRateLimiter({ windowMs, max, label }) {
 }
 app.use("/api", createRateLimiter({ windowMs: 60_000, max: 120, label: "general" }));
 app.use("/api/chat", createRateLimiter({ windowMs: 60_000, max: 20, label: "chat" }));
+// v11:分析路由(语音转写 / 逐题反馈 / 押题),LLM 调用共享 chat 限流语义
+app.use("/api", analysisRouter);
 // v10.2.4(P1):导入/上传独立限流(防 CPU/内存 DoS)
 // /api/import:15mb JSON 解析是 CPU 密集操作,限制 5次/分钟
 app.use("/api/import", createRateLimiter({ windowMs: 60_000, max: 5, label: "import" }));
@@ -842,7 +845,7 @@ app.get("/api/export", (req, res) => {
     sessionGroups: listSessionGroups(),
     reviews: listAllSessionReviews(),
   };
-  res.setHeader("Content-Disposition", `attachment; filename="interviewx-export-${Date.now()}.json"`);
+  res.setHeader("Content-Disposition", `attachment; filename="tryout-export-${Date.now()}.json"`);
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.ok(data);
 });
@@ -1080,7 +1083,7 @@ seedBuiltinMaterials();
 const server = app.listen(PORT, HOST, () => {
   const url = HOST === "0.0.0.0" ? `http://localhost:${PORT}` : `http://${HOST}:${PORT}`;
   logger.info("server.started", { url, host: HOST, port: PORT, auth: isAuthEnabled() ? "enabled" : "disabled" });
-  console.log(`InterviewX server v9.0 running on ${url}`);
+  console.log(`Tryout server v9.0 running on ${url}`);
 });
 
 let shuttingDown = false;
