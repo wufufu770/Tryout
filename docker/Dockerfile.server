@@ -1,11 +1,29 @@
 # ===== 后端构建阶段 =====
 # 构建上下文为仓库根目录：docker build -f docker/Dockerfile.server .
-FROM node:20-alpine AS server
+# 说明：基础镜像用 Debian slim(glibc)——依赖树含 onnxruntime-node(仅 glibc 预编译)，
+# Alpine/musl 无法加载。
+# 网络受限环境可用 --build-arg 覆盖：
+#   --build-arg APT_MIRROR=mirrors.aliyun.com
+#   --build-arg NPM_REGISTRY=https://registry.npmmirror.com
+#   --build-arg SHARP_BINARY_HOST=https://npmmirror.com/mirrors/sharp
+#   --build-arg SHARP_LIBVIPS_BINARY_HOST=https://npmmirror.com/mirrors/sharp-libvips
+FROM node:24-slim AS server
+ARG APT_MIRROR=deb.debian.org
+ARG NPM_REGISTRY=https://registry.npmjs.org
+ARG SHARP_BINARY_HOST=
+ARG SHARP_LIBVIPS_BINARY_HOST=
+ENV npm_config_sharp_binary_host=${SHARP_BINARY_HOST} \
+    npm_config_sharp_libvips_binary_host=${SHARP_LIBVIPS_BINARY_HOST} \
+    npm_config_nodedir=/usr/local
 WORKDIR /app
 
-# 安装依赖(better-sqlite3 需要 native 编译;带 lockfile 保证版本可复现)
+# 安装依赖(better-sqlite3 源码编译用本地 Node 头文件，零外网下载)
 COPY server/package.json server/package-lock.json ./
-RUN apk add --no-cache python3 make g++ wget && npm ci --silent
+RUN sed -i "s|deb.debian.org|${APT_MIRROR}|g" /etc/apt/sources.list.d/debian.sources \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends python3 make g++ wget ca-certificates \
+ && rm -rf /var/lib/apt/lists/* \
+ && npm ci --silent --registry=${NPM_REGISTRY}
 
 COPY server/ ./
 
