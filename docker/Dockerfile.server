@@ -3,9 +3,9 @@
 FROM node:20-alpine AS server
 WORKDIR /app
 
-# 安装依赖(better-sqlite3 需要 native 编译)
-COPY server/package.json ./
-RUN apk add --no-cache python3 make g++ wget && npm install --silent
+# 安装依赖(better-sqlite3 需要 native 编译;带 lockfile 保证版本可复现)
+COPY server/package.json server/package-lock.json ./
+RUN apk add --no-cache python3 make g++ wget && npm ci --silent
 
 COPY server/ ./
 

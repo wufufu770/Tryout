@@ -1,0 +1,18 @@
+# 构建上下文瘦身 + 防止宿主机原生模块污染镜像
+**/node_modules
+**/dist
+**/build
+.git
+.github
+server/data
+web/dist
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store

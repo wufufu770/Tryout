@@ -2,8 +2,8 @@
 # 构建上下文为仓库根目录：docker build -f docker/Dockerfile.web .
 FROM node:20-alpine AS web-builder
 WORKDIR /web
-COPY web/package.json ./
-RUN npm install --silent
+COPY web/package.json web/package-lock.json ./
+RUN npm ci --silent
 COPY web/ ./
 RUN npm run build
 
