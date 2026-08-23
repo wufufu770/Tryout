@@ -54,3 +54,13 @@ jobs:
         run: npm test -- --run || true  # vitest,允许无测试时跳过
       - name: Build
         run: npm run build
+
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build server image
+        run: docker build -f docker/Dockerfile.server -t interviewx-server:ci .
+      - name: Build web image
+        run: docker build -f docker/Dockerfile.web -t interviewx-web:ci .

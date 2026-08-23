@@ -1,0 +1,27 @@
+# ===== 后端构建阶段 =====
+# 构建上下文为仓库根目录：docker build -f docker/Dockerfile.server .
+FROM node:20-alpine AS server
+WORKDIR /app
+
+# 安装依赖(better-sqlite3 需要 native 编译)
+COPY server/package.json ./
+RUN apk add --no-cache python3 make g++ wget && npm install --silent
+
+COPY server/ ./
+
+# 数据目录
+RUN mkdir -p /data
+VOLUME ["/data"]
+
+ENV PORT=3001
+ENV DB_DIR=/data
+ENV DOCKER=1
+ENV NODE_ENV=production
+
+EXPOSE 3001
+
+# 健康检查(每 30s 探活,失败 3 次标记 unhealthy)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -qO- http://localhost:3001/api/health || exit 1
+
+CMD ["node", "index.js"]

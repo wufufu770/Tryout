@@ -4,7 +4,14 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/),版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [1.0.0] - 2025-07-22
+## [Unreleased]
+
+### Changed
+- Docker 部署方案并入本仓库 `docker/` 目录（Dockerfile.server / Dockerfile.web / docker-compose.yml / nginx.conf），原独立仓库 interviewx-docker 废弃并重定向；镜像名由 tryout-server/tryout-web 统一为 interviewx-server/interviewx-web。
+- CI 新增 docker-build job（构建两个镜像验证）。
+- 修正 CHANGELOG 日期年份笔误（2025 → 2026，仓库实际创建于 2026-07-22）。
+
+## [1.0.0] - 2026-07-22
 
 首次公开发布。
 
@@ -70,4 +77,4 @@
 
 ---
 
-[Tryout Docker 版](https://github.com/wufufu770/tryout-docker) 提供同等功能,通过 Docker 一键部署。
+Docker 部署方案现内置于本仓库 `docker/` 目录,一键 `docker compose up` 部署。

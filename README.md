@@ -2,11 +2,11 @@
 
 > 终端风格的本地优先 AI 面试模拟平台
 
-[![CI](https://github.com/wufufu770/tryout/actions/workflows/ci.yml/badge.svg)](https://github.com/wufufu770/tryout/actions/workflows/ci.yml)
+[![CI](https://github.com/wufufu770/interviewx/actions/workflows/ci.yml/badge.svg)](https://github.com/wufufu770/interviewx/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org/)
-[![GitHub stars](https://img.shields.io/github/stars/wufufu770/tryout?style=social)](https://github.com/wufufu770/tryout/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/wufufu770/tryout?style=social)](https://github.com/wufufu770/tryout/network/members)
+[![GitHub stars](https://img.shields.io/github/stars/wufufu770/interviewx?style=social)](https://github.com/wufufu770/interviewx/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/wufufu770/interviewx?style=social)](https://github.com/wufufu770/interviewx/network/members)
 
 **版本:v1.0.0**
 
@@ -219,4 +219,18 @@ cd web && npm run build
 
 ## License
 
-[MIT](LICENSE)
+[MIT## Docker 部署
+
+Docker 部署方案已并入本仓库 `docker/` 目录（原独立仓库 interviewx-docker 已废弃并重定向到本仓库）：
+
+```bash
+cd docker
+cp .env.example .env   # 按需修改（Ollama 地址、CORS 等）
+docker compose up -d --build
+```
+
+- 前端：http://localhost:9090（Nginx + SPA 路由 + API 反代）
+- 后端：http://localhost:3001/api/health
+- 镜像发布：推送 `v*` tag 自动构建到 GHCR（`ghcr.io/wufufu770/interviewx-server` / `interviewx-web`）
+
+## License
