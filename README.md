@@ -219,7 +219,33 @@ cd web && npm run build
 
 ## License
 
-[MIT## Docker 部署
+[MIT## 题库资产（JSON 化）
+
+内置题库已可导出为框架无关的 JSON 资产（808 题 / 12 行业 / 5 题型 / 3 难度）：
+
+```bash
+cd web && npm run export:questionbank   # 生成 public/questionbank.json
+```
+
+JSON 结构（`questionbank.schema` 同构，自定义题库按此结构即可接入导入流程）：
+
+```jsonc
+{
+  "version": "2026-08-23",
+  "meta": { "industries": [...], "questionTypes": [...], "difficulties": [...], "total": 808 },
+  "questions": [{
+    "id": "security-tech-001", "industry": "security",
+    "type": "technical",            // technical|design|behavioral|coding|questions
+    "difficulty": "junior",         // junior|mid|senior
+    "title": "...", "content": "...",
+    "referenceAnswer": "...",       // 参考答案
+    "keyPoints": ["..."], "tags": ["..."],
+    "estimatedMinutes": 12
+  }]
+}
+```
+
+## Docker 部署
 
 Docker 部署方案已并入本仓库 `docker/` 目录（原独立仓库 interviewx-docker 已废弃并重定向到本仓库）：
 
