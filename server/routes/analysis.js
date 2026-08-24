@@ -27,6 +27,32 @@ const router = express.Router();
 const UPLOAD_DIR = path.join(DB_DIR_EXPORT, "uploads");
 const DAILY_TOKEN_BUDGET = Number(process.env.DAILY_TOKEN_BUDGET) || 500000;
 
+// 从 LLM 回复提取 JSON(容错处理):
+// 1. 剥离 <think>...</think> 思考块(MiniMax 等推理模型默认输出,会污染 JSON 解析)
+// 2. 剥离 markdown 代码围栏
+// 3. 截取首个 { 或 [ 到末尾对应括号之间的内容
+function extractJson(content) {
+  let s = String(content || "");
+  // 剥 think 块(含嵌套标签变体)
+  s = s.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+  // 剥代码围栏
+  const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fence) s = fence[1].trim();
+  // 定位 JSON 主体(对象或数组)
+  const first = s.search(/[[{]/);
+  if (first < 0) return null;
+  const lastBrace = s.lastIndexOf("}");
+  const lastBracket = s.lastIndexOf("]");
+  const end = Math.max(lastBrace, lastBracket);
+  if (end <= first) return null;
+  const slice = s.slice(first, end + 1);
+  try {
+    return JSON.parse(slice);
+  } catch {
+    return null;
+  }
+}
+
 // 音频 MIME 白名单(MediaRecorder 常见输出)
 const ALLOWED_AUDIO_MIMES = new Set([
   "audio/webm", "audio/ogg", "audio/wav", "audio/x-wav",
@@ -128,7 +154,7 @@ router.post("/sessions/:id/answers/score", async (req, res, next) => {
     const prompt = `请以资深面试官视角,对这道面试题的回答做逐题反馈。题目: ${question}
 用户回答: ${answer}
 
-严格输出 JSON(不要输出其他内容,不要 markdown 代码块):
+严格输出 JSON(不要输出其他内容,不要 markdown 代码块,不要输出思考过程/think 标签):
 {
   "score": 1-10 的整数或一位小数,
   "starAnalysis": {"situation": "是否描述情境(1-2句)", "task": "任务目标(1-2句)", "action": "行动(1-2句)", "result": "结果是否量化(1-2句)"},
@@ -143,26 +169,13 @@ router.post("/sessions/:id/answers/score", async (req, res, next) => {
       sessionId,
     }, null, makeUsageRecorder(provider, sessionId));
 
-    const content = result?.content || "";
-    let jsonStr = content.trim();
-    const fence = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (fence) jsonStr = fence[1].trim();
-    const s = jsonStr.indexOf("{");
-    const e = jsonStr.lastIndexOf("}");
-    if (s >= 0 && e > s) jsonStr = jsonStr.slice(s, e + 1);
-
-    let parsed;
-    try {
-      parsed = JSON.parse(jsonStr);
-    } catch {
-      parsed = null;
-    }
+    const parsed = extractJson(result?.content || "");
     if (!parsed || typeof parsed.score !== "number") {
       return res.ok({
         ok: false,
         error: "评估结果解析失败,请重试",
         feedbackId: null,
-        raw: content.slice(0, 500),
+        raw: (result?.content || "").slice(0, 500),
       });
     }
 
@@ -229,9 +242,9 @@ router.post("/analysis/predict-questions", async (req, res, next) => {
 简历: ${resume.slice(0, 20000)}
 ${jd ? `岗位 JD: ${jd.slice(0, 10000)}` : ""}
 
-输出 6-8 道押题,严格输出 JSON 数组(不要输出其他内容,不要 markdown 代码块):
+输出 6-8 道押题,严格输出 JSON 数组(不要输出其他内容,不要 markdown 代码块,不要输出思考过程/think 标签,字符串内不要使用换行):
 [
-  {"question": "具体问题", "category": "技术/项目/行为/场景/动机", "difficulty": 1-5, "intent": "面试官想考察什么", "keyPoints": ["回答要点1", "回答要点2"]}
+  {"question": "具体问题(一句话)", "category": "技术/项目/行为/场景/动机", "difficulty": 3, "intent": "面试官想考察什么(一句话)", "keyPoints": "要点1;要点2;要点3(用分号分隔,不要用数组)"}
 ]`;
 
     const result = await chatProxy(provider, {
@@ -239,21 +252,11 @@ ${jd ? `岗位 JD: ${jd.slice(0, 10000)}` : ""}
       stream: false,
     }, null, makeUsageRecorder(provider, null));
 
-    const content = result?.content || "";
-    let jsonStr = content.trim();
-    const fence = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (fence) jsonStr = fence[1].trim();
-    const s = jsonStr.indexOf("[");
-    const e = jsonStr.lastIndexOf("]");
-    if (s >= 0 && e > s) jsonStr = jsonStr.slice(s, e + 1);
-
     let questions = [];
-    try {
-      const parsed = JSON.parse(jsonStr);
-      if (Array.isArray(parsed)) {
-        questions = parsed.filter((q) => q && typeof q.question === "string").slice(0, 8);
-      }
-    } catch {}
+    const parsed = extractJson(result?.content || "");
+    if (Array.isArray(parsed)) {
+      questions = parsed.filter((q) => q && typeof q.question === "string").slice(0, 8);
+    }
 
     if (questions.length === 0) {
       return res.ok({ ok: false, questions: [], error: "押题结果解析失败,请重试" });

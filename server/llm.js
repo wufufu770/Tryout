@@ -140,8 +140,12 @@ function createSafeLookup(allowLocal) {
           }
         }
       }
-      const first = addresses[0];
-      cb(null, first.address, first.family);
+      // v11.2:回调必须传数组(undici/Node 24 的 connect.lookup 契约是 all 模式:
+      // callback(null, [{ address, family }, ...]))。
+      // 原实现传单地址 (null, first.address, first.family) → node:net emitLookup
+      // 收到非法值报 "Invalid IP address: undefined" → 所有域名类 provider 全部 fetch failed。
+      // 本地 mock(127.0.0.1)是 IP 字面量,undici 不走 lookup,所以此前 e2e 未暴露。
+      cb(null, addresses.map((a) => ({ address: a.address, family: a.family || 4 })));
     });
   };
 }
@@ -207,7 +211,9 @@ function resolveProvider(providerId) {
   if (dbProvider) {
     return {
       baseUrl: dbProvider.baseUrl,
-      apiKey: dbProvider.apiKey,
+      // v11.2:providers.api_key 列通常为空(安全设计:key 存独立 api_keys 表,
+      // 前端通过 /api/keys 写入)。getApiKey 会回退查 api_keys 表,缺此兜底所有数据库 provider 都拿不到 key
+      apiKey: dbProvider.apiKey || getApiKey(providerId),
       model: dbProvider.modelName || providerId,
       apiFormat: dbProvider.apiFormat,
       isLocal: dbProvider.category === "local",
