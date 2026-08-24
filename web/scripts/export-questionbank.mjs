@@ -1,14 +1,5 @@
 #!/usr/bin/env node
-/**
- * export-questionbank.mjs — 把内置 TS 题库导出为 JSON 资产
- *
- * 用途：题库产品化第一步。JSON 化后：
- *   - 任何语言/工具都能消费（不依赖前端构建链）
- *   - 为「用户自定义题库导入」提供 schema 基准（同结构即可导入）
- *
- * 运行：npm run export:questionbank   （在 web/ 目录）
- * 输出：public/questionbank.json
- */
+/** 导出内置题库为 public/questionbank.json；同结构 JSON 即为自定义导入格式。 */
 import { createServer } from 'vite';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';

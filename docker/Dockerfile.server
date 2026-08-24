@@ -1,12 +1,4 @@
-# ===== 后端构建阶段 =====
-# 构建上下文为仓库根目录：docker build -f docker/Dockerfile.server .
-# 说明：基础镜像用 Debian slim(glibc)——依赖树含 onnxruntime-node(仅 glibc 预编译)，
-# Alpine/musl 无法加载。
-# 网络受限环境可用 --build-arg 覆盖：
-#   --build-arg APT_MIRROR=mirrors.aliyun.com
-#   --build-arg NPM_REGISTRY=https://registry.npmmirror.com
-#   --build-arg SHARP_BINARY_HOST=https://npmmirror.com/mirrors/sharp
-#   --build-arg SHARP_LIBVIPS_BINARY_HOST=https://npmmirror.com/mirrors/sharp-libvips
+# 后端镜像。glibc 基础镜像(onnxruntime-node 依赖)；受限网络可用 --build-arg 换源。
 FROM node:24-slim AS server
 ARG APT_MIRROR=deb.debian.org
 ARG NPM_REGISTRY=https://registry.npmjs.org

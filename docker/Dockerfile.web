@@ -1,5 +1,4 @@
-# ===== 前端构建阶段 =====
-# 构建上下文为仓库根目录：docker build -f docker/Dockerfile.web .
+# 前端镜像。
 FROM node:24-alpine AS web-builder
 WORKDIR /web
 COPY web/package.json web/package-lock.json ./
