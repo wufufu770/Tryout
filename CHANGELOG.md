@@ -11,6 +11,13 @@
 - CI 新增 docker-build job（构建两个镜像验证）。
 - 修正 CHANGELOG 日期年份笔误（2025 → 2026，仓库实际创建于 2026-07-22）。
 
+### Fixed
+- nginx 改为运行时解析后端(`resolver 127.0.0.11` + 变量 upstream)：web 容器不再因后端未就绪/换 IP 而启动失败或断链（独立运行时 /api 返回 502 而非崩溃）。
+
+### Changed
+- Dockerfile.server 基础镜像 node:20-alpine → node:24-slim：依赖树含 onnxruntime-node(仅 glibc) 与需要 Node24 API 的 undici；受限网络提供 APT/NPM/sharp 镜像源构建参数，better-sqlite3 用镜像内自带 Node 头文件本地编译。
+- 新增题库 JSON 导出：`npm run export:questionbank` 生成框架无关的 public/questionbank.json（808 题），README 文档化导入 schema。
+
 ## [1.0.0] - 2026-07-22
 
 首次公开发布。
