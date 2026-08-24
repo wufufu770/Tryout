@@ -14,7 +14,10 @@ import { encryptSecret, decryptSecret } from "./crypto.js";
 // 跨平台兼容:Windows 下 "/data" 会被解析为 "<盘符>:\data" 导致 EPERM
 const DB_DIR = process.env.DB_DIR || (process.platform === "win32" ? path.join(process.cwd(), "data") : "/data");
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
-const DB_PATH = path.join(DB_DIR, "interviewx.db");
+const DB_BASE = fs.existsSync(path.join(DB_DIR, "tryout.db")) || !fs.existsSync(path.join(DB_DIR, "interviewx.db"))
+  ? "tryout"
+  : "interviewx";
+const DB_PATH = path.join(DB_DIR, `${DB_BASE}.db`);
 
 // Agent 图标存储目录
 const ICON_DIR = path.join(DB_DIR, "agent_icons");
@@ -266,7 +269,7 @@ function backupDatabase() {
     const backupDir = path.join(DB_DIR, "backup");
     if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
     const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-    const backupPath = path.join(backupDir, `interviewx-${today}.db`);
+    const backupPath = path.join(backupDir, `${DB_BASE}-${today}.db`);
     // 当天已备份则跳过
     if (!fs.existsSync(backupPath)) {
       // 使用 SQLite Online Backup API(保证 WAL 库一致性,避免 fs.copyFileSync 复制到一半的页)
@@ -274,9 +277,9 @@ function backupDatabase() {
       console.log(`[backup] 已备份到 ${backupPath}`);
     }
     // 清理 7 天前的旧备份
-    const files = fs.readdirSync(backupDir).filter(f => f.startsWith("interviewx-") && f.endsWith(".db"));
+    const files = fs.readdirSync(backupDir).filter(f => f.startsWith(`${DB_BASE}-`) && f.endsWith(".db"));
     for (const f of files) {
-      const m = f.match(/interviewx-(\d{4}-\d{2}-\d{2})\.db/);
+      const m = f.match(new RegExp(`${DB_BASE}-(\\d{4}-\\d{2}-\\d{2})\\.db`));
       if (!m) continue;
       const age = Date.now() - new Date(m[1]).getTime();
       if (age > 7 * 24 * 3600 * 1000) {

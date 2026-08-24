@@ -61,6 +61,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build server image
-        run: docker build -f docker/Dockerfile.server -t interviewx-server:ci .
+        run: docker build -f docker/Dockerfile.server -t tryout-server:ci .
       - name: Build web image
-        run: docker build -f docker/Dockerfile.web -t interviewx-web:ci .
+        run: docker build -f docker/Dockerfile.web -t tryout-web:ci .

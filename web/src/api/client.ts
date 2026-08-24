@@ -16,7 +16,8 @@ import type {
 import { ApiError } from "./types";
 
 const BASE = "/api";
-const TOKEN_KEY = "interviewx:api_token";
+const TOKEN_KEY = "tryout:api_token";
+const LEGACY_TOKEN_KEY = "interviewx:api_token";
 
 // ---- Normalize:补全兼容字段,让旧代码(provider.id / material.content)能直接用 ----
 function normalizeProvider(p: any): Provider {
@@ -44,7 +45,13 @@ const RETRYABLE_STATUS = new Set([502, 503, 504, 429]);
 // ---- Token 管理 ----
 // v10.2.6(D2):改用 sessionStorage,标签关闭即清空,降低 XSS 持久窃取风险
 export function getApiToken(): string | null {
-  try { return sessionStorage.getItem(TOKEN_KEY); } catch { return null; }
+  try {
+    const cur = sessionStorage.getItem(TOKEN_KEY);
+    if (cur) return cur;
+    const legacy = sessionStorage.getItem(LEGACY_TOKEN_KEY);
+    if (legacy) { sessionStorage.setItem(TOKEN_KEY, legacy); sessionStorage.removeItem(LEGACY_TOKEN_KEY); }
+    return legacy;
+  } catch { return null; }
 }
 export function setApiToken(token: string | null) {
   try {

@@ -2,11 +2,11 @@
 
 > 终端风格的本地优先 AI 面试模拟平台
 
-[![CI](https://github.com/wufufu770/interviewx/actions/workflows/ci.yml/badge.svg)](https://github.com/wufufu770/interviewx/actions/workflows/ci.yml)
+[![CI](https://github.com/wufufu770/Tryout/actions/workflows/ci.yml/badge.svg)](https://github.com/wufufu770/Tryout/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org/)
-[![GitHub stars](https://img.shields.io/github/stars/wufufu770/interviewx?style=social)](https://github.com/wufufu770/interviewx/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/wufufu770/interviewx?style=social)](https://github.com/wufufu770/interviewx/network/members)
+[![GitHub stars](https://img.shields.io/github/stars/wufufu770/Tryout?style=social)](https://github.com/wufufu770/Tryout/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/wufufu770/Tryout?style=social)](https://github.com/wufufu770/Tryout/network/members)
 
 **版本:v1.0.0**
 
@@ -257,6 +257,6 @@ docker compose up -d --build
 
 - 前端：http://localhost:9090（Nginx + SPA 路由 + API 反代）
 - 后端：http://localhost:3001/api/health
-- 镜像发布：推送 `v*` tag 自动构建到 GHCR（`ghcr.io/wufufu770/interviewx-server` / `interviewx-web`）
+- 镜像发布：推送 `v*` tag 自动构建到 GHCR（`ghcr.io/wufufu770/tryout-server` / `tryout-web`）
 
 ## License

@@ -7,7 +7,7 @@
 ## [Unreleased]
 
 ### Changed
-- Docker 部署方案并入本仓库 `docker/` 目录（Dockerfile.server / Dockerfile.web / docker-compose.yml / nginx.conf），原独立仓库 interviewx-docker 废弃并重定向；镜像名由 tryout-server/tryout-web 统一为 interviewx-server/interviewx-web。
+- Docker 部署方案并入本仓库 `docker/` 目录（Dockerfile.server / Dockerfile.web / docker-compose.yml / nginx.conf），原独立仓库 interviewx-docker 废弃并重定向；镜像与容器名统一为 tryout-server / tryout-web（随仓库更名 Tryout）。
 - CI 新增 docker-build job（构建两个镜像验证）。
 - 修正 CHANGELOG 日期年份笔误（2025 → 2026，仓库实际创建于 2026-07-22）。
 

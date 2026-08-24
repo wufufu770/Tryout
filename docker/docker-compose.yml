@@ -3,11 +3,11 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.server
-    container_name: interviewx-server
+    container_name: tryout-server
     ports:
       - "3001:3001"
     volumes:
-      - interviewx-data:/data
+      - tryout-data:/data
     environment:
       - PORT=3001
       - DB_DIR=/data
@@ -47,7 +47,7 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.web
-    container_name: interviewx-web
+    container_name: tryout-web
     ports:
       - "9090:80"
     depends_on:
@@ -66,4 +66,4 @@ services:
         max-file: "3"
 
 volumes:
-  interviewx-data:
+  tryout-data:

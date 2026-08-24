@@ -1,7 +1,7 @@
 name: Publish Docker Images to GHCR
 
 # 推送 v* tag 或发布 release 时,自动构建 Docker 镜像并发布到 GitHub Container Registry
-# 用户即可 docker pull ghcr.io/wufufu770/interviewx-server:v1.0.0
+# 用户即可 docker pull ghcr.io/wufufu770/tryout-server:v1.0.0
 on:
   push:
     tags:
@@ -57,8 +57,8 @@ jobs:
           file: ./docker/Dockerfile.server
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/interviewx-server:${{ steps.meta.outputs.version }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/interviewx-server:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/tryout-server:${{ steps.meta.outputs.version }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/tryout-server:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -69,7 +69,7 @@ jobs:
           file: ./docker/Dockerfile.web
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/interviewx-web:${{ steps.meta.outputs.version }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/interviewx-web:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/tryout-web:${{ steps.meta.outputs.version }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/tryout-web:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
