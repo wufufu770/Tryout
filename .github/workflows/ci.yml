@@ -24,14 +24,19 @@ jobs:
           cache: 'npm'
           cache-dependency-path: server/package-lock.json
       - run: npm ci
-      - name: Lint (basic syntax check)
-        run: node --check index.js && node --check db.js && node --check llm.js && node --check auth.js && node --check crypto.js && node --check validate.js && node --check response.js && node --check logger.js && node --check pii.js && node --check seed.js && node --check ssrf-shared.js
+      - name: Syntax check (node --check)
+        run: node --check index.js && node --check db.js && node --check llm.js && node --check auth.js && node --check crypto.js && node --check validate.js && node --check response.js && node --check logger.js && node --check pii.js && node --check seed.js && node --check ssrf-shared.js && node --check routes/analysis.js && node --check services/whisper.js && node --check services/pdf.js
       - name: SSRF security tests
         run: node --test test/ssrf.test.js
-      - name: Test
+      - name: Unit tests
         run: npm test
         env:
           DB_DIR: /tmp/tryout-test
+          INTERVIEWX_AUTH_DISABLED: '1'
+      # R11 回归防护 + 语音闭环:门禁自动准备前置服务,不需人工预热
+      - name: E2E (auto-provisioned)
+        run: ../build.sh e2e
+        env:
           INTERVIEWX_AUTH_DISABLED: '1'
 
   frontend:
@@ -47,11 +52,12 @@ jobs:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - run: npm install --legacy-peer-deps
+      - run: npm ci
       - name: Type check
         run: npx tsc --noEmit
       - name: Test
-        run: npm test -- --run || true  # vitest,允许无测试时跳过
+        # 不允许 || true:前端测试必须真实失败即红
+        run: npx vitest run
       - name: Build
         run: npm run build
 

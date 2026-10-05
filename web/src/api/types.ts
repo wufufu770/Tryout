@@ -176,6 +176,8 @@ export type ErrorCode =
   | "AUTH_MISSING"
   | "AUTH_INVALID"
   | "RATE_LIMITED"
+  // 日 token 预算耗尽:同样 429,但当天重试必然失败,不可当作可重试错误
+  | "TOKEN_BUDGET_EXCEEDED"
   | "CONFLICT"
   | "UPSTREAM_ERROR"
   | "TIMEOUT"
@@ -216,6 +218,11 @@ export interface ChatResult {
   finishReason: string;
   degraded?: boolean;
   degradedFrom?: string;
+  /**
+   * v11.3 PII 占位符 → 明文 映射(仅流式响应返回,来自后端首个 SSE 事件)。
+   * 敏感信息:调用方不得写入 localStorage / sessionStorage / 日志。
+   */
+  piiMapping?: import("@/lib/piiPlaceholder").PiiMapping[];
 }
 
 // ---- 弱项分析返回 ----

@@ -5,6 +5,7 @@ import { useSessionStore } from "@/stores/sessionStore";
 import { InfoTip } from "@/components/InfoTip";
 import { Upload, Clipboard, Trash2, FileText, File as FileIcon, Plus, Check, Briefcase, Sparkles, CheckCircle2, AlertCircle, ChevronDown, ChevronRight } from "lucide-react";
 import { parseResume, generateJDPrompt, parseJDMatchResult, type StructuredResume, type JDMatchResult } from "@/lib/resumeParser";
+import { computeMatchScore, describeMatchQuality, type MatchResult as ScoreResult } from "@/lib/matchScore";
 import { useI18n } from "@/i18n";
 
 interface MaterialPageItem {
@@ -62,6 +63,8 @@ export function MaterialPage() {
   const [jdText, setJdText] = useState("");
   const [parsedResume, setParsedResume] = useState<StructuredResume | null>(null);
   const [matchResult, setMatchResult] = useState<JDMatchResult | null>(null);
+  // R21:匹配度可能"无法计算"(简历技能为 0 条)—— 那不是 0 分
+  const [matchScore, setMatchScore] = useState<ScoreResult | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [resumeError, setResumeError] = useState<string | null>(null);
   const [resumeCollapsed, setResumeCollapsed] = useState(true);
@@ -235,9 +238,17 @@ export function MaterialPage() {
       const missingSkills = jdTokens
         .filter((tok) => !resumeSkillLower.has(tok.toLowerCase()))
         .slice(0, 12);
-      const baseScore = parsed.skills.length
-        ? Math.min(100, Math.round((matchedSkills.length / Math.max(parsed.skills.length, 1)) * 100))
-        : 0;
+      /*
+       * R21:此前是 `skills.length ? round(...) : 0` —— 解析失败时给 0 分,
+       * 用户会以为是自己能力差。改为返回 null 并在 UI 上明确说明"无法计算"。
+       */
+      const scoreResult = computeMatchScore({
+        skills: parsed.skills,
+        matchedSkills,
+        jdEmpty: !jdText.trim(),
+      });
+      setMatchScore(scoreResult);
+      const baseScore = scoreResult.score ?? 0;
       setMatchResult({
         matchScore: baseScore,
         matchedSkills,
@@ -539,6 +550,14 @@ export function MaterialPage() {
                       <FileText size={12} className="text-ide-accent" />
                       {t("material.parsedResume")}
                     </div>
+                    {/* R21:把"没解析出来"显式告诉用户。
+                        此前这些缺口是静默的 —— 界面只显示解析到的部分,
+                        用户以为"简历里就没有这些信息",实际是解析器没读出来。 */}
+                    {parsedResume.parseGaps && parsedResume.parseGaps.length > 0 && (
+                      <div className="mb-1.5 border-l-2 border-ide-warning bg-ide-warning/5 px-2 py-1 text-[10px] leading-relaxed text-ide-fg-muted">
+                        {t("material.parseGaps", { fields: parsedResume.parseGaps.join("、") })}
+                      </div>
+                    )}
                     <dl className="flex flex-col gap-1 text-[11px]">
                       {parsedResume.name && (
                         <div className="flex gap-1">
@@ -602,10 +621,32 @@ export function MaterialPage() {
                     <div className="mb-1.5 flex items-center gap-1 text-[11px] font-semibold text-ide-fg">
                       <Briefcase size={12} className="text-ide-accent" />
                       {t("material.matchResult")}
-                      <span className="ml-auto rounded bg-ide-accent/20 px-1.5 py-0.5 text-[10px] font-bold text-ide-accent">
-                        {matchResult.matchScore}
-                      </span>
+                      {/*
+                        R21:分数为 null 时**不能显示 0**。
+                        0 分 = "我读懂了,你不匹配"(结论);
+                        无法计算 = "我没读懂"(失败)。两者含义完全不同,
+                        混淆会让用户误判自己的能力。
+                      */}
+                      {matchScore?.score === null || matchScore?.score === undefined ? (
+                        <span
+                          className="ml-auto rounded bg-ide-warning/20 px-1.5 py-0.5 text-[10px] font-bold text-ide-warning"
+                          title={t("material.matchUnavailableHint")}
+                        >
+                          {t("material.matchUnavailable")}
+                        </span>
+                      ) : (
+                        <span className="ml-auto rounded bg-ide-accent/20 px-1.5 py-0.5 text-[10px] font-bold text-ide-accent">
+                          {matchScore.score}
+                        </span>
+                      )}
                     </div>
+                    {(matchScore?.score === null || matchScore?.score === undefined) && (
+                      <div className="mb-1.5 border-l-2 border-ide-warning bg-ide-warning/5 px-2 py-1 text-[10px] leading-relaxed text-ide-fg-muted">
+                        {matchScore?.reason === "emptyJd"
+                          ? t("material.matchFailEmptyJd")
+                          : t("material.matchFailNoSkills")}
+                      </div>
+                    )}
                     <div className="flex flex-col gap-1.5 text-[11px]">
                       {matchResult.matchedSkills.length > 0 && (
                         <div>

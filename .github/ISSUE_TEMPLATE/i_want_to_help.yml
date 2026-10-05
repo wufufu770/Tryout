@@ -1,0 +1,34 @@
+name: 我想帮忙
+description: 认领任务或提出贡献意向
+labels: ["help wanted"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: 你想参与哪方面
+      options:
+        - 题库补充 / 参考答案修订
+        - 翻译（i18n）
+        - 文档
+        - 前端
+        - 后端
+        - 音频 / 语音
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: how
+    attributes:
+      label: 你打算怎么做
+      description: 大致思路即可，不需要完整方案
+    validations:
+      required: true
+
+  - type: input
+    id: claim
+    attributes:
+      label: 关联的 issue
+      description: 如果是认领某个具体任务，填 issue 编号（例如 #42）
+    validations:
+      required: false

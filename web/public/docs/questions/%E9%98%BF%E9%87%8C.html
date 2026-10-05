@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>阿里 面试题 · 34 道</title>
+<meta name="description" content="阿里 相关面试题共 34 道,高频考点:STAR、数据驱动、等价类。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"阿里 面试题 · 34 道","description":"阿里 相关面试题共 34 道,高频考点:STAR、数据驱动、等价类。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"缓存穿透、击穿、雪崩的区别与解决","text":"讲一下缓存穿透、缓存击穿、缓存雪崩各自的现象、区别和解决方案,并对比布隆过滤器与缓存空值。","acceptedAnswer":{"@type":"Answer","text":"穿透 vs 击穿 vs 雪崩、布隆过滤器、互斥锁、TTL 抖动"}},{"@type":"Question","name":"JVM 内存模型与 GC 全流程","text":"讲 JVM 内存区域划分、对象分配流程、GC Roots、可达性分析,以及 G1 与 CMS 的对比。","acceptedAnswer":{"@type":"Answer","text":"JVM 内存、GC Roots、G1 vs CMS、可达性分析"}},{"@type":"Question","name":"Netty Reactor 模型与 IO 多路复用","text":"讲 Netty 的 Reactor 模型、BossGroup 与 WorkerGroup 的分工,以及 Linux 下 epoll/select/poll 的区别。","acceptedAnswer":{"@type":"Answer","text":"Reactor、Boss/Worker、epoll 边沿触发、Netty 优势"}},{"@type":"Question","name":"设计美团点餐系统(订单+支付+库存)","text":"设计一个支持点餐、支付、库存扣减的高并发系统,QPS 万级,要求不超卖、防重复支付、对账可追溯。","acceptedAnswer":{"@type":"Answer","text":"状态机、Redis 原子扣减、幂等、T+1 对账、防重支付"}},{"@type":"Question","name":"浏览器跨域与 CORS、JSONP、代理","text":"讲同源策略、CORS 完整流程(预检请求)、JSONP 原理与局限、开发代理与生产 Nginx 反代方案。","acceptedAnswer":{"@type":"Answer","text":"同源策略、CORS 预检、JSONP、Nginx 反代"}},{"@type":"Question","name":"设计一个前端性能监控平台(类 ARMS/Sentry)","text":"设计公司级前端性能监控平台,涵盖 Web Vitals 采集、JS 错误、API 监控、SourceMap 解析与告警。","acceptedAnswer":{"@type":"Answer","text":"Web Vitals、sendBeacon、SourceMap、指纹分组、告警"}},{"@type":"Question","name":"无重复字符的最长子串(滑动窗口)","text":"给定字符串 s,返回不含重复字符的最长子串长度,要求 O(n)。","acceptedAnswer":{"@type":"Answer","text":"滑动窗口、left 跳跃条件、O(n)"}},{"@type":"Question","name":"讲一次你推动算法平台化的经历","text":"用 STAR 描述一次你推动公司算法平台化/标准化的跨团队协作经历。","acceptedAnswer":{"@type":"Answer","text":"平台化、降低成本、机制化、特征一致性"}},{"@type":"Question","name":"Hive 数据倾斜如何解决","text":"讲 Hive/Spark 数据倾斜的现象、原因与解决方案,以 group by / join 为例。","acceptedAnswer":{"@type":"Answer","text":"数据倾斜、MapJoin、随机前缀、combiner"}},{"@type":"Question","name":"数仓分层与维度建模","text":"讲 Kimball 维度建模的星型/雪花模型,以及 ODS/DWD/DWS/ADS 分层职责。","acceptedAnswer":{"@type":"Answer","text":"维度建模、星型/雪花、ODS/DWD/DWS/ADS、SCD"}},{"@type":"Question","name":"Flink 状态管理与 Checkpoint","text":"讲 Flink 有状态计算的 State 类型,以及 Checkpoint/Savepoint 原理与 Exactly-Once 实现。","acceptedAnswer":{"@type":"Answer","text":"Keyed State、RocksDB、Barrier 对齐、Exactly-Once"}},{"@type":"Question","name":"设计实时数仓 Lambda 与 Kappa 架构","text":"对比 Lambda 与 Kappa 架构,并设计一个支持秒级延迟的实时数仓方案。","acceptedAnswer":{"@type":"Answer","text":"Lambda/Kappa、Flink、ClickHouse、CDC"}},{"@type":"Question","name":"设计公司级数据治理体系","text":"为公司设计完整数据治理方案,涵盖数据质量/元数据/血缘/安全/资产。","acceptedAnswer":{"@type":"Answer","text":"数据治理、血缘、元数据、DataHub"}},{"@type":"Question","name":"讲一次你主导的数据驱动业务决策","text":"用 STAR 描述一次你用数据推动业务决策的经历,有量化的业务收益。","acceptedAnswer":{"@type":"Answer","text":"数据驱动、RFM、A/B、ROI、STAR"}},{"@type":"Question","name":"产品度量:AARRR 与北极星指标","text":"讲 AARRR 海盗指标与北极星指标(NSM),结合抖音/淘宝举例。","acceptedAnswer":{"@type":"Answer","text":"AARRR、北极星、留存、aha moment"}},{"@type":"Question","name":"讲一次你推动产品落地的经历","text":"用 STAR 描述一次你主导推动产品落地的经历,讲清楚如何说服 stakeholder 与跨部门。","acceptedAnswer":{"@type":"Answer","text":"STAR、推动落地、跨部门、数据说服"}},{"@type":"Question","name":"设计一个高可用 Redis 集群方案","text":"为公司设计 Redis 集群方案,要求支持 1TB 数据、QPS 10万、可用性 99.99%,讲分片/哨兵/复制。","acceptedAnswer":{"@type":"Answer","text":"Redis Cluster、16384 slot、failover、跨 AZ"}},{"@type":"Question","name":"讲一次你主导的稳定性治理项目","text":"用 STAR 描述一次你主导的稳定性治理项目,有量化指标(MTTR/可用性/告警数)。","acceptedAnswer":{"@type":"Answer","text":"SLI/SLO、burn rate、金丝雀回滚、告警治理"}},{"@type":"Question","name":"BERT vs GPT 架构对比","text":"对比 BERT 与 GPT 的架构差异(Encoder/Decoder)、训练目标、适用任务。","acceptedAnswer":{"@type":"Answer","text":"BERT vs GPT、Encoder/Decoder、MLM vs Causal、fine-tune"}},{"@type":"Question","name":"设计推荐系统召回排序架构","text":"为内容平台设计推荐系统,涵盖召回/粗排/精排/重排,以及冷启动处理。","acceptedAnswer":{"@type":"Answer","text":"召回排序、DSSM、DeepFM、冷启动、多目标"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>阿里 面试题</h1>
+<p>共 <b>34</b> 道,高频考点 3 个。</p>
+<div class="stats">
+  <div class="stat"><b>34</b><span>题目数</span></div>
+  <div class="stat"><b>8</b><span>初级</span></div><div class="stat"><b>18</b><span>中级</span></div><div class="stat"><b>8</b><span>高级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">STAR</span><span class="tag">数据驱动</span><span class="tag">等价类</span></div>
+<h2>题目列表</h2>
+<h2>1. 缓存穿透、击穿、雪崩的区别与解决</h2>
+<p>讲一下缓存穿透、缓存击穿、缓存雪崩各自的现象、区别和解决方案,并对比布隆过滤器与缓存空值。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">穿透 vs 击穿 vs 雪崩</span><span class="tag">布隆过滤器</span><span class="tag">互斥锁</span><span class="tag">TTL 抖动</span></div><h2>2. JVM 内存模型与 GC 全流程</h2>
+<p>讲 JVM 内存区域划分、对象分配流程、GC Roots、可达性分析,以及 G1 与 CMS 的对比。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">JVM 内存</span><span class="tag">GC Roots</span><span class="tag">G1 vs CMS</span><span class="tag">可达性分析</span></div><h2>3. Netty Reactor 模型与 IO 多路复用</h2>
+<p>讲 Netty 的 Reactor 模型、BossGroup 与 WorkerGroup 的分工,以及 Linux 下 epoll/select/poll 的区别。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Reactor</span><span class="tag">Boss/Worker</span><span class="tag">epoll 边沿触发</span><span class="tag">Netty 优势</span></div><h2>4. 设计美团点餐系统(订单+支付+库存)</h2>
+<p>设计一个支持点餐、支付、库存扣减的高并发系统,QPS 万级,要求不超卖、防重复支付、对账可追溯。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">状态机</span><span class="tag">Redis 原子扣减</span><span class="tag">幂等</span><span class="tag">T+1 对账</span><span class="tag">防重支付</span></div><h2>5. 浏览器跨域与 CORS、JSONP、代理</h2>
+<p>讲同源策略、CORS 完整流程(预检请求)、JSONP 原理与局限、开发代理与生产 Nginx 反代方案。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">同源策略</span><span class="tag">CORS 预检</span><span class="tag">JSONP</span><span class="tag">Nginx 反代</span></div><h2>6. 设计一个前端性能监控平台(类 ARMS/Sentry)</h2>
+<p>设计公司级前端性能监控平台,涵盖 Web Vitals 采集、JS 错误、API 监控、SourceMap 解析与告警。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Web Vitals</span><span class="tag">sendBeacon</span><span class="tag">SourceMap</span><span class="tag">指纹分组</span><span class="tag">告警</span></div><h2>7. 无重复字符的最长子串(滑动窗口)</h2>
+<p>给定字符串 s,返回不含重复字符的最长子串长度,要求 O(n)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">滑动窗口</span><span class="tag">left 跳跃条件</span><span class="tag">O(n)</span></div><h2>8. 讲一次你推动算法平台化的经历</h2>
+<p>用 STAR 描述一次你推动公司算法平台化/标准化的跨团队协作经历。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">平台化</span><span class="tag">降低成本</span><span class="tag">机制化</span><span class="tag">特征一致性</span></div><h2>9. Hive 数据倾斜如何解决</h2>
+<p>讲 Hive/Spark 数据倾斜的现象、原因与解决方案,以 group by / join 为例。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">数据倾斜</span><span class="tag">MapJoin</span><span class="tag">随机前缀</span><span class="tag">combiner</span></div><h2>10. 数仓分层与维度建模</h2>
+<p>讲 Kimball 维度建模的星型/雪花模型,以及 ODS/DWD/DWS/ADS 分层职责。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">维度建模</span><span class="tag">星型/雪花</span><span class="tag">ODS/DWD/DWS/ADS</span><span class="tag">SCD</span></div><h2>11. Flink 状态管理与 Checkpoint</h2>
+<p>讲 Flink 有状态计算的 State 类型,以及 Checkpoint/Savepoint 原理与 Exactly-Once 实现。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Keyed State</span><span class="tag">RocksDB</span><span class="tag">Barrier 对齐</span><span class="tag">Exactly-Once</span></div><h2>12. 设计实时数仓 Lambda 与 Kappa 架构</h2>
+<p>对比 Lambda 与 Kappa 架构,并设计一个支持秒级延迟的实时数仓方案。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Lambda/Kappa</span><span class="tag">Flink</span><span class="tag">ClickHouse</span><span class="tag">CDC</span></div><h2>13. 设计公司级数据治理体系</h2>
+<p>为公司设计完整数据治理方案,涵盖数据质量/元数据/血缘/安全/资产。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">数据治理</span><span class="tag">血缘</span><span class="tag">元数据</span><span class="tag">DataHub</span></div><h2>14. 讲一次你主导的数据驱动业务决策</h2>
+<p>用 STAR 描述一次你用数据推动业务决策的经历,有量化的业务收益。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">数据驱动</span><span class="tag">RFM</span><span class="tag">A/B</span><span class="tag">ROI</span><span class="tag">STAR</span></div><h2>15. 产品度量:AARRR 与北极星指标</h2>
+<p>讲 AARRR 海盗指标与北极星指标(NSM),结合抖音/淘宝举例。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">AARRR</span><span class="tag">北极星</span><span class="tag">留存</span><span class="tag">aha moment</span></div><h2>16. 讲一次你推动产品落地的经历</h2>
+<p>用 STAR 描述一次你主导推动产品落地的经历,讲清楚如何说服 stakeholder 与跨部门。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">STAR</span><span class="tag">推动落地</span><span class="tag">跨部门</span><span class="tag">数据说服</span></div><h2>17. 设计一个高可用 Redis 集群方案</h2>
+<p>为公司设计 Redis 集群方案,要求支持 1TB 数据、QPS 10万、可用性 99.99%,讲分片/哨兵/复制。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Redis Cluster</span><span class="tag">16384 slot</span><span class="tag">failover</span><span class="tag">跨 AZ</span></div><h2>18. 讲一次你主导的稳定性治理项目</h2>
+<p>用 STAR 描述一次你主导的稳定性治理项目,有量化指标(MTTR/可用性/告警数)。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">SLI/SLO</span><span class="tag">burn rate</span><span class="tag">金丝雀回滚</span><span class="tag">告警治理</span></div><h2>19. BERT vs GPT 架构对比</h2>
+<p>对比 BERT 与 GPT 的架构差异(Encoder/Decoder)、训练目标、适用任务。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">BERT vs GPT</span><span class="tag">Encoder/Decoder</span><span class="tag">MLM vs Causal</span><span class="tag">fine-tune</span></div><h2>20. 设计推荐系统召回排序架构</h2>
+<p>为内容平台设计推荐系统,涵盖召回/粗排/精排/重排,以及冷启动处理。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">召回排序</span><span class="tag">DSSM</span><span class="tag">DeepFM</span><span class="tag">冷启动</span><span class="tag">多目标</span></div><h2>21. 设计公司 LLM 微调与部署方案</h2>
+<p>为公司设计基于开源 LLM(LLaMA/Qwen)的微调与部署方案,涵盖数据/SFT/RLHF/推理优化。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">LLM 微调</span><span class="tag">LoRA</span><span class="tag">RLHF</span><span class="tag">vLLM</span><span class="tag">量化</span></div><h2>22. 讲一下 SSRF 漏洞原理与绕过技巧</h2>
+<p>讲 SSRF 原理、危害、常见绕过技巧,以及大厂防护方案。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">SSRF</span><span class="tag">进制转换</span><span class="tag">DNS rebinding</span><span class="tag">IMDSv2</span></div><h2>23. 反序列化漏洞原理与 fastjson 案例</h2>
+<p>讲 Java 反序列化漏洞原理,以 fastjson 为例说明利用链,以及防护方案。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">反序列化</span><span class="tag">fastjson</span><span class="tag">JNDI</span><span class="tag">autoType</span></div><h2>24. JWT 安全与攻防</h2>
+<p>讲 JWT 的结构、常见安全问题(none 算法/密钥混淆/弱密钥),以及防护方案。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">JWT</span><span class="tag">alg none</span><span class="tag">算法混淆</span><span class="tag">撤销</span></div><h2>25. 设计大厂红蓝对抗演练</h2>
+<p>为公司设计红蓝对抗(Purple Team)演练方案,涵盖攻击路径、防御检测、复盘改进。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">红蓝对抗</span><span class="tag">ATT&amp;CK</span><span class="tag">MTTD</span><span class="tag">Purple Team</span></div><h2>26. 测试用例设计:登录页面</h2>
+<p>为一个登录页面设计测试用例,讲清楚覆盖维度与边界值。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">等价类</span><span class="tag">边界值</span><span class="tag">安全测试</span><span class="tag">性能测试</span></div><h2>27. 黑盒/白盒/灰盒测试区别</h2>
+<p>讲黑盒/白盒/灰盒测试的区别、适用场景、典型方法。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">黑/白/灰盒</span><span class="tag">覆盖率</span><span class="tag">等价类</span><span class="tag">集成测试</span></div><h2>28. 测试左移与右移实践</h2>
+<p>讲测试左移(Shift-Left)与测试右移(Shift-Right)理念,以及在 DevSecOps 中的落地。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">左移</span><span class="tag">右移</span><span class="tag">TDD/BDD</span><span class="tag">混沌工程</span></div><h2>29. 设计接口自动化测试框架</h2>
+<p>为公司设计 API 自动化测试框架,支持断言/数据驱动/Mock/报告/CI 集成。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">接口自动化</span><span class="tag">数据驱动</span><span class="tag">Allure</span><span class="tag">CI 集成</span></div><h2>30. 讲一次你发现的严重线上 Bug</h2>
+<p>用 STAR 描述一次你发现并定位的严重线上 Bug,有量化的影响范围与修复时间。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">线上 Bug</span><span class="tag">MTTR</span><span class="tag">契约测试</span><span class="tag">STAR</span></div><h2>31. Flutter 渲染原理与 Skia</h2>
+<p>讲 Flutter 的渲染管线、Widget/Element/RenderObject 三棵树,以及为什么 Flutter 性能接近原生。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">三棵树</span><span class="tag">Skia</span><span class="tag">自绘 UI</span><span class="tag">Impeller</span></div><h2>32. 设计跨部门大型项目治理</h2>
+<p>为公司设计跨 5+ 部门、50+ 人的大型项目治理框架,涵盖组织/流程/工具/度量。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">项目治理</span><span class="tag">RACI</span><span class="tag">Steering Committee</span><span class="tag">里程碑 gate</span></div><h2>33. 讲一次你挽救的项目</h2>
+<p>用 STAR 描述一次你挽救的濒临失败的项目,讲清楚危机识别与处理。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">救火项目</span><span class="tag">范围聚焦</span><span class="tag">信任重建</span><span class="tag">STAR</span></div><h2>34. 阿里六脉神剑与价值观考核</h2>
+<p>讲一下阿里巴巴「六脉神剑」价值观体系,以及价值观考核在绩效中的占比与方式。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">六脉神剑</span><span class="tag">价值观考核</span><span class="tag">50% 占比</span><span class="tag">一票否决</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Python 面试题 · 47 道</title>
+<meta name="description" content="Python 相关面试题共 47 道,高频考点:alg=none、fixture、kubernetes client、pandas merge、t 检验。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"Python 面试题 · 47 道","description":"Python 相关面试题共 47 道,高频考点:alg=none、fixture、kubernetes client、pandas merge、t 检验。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"Python:数据清洗脚本","text":"写一个 Python 脚本,读取 CSV,处理缺失值/异常值/重复行,输出清洗后数据。","acceptedAnswer":{"@type":"Answer","text":"pandas、dropna、异常值、类型转换"}},{"@type":"Question","name":"Python:实现留存计算","text":"给定用户激活日表和活跃事件表,用 Python 算次日/7日/30日留存。","acceptedAnswer":{"@type":"Answer","text":"pandas merge、日期差、去重、留存率"}},{"@type":"Question","name":"Python:实现 A/B 显著性检验","text":"写一个完整的 A/B 检验函数,支持比例检验(CTR)与均值检验(客单价),输出 p-value、置信区间、结论。","acceptedAnswer":{"@type":"Answer","text":"z 检验、t 检验、置信区间、lift"}},{"@type":"Question","name":"Python:简单留存计算","text":"给定用户激活日表与活跃事件表,用 Python 算次日/7日留存率。","acceptedAnswer":{"@type":"Answer","text":"pandas merge、日期差、去重"}},{"@type":"Question","name":"Python:AB 实验显著性检验","text":"写一个函数,输入两组数据(转化率或均值),输出 p-value、置信区间、是否显著。","acceptedAnswer":{"@type":"Answer","text":"z 检验、t 检验、置信区间、显著性"}},{"@type":"Question","name":"Python:用户路径分析","text":"给定用户行为日志,用 Python 实现用户路径分析,找出最常见的 N 步路径。","acceptedAnswer":{"@type":"Answer","text":"路径拼接、Counter、截断、聚类"}},{"@type":"Question","name":"Python:用户聚类 K-Means","text":"给定用户行为特征表,用 Python 实现 K-Means 聚类并选择最佳 K。","acceptedAnswer":{"@type":"Answer","text":"StandardScaler、silhouette、肘部法、可解释"}},{"@type":"Question","name":"Python:LTV 预测模型","text":"写一个 LTV 预测函数,基于历史购买数据预测用户未来 LTV。","acceptedAnswer":{"@type":"Answer","text":"BG/NBD、Gamma-Gamma、churn rate、冷启动"}},{"@type":"Question","name":"Python:批量操作服务器","text":"用 Python 写一个批量在多台服务器执行命令的工具,支持并发与结果汇总。","acceptedAnswer":{"@type":"Answer","text":"paramiko、并发、SSH、结果汇总"}},{"@type":"Question","name":"Python:K8s 资源利用率分析","text":"用 Python 调 K8s API,统计所有命名空间的资源利用率,输出低利用率清单供优化。","acceptedAnswer":{"@type":"Answer","text":"kubernetes client、metrics-server、owner 解析、聚合"}},{"@type":"Question","name":"Python:K8s 资源巡检脚本","text":"写 Python 脚本用 kubernetes 客户端巡检集群异常 Pod,发钉钉告警。","acceptedAnswer":{"@type":"Answer","text":"kubernetes client、Pod 状态、钉钉、巡检"}},{"@type":"Question","name":"Python:手撕 KMeans","text":"用 numpy 实现 KMeans 聚类,不调 sklearn。","acceptedAnswer":{"@type":"Answer","text":"分配+更新、空簇处理、收敛判断、Kmeans++"}},{"@type":"Question","name":"Python:手撕逻辑回归","text":"用 numpy 实现逻辑回归(梯度下降训练 + 预测)。","acceptedAnswer":{"@type":"Answer","text":"sigmoid、梯度下降、数值稳定、正则"}},{"@type":"Question","name":"Python:手撕决策树","text":"用 numpy 实现决策树(ID3 或 CART),信息增益或基尼系数。","acceptedAnswer":{"@type":"Answer","text":"基尼系数、递归构建、剪枝、连续阈值"}},{"@type":"Question","name":"Python:手撕 AUC 计算","text":"实现 AUC 计算,不调 sklearn,用面积法或 rank 法。","acceptedAnswer":{"@type":"Answer","text":"rank 法、同分平均、面积法、正负样本对"}},{"@type":"Question","name":"Python:手撕随机森林","text":"用 numpy 实现简化版随机森林(Bagging + 决策树),不调 sklearn。","acceptedAnswer":{"@type":"Answer","text":"Bagging、特征随机、Gini、OOB"}},{"@type":"Question","name":"Python:手撕 GBDT","text":"用 numpy 实现简化版 GBDT 二分类(回归树 + sigmoid + 梯度拟合)。","acceptedAnswer":{"@type":"Answer","text":"残差拟合、对数几率初始化、学习率、二分类"}},{"@type":"Question","name":"Python:实现安全密码哈希","text":"实现一个密码哈希函数,使用 bcrypt,支持加盐与验证。","acceptedAnswer":{"@type":"Answer","text":"bcrypt、rounds、盐、常量时间"}},{"@type":"Question","name":"Python:SQL 注入检测","text":"写一个函数,判断给定 SQL 字符串是否可能存在注入风险(简单规则)。","acceptedAnswer":{"@type":"Answer","text":"正则规则、大小写、绕过、误报"}},{"@type":"Question","name":"Python:JWT 生成与校验","text":"实现 JWT 的生成与校验,使用 HMAC SHA256。","acceptedAnswer":{"@type":"Answer","text":"HMAC SHA256、base64url、compare_digest、alg=none"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Python 面试题</h1>
+<p>共 <b>47</b> 道,高频考点 8 个。</p>
+<div class="stats">
+  <div class="stat"><b>47</b><span>题目数</span></div>
+  <div class="stat"><b>15</b><span>初级</span></div><div class="stat"><b>18</b><span>中级</span></div><div class="stat"><b>14</b><span>高级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">alg=none</span><span class="tag">fixture</span><span class="tag">kubernetes client</span><span class="tag">pandas merge</span><span class="tag">t 检验</span><span class="tag">z 检验</span><span class="tag">去重</span><span class="tag">并发</span></div>
+<h2>题目列表</h2>
+<h2>1. Python:数据清洗脚本</h2>
+<p>写一个 Python 脚本,读取 CSV,处理缺失值/异常值/重复行,输出清洗后数据。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">pandas</span><span class="tag">dropna</span><span class="tag">异常值</span><span class="tag">类型转换</span></div><h2>2. Python:实现留存计算</h2>
+<p>给定用户激活日表和活跃事件表,用 Python 算次日/7日/30日留存。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">pandas merge</span><span class="tag">日期差</span><span class="tag">去重</span><span class="tag">留存率</span></div><h2>3. Python:实现 A/B 显著性检验</h2>
+<p>写一个完整的 A/B 检验函数,支持比例检验(CTR)与均值检验(客单价),输出 p-value、置信区间、结论。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">z 检验</span><span class="tag">t 检验</span><span class="tag">置信区间</span><span class="tag">lift</span></div><h2>4. Python:简单留存计算</h2>
+<p>给定用户激活日表与活跃事件表,用 Python 算次日/7日留存率。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">pandas merge</span><span class="tag">日期差</span><span class="tag">去重</span></div><h2>5. Python:AB 实验显著性检验</h2>
+<p>写一个函数,输入两组数据(转化率或均值),输出 p-value、置信区间、是否显著。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">z 检验</span><span class="tag">t 检验</span><span class="tag">置信区间</span><span class="tag">显著性</span></div><h2>6. Python:用户路径分析</h2>
+<p>给定用户行为日志,用 Python 实现用户路径分析,找出最常见的 N 步路径。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">路径拼接</span><span class="tag">Counter</span><span class="tag">截断</span><span class="tag">聚类</span></div><h2>7. Python:用户聚类 K-Means</h2>
+<p>给定用户行为特征表,用 Python 实现 K-Means 聚类并选择最佳 K。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">StandardScaler</span><span class="tag">silhouette</span><span class="tag">肘部法</span><span class="tag">可解释</span></div><h2>8. Python:LTV 预测模型</h2>
+<p>写一个 LTV 预测函数,基于历史购买数据预测用户未来 LTV。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">BG/NBD</span><span class="tag">Gamma-Gamma</span><span class="tag">churn rate</span><span class="tag">冷启动</span></div><h2>9. Python:批量操作服务器</h2>
+<p>用 Python 写一个批量在多台服务器执行命令的工具,支持并发与结果汇总。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">paramiko</span><span class="tag">并发</span><span class="tag">SSH</span><span class="tag">结果汇总</span></div><h2>10. Python:K8s 资源利用率分析</h2>
+<p>用 Python 调 K8s API,统计所有命名空间的资源利用率,输出低利用率清单供优化。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">kubernetes client</span><span class="tag">metrics-server</span><span class="tag">owner 解析</span><span class="tag">聚合</span></div><h2>11. Python:K8s 资源巡检脚本</h2>
+<p>写 Python 脚本用 kubernetes 客户端巡检集群异常 Pod,发钉钉告警。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">kubernetes client</span><span class="tag">Pod 状态</span><span class="tag">钉钉</span><span class="tag">巡检</span></div><h2>12. Python:手撕 KMeans</h2>
+<p>用 numpy 实现 KMeans 聚类,不调 sklearn。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">分配+更新</span><span class="tag">空簇处理</span><span class="tag">收敛判断</span><span class="tag">Kmeans++</span></div><h2>13. Python:手撕逻辑回归</h2>
+<p>用 numpy 实现逻辑回归(梯度下降训练 + 预测)。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">sigmoid</span><span class="tag">梯度下降</span><span class="tag">数值稳定</span><span class="tag">正则</span></div><h2>14. Python:手撕决策树</h2>
+<p>用 numpy 实现决策树(ID3 或 CART),信息增益或基尼系数。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">基尼系数</span><span class="tag">递归构建</span><span class="tag">剪枝</span><span class="tag">连续阈值</span></div><h2>15. Python:手撕 AUC 计算</h2>
+<p>实现 AUC 计算,不调 sklearn,用面积法或 rank 法。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">rank 法</span><span class="tag">同分平均</span><span class="tag">面积法</span><span class="tag">正负样本对</span></div><h2>16. Python:手撕随机森林</h2>
+<p>用 numpy 实现简化版随机森林(Bagging + 决策树),不调 sklearn。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Bagging</span><span class="tag">特征随机</span><span class="tag">Gini</span><span class="tag">OOB</span></div><h2>17. Python:手撕 GBDT</h2>
+<p>用 numpy 实现简化版 GBDT 二分类(回归树 + sigmoid + 梯度拟合)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">残差拟合</span><span class="tag">对数几率初始化</span><span class="tag">学习率</span><span class="tag">二分类</span></div><h2>18. Python:实现安全密码哈希</h2>
+<p>实现一个密码哈希函数,使用 bcrypt,支持加盐与验证。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">bcrypt</span><span class="tag">rounds</span><span class="tag">盐</span><span class="tag">常量时间</span></div><h2>19. Python:SQL 注入检测</h2>
+<p>写一个函数,判断给定 SQL 字符串是否可能存在注入风险(简单规则)。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">正则规则</span><span class="tag">大小写</span><span class="tag">绕过</span><span class="tag">误报</span></div><h2>20. Python:JWT 生成与校验</h2>
+<p>实现 JWT 的生成与校验,使用 HMAC SHA256。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">HMAC SHA256</span><span class="tag">base64url</span><span class="tag">compare_digest</span><span class="tag">alg=none</span></div><h2>21. Python:端口扫描器</h2>
+<p>实现一个并发端口扫描器,支持 TCP connect 扫描与服务识别。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">connect</span><span class="tag">并发</span><span class="tag">banner</span><span class="tag">限速</span></div><h2>22. Python:实现一个简单的 IDS</h2>
+<p>用 Python 监听网络流量,检测可疑行为(端口扫描/SQL 注入特征)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">scapy</span><span class="tag">SYN 检测</span><span class="tag">payload 检查</span><span class="tag">BPF</span></div><h2>23. Python:实现一个简易 RASP</h2>
+<p>实现一个 Python Web 应用的 RASP(Runtime Application Self-Protection),hook 危险函数检测 SQL 注入。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">hook API</span><span class="tag">调用栈</span><span class="tag">语义检测</span><span class="tag">性能</span></div><h2>24. Python:实现一个 JWT 安全审计器</h2>
+<p>写一个工具,审计给定 JWT 的安全问题:alg=none、弱密钥、过期、kid 注入等。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">alg=none</span><span class="tag">弱密钥</span><span class="tag">kid 注入</span><span class="tag">过期检查</span></div><h2>25. Python:实现 SQL 注入检测</h2>
+<p>写 Python 脚本检测一个 URL 的 SQL 注入漏洞(基于参数化对比)。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">参数化对比</span><span class="tag">时间盲注</span><span class="tag">WAF 绕过</span><span class="tag">sqlmap</span></div><h2>26. Python:实现 JWT 安全校验</h2>
+<p>写 Python 实现完整的 JWT 验证(签名/过期/issuer/audience),处理常见漏洞。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">alg 白名单</span><span class="tag">issuer/audience</span><span class="tag">JWKS</span><span class="tag">require claim</span></div><h2>27. Python:实现密码学签名验证</h2>
+<p>用 Python 实现完整数字签名(签名/验签/证书链),用于 API 双向认证。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">RSA-PSS</span><span class="tag">证书链</span><span class="tag">mTLS</span><span class="tag">ECDSA</span></div><h2>28. Python:Pytest 测试用例</h2>
+<p>用 Pytest 写一个登录接口的测试,包含正常/异常/参数化。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">fixture</span><span class="tag">parametrize</span><span class="tag">断言</span><span class="tag">清理</span></div><h2>29. Python:UI 自动化(Selenium)</h2>
+<p>用 Selenium 写一个搜索功能的 UI 自动化,含等待与断言。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">显式等待</span><span class="tag">By 定位</span><span class="tag">断言</span><span class="tag">POM</span></div><h2>30. Python:生成测试数据</h2>
+<p>写一个函数,生成大量合规测试数据(用户/订单)。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Faker</span><span class="tag">随机生成</span><span class="tag">多样性</span><span class="tag">脱敏</span></div><h2>31. Python:Locust 压测脚本</h2>
+<p>用 Locust 写一个接口压测脚本,模拟用户行为,有阶梯加压。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Locust</span><span class="tag">task 权重</span><span class="tag">阶梯加压</span><span class="tag">思考时间</span></div><h2>32. Python:接口契约测试</h2>
+<p>用 Python 实现接口契约测试,基于 OpenAPI/Swagger 校验响应符合 schema。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">OpenAPI</span><span class="tag">jsonschema</span><span class="tag">schemathesis</span><span class="tag">兼容性</span></div><h2>33. Python:流量录制回放</h2>
+<p>实现一个简单的生产流量录制与回放工具,用于压测与回归。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">mitmproxy</span><span class="tag">回放</span><span class="tag">脱敏</span><span class="tag">频率控制</span></div><h2>34. Python:用 LLM 生成测试用例</h2>
+<p>用 LLM API 根据接口定义自动生成测试用例。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">LLM 生成</span><span class="tag">Prompt 工程</span><span class="tag">RAG</span><span class="tag">人工 review</span></div><h2>35. Python 接口测试脚本</h2>
+<p>用 Python + requests + pytest 写一个登录接口测试,包含正向/反向/参数化。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">requests</span><span class="tag">pytest</span><span class="tag">参数化</span><span class="tag">fixture</span></div><h2>36. Python:自动生成项目周报</h2>
+<p>用 Python 从 Jira/项目管理工具拉数据,自动生成周报。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Jira API</span><span class="tag">JQL</span><span class="tag">周报自动化</span></div><h2>37. Python:燃尽图生成</h2>
+<p>用 Python 从项目管理工具拉数据,生成 Sprint 燃尽图。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">燃尽图</span><span class="tag">Story Points</span><span class="tag">理想线</span><span class="tag">周末</span></div><h2>38. Python:风险登记册分析</h2>
+<p>用 Python 从表格读风险数据,自动计算风险等级、生成热力图。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">风险评分</span><span class="tag">热力图</span><span class="tag">预警</span><span class="tag">自动 review</span></div><h2>39. Python:关键路径计算</h2>
+<p>用 Python 实现关键路径法(CPM),给定任务列表算关键路径与浮动。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">拓扑排序</span><span class="tag">正推逆推</span><span class="tag">浮动计算</span><span class="tag">循环检测</span></div><h2>40. Python:项目组合分析</h2>
+<p>用 Python 实现项目组合分析,按战略价值/ROI/风险评分排序与平衡。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">综合评分</span><span class="tag">平衡图</span><span class="tag">背包选择</span><span class="tag">沉没成本</span></div><h2>41. Python:依赖关系可视化</h2>
+<p>用 Python 把项目跨团队依赖关系画成图,识别瓶颈与循环依赖。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">有向图</span><span class="tag">循环检测</span><span class="tag">瓶颈识别</span><span class="tag">可视化</span></div><h2>42. Python:离职率分析</h2>
+<p>用 Python 分析公司离职率,识别离职高发岗位/经理/司龄。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">分组拆解</span><span class="tag">司龄分析</span><span class="tag">生存分析</span><span class="tag">预测模型</span></div><h2>43. Python:绩效校准工具</h2>
+<p>用 Python 实现绩效校准工具,防止评分通胀与不公。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">强制分布</span><span class="tag">Z-score</span><span class="tag">横向校准</span><span class="tag">争议</span></div><h2>44. Python:离职预测模型</h2>
+<p>用 Python 构建离职风险预测模型,识别高离职风险员工提前干预。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">梯度提升</span><span class="tag">特征工程</span><span class="tag">AUC</span><span class="tag">伦理</span></div><h2>45. Python:人才盘点可视化</h2>
+<p>用 Python 把人才九宫格(绩效-潜力)画成交互式可视化。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">九宫格</span><span class="tag">Plotly</span><span class="tag">抖动</span><span class="tag">权限分级</span></div><h2>46. Python:简历自动匹配</h2>
+<p>用 Python 实现简历与 JD 的关键词匹配 + 语义相似度,辅助筛选。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">TF-IDF</span><span class="tag">cosine 相似度</span><span class="tag">BERT embedding</span><span class="tag">偏见防范</span></div><h2>47. Python:薪酬公平性分析</h2>
+<p>用 Python 分析薪酬公平性(性别/年龄/族裔 pay gap),回归控制变量。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">回归控制</span><span class="tag">性别系数</span><span class="tag">p-value</span><span class="tag">Shapley 分解</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

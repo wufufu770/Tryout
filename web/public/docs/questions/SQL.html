@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL 面试题 · 22 道</title>
+<meta name="description" content="SQL 相关面试题共 22 道,高频考点:去重、row_number、时间窗口、BI、left join 链。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"SQL 面试题 · 22 道","description":"SQL 相关面试题共 22 道,高频考点:去重、row_number、时间窗口、BI、left join 链。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"SQL 窗口函数","text":"解释 SQL 窗口函数的语法,举例 ROW_NUMBER / RANK / DENSE_RANK / LAG / LEAD / SUM OVER 的区别与用法。","acceptedAnswer":{"@type":"Answer","text":"PARTITION BY、ROWS 窗口框、三种 RANK 差异、LAG/LEAD"}},{"@type":"Question","name":"SQL JOIN 类型与执行原理","text":"讲一下 INNER/LEFT/RIGHT/FULL JOIN、CROSS JOIN、SEMI JOIN 的区别,以及 JOIN 的执行计划(Nested Loop / Hash Join / Merge Join)。","acceptedAnswer":{"@type":"Answer","text":"JOIN 类型、Hash Join、小表驱动、执行计划"}},{"@type":"Question","name":"SQL 性能优化与执行计划","text":"讲一下 SQL 优化思路,如何看 EXPLAIN,索引失效场景,大表 join 优化。","acceptedAnswer":{"@type":"Answer","text":"EXPLAIN、索引失效、覆盖索引、深翻页"}},{"@type":"Question","name":"设计一个留存分析看板","text":"设计一个用户留存分析看板,支持次日/7日/30日留存,按渠道/版本/行为分群。","acceptedAnswer":{"@type":"Answer","text":"留存口径、自连接、汇总表预计算"}},{"@type":"Question","name":"SQL:连续登录 N 天的用户","text":"用 SQL 找出连续登录 7 天的用户。给出至少两种解法。","acceptedAnswer":{"@type":"Answer","text":"date_sub 差值、row_number、去重、分组计数"}},{"@type":"Question","name":"SQL:行转列与列转行","text":"实现 SQL 的行转列(PIVOT)与列转行(UNPIVOT),不用 PIVOT 函数。","acceptedAnswer":{"@type":"Answer","text":"case when、union all、lateral view"}},{"@type":"Question","name":"SQL:求 TopN 与累计","text":"用 SQL 实现每个部门薪资 Top3,以及按入职日期累计薪资。","acceptedAnswer":{"@type":"Answer","text":"row_number、TopN、累计窗口、rows vs range"}},{"@type":"Question","name":"SQL:复杂漏斗分析","text":"用 SQL 实现一个 5 步漏斗(曝光→点击→加购→下单→支付),支持任意时间窗口约束。","acceptedAnswer":{"@type":"Answer","text":"left join 链、时间窗口、union 聚合、去重"}},{"@type":"Question","name":"SQL 去重与分组聚合","text":"用 SQL 实现行去重、分组去重、按组取 Top1,讲 DISTINCT/GROUP BY/窗口函数。","acceptedAnswer":{"@type":"Answer","text":"DISTINCT、GROUP BY、ROW_NUMBER、RANK"}},{"@type":"Question","name":"SQL 滑动窗口与累计分析","text":"用 SQL 实现滑动窗口(7 日滑动平均)与累计求和,讲窗口函数 RANGE/ROWS。","acceptedAnswer":{"@type":"Answer","text":"滑动窗口、ROWS/RANGE、累计求和、同环比 LAG"}},{"@type":"Question","name":"SQL:漏斗分析","text":"用 SQL 实现一个 4 步漏斗(曝光→点击→加购→下单),输出每步 UV 与转化率。","acceptedAnswer":{"@type":"Answer","text":"left join 链、时间窗口、去重、转化率"}},{"@type":"Question","name":"SQL:求 TopN 与分组排名","text":"用 SQL 实现每个品类销量 Top3 商品。","acceptedAnswer":{"@type":"Answer","text":"row_number、partition by、TopN"}},{"@type":"Question","name":"SQL:用户分群 RFM","text":"用 SQL 实现用户 RFM 分群(最近消费 R、频次 F、金额 M 各 5 等分)。","acceptedAnswer":{"@type":"Answer","text":"ntile、RFM、分群"}},{"@type":"Question","name":"SQL:同环比与异常归因","text":"用 SQL 计算 GMV 同环比,并对异常(如下降)做归因拆解。","acceptedAnswer":{"@type":"Answer","text":"lag 同环比、维度拆解、归因、LMD"}},{"@type":"Question","name":"SQL 留存率查询","text":"用 SQL 计算某日注册用户的次日/7 日留存率。","acceptedAnswer":{"@type":"Answer","text":"LEFT JOIN、COUNT DISTINCT、DATEDIFF、留存定义"}},{"@type":"Question","name":"SQL 漏斗分析","text":"用 SQL 计算「曝光→点击→加购→下单」漏斗每步转化率。","acceptedAnswer":{"@type":"Answer","text":"CASE WHEN、漏斗、时间顺序、多维分组"}},{"@type":"Question","name":"SQL:项目进度看板查询","text":"用 SQL 从工单系统查询各项目的进度、延期率、负责人工作量。","acceptedAnswer":{"@type":"Answer","text":"完成率、延期率、个人工作量、BI"}},{"@type":"Question","name":"SQL:DORA 效能度量","text":"用 SQL 从 CI/CD 与工单系统算 DORA 四指标:部署频率/Lead Time/变更失败率/MTTR。","acceptedAnswer":{"@type":"Answer","text":"DORA 四指标、数据打通、P90、BI"}},{"@type":"Question","name":"SQL:招聘漏斗分析","text":"用 SQL 从招聘系统统计招聘漏斗各环节转化率。","acceptedAnswer":{"@type":"Answer","text":"漏斗转化率、去重、状态枚举、瓶颈分析"}},{"@type":"Question","name":"SQL:人均效能分析","text":"用 SQL 算人均营收/人均利润/人均成本,按部门与时间对比。","acceptedAnswer":{"@type":"Answer","text":"人均营收、在职口径、成本分摊、行业对标"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>SQL 面试题</h1>
+<p>共 <b>22</b> 道,高频考点 8 个。</p>
+<div class="stats">
+  <div class="stat"><b>22</b><span>题目数</span></div>
+  <div class="stat"><b>11</b><span>初级</span></div><div class="stat"><b>7</b><span>中级</span></div><div class="stat"><b>4</b><span>高级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">去重</span><span class="tag">row_number</span><span class="tag">时间窗口</span><span class="tag">BI</span><span class="tag">left join 链</span><span class="tag">TopN</span><span class="tag">人均营收</span><span class="tag">成本分摊</span></div>
+<h2>题目列表</h2>
+<h2>1. SQL 窗口函数</h2>
+<p>解释 SQL 窗口函数的语法,举例 ROW_NUMBER / RANK / DENSE_RANK / LAG / LEAD / SUM OVER 的区别与用法。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">PARTITION BY</span><span class="tag">ROWS 窗口框</span><span class="tag">三种 RANK 差异</span><span class="tag">LAG/LEAD</span></div><h2>2. SQL JOIN 类型与执行原理</h2>
+<p>讲一下 INNER/LEFT/RIGHT/FULL JOIN、CROSS JOIN、SEMI JOIN 的区别,以及 JOIN 的执行计划(Nested Loop / Hash Join / Merge Join)。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">JOIN 类型</span><span class="tag">Hash Join</span><span class="tag">小表驱动</span><span class="tag">执行计划</span></div><h2>3. SQL 性能优化与执行计划</h2>
+<p>讲一下 SQL 优化思路,如何看 EXPLAIN,索引失效场景,大表 join 优化。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">EXPLAIN</span><span class="tag">索引失效</span><span class="tag">覆盖索引</span><span class="tag">深翻页</span></div><h2>4. 设计一个留存分析看板</h2>
+<p>设计一个用户留存分析看板,支持次日/7日/30日留存,按渠道/版本/行为分群。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">留存口径</span><span class="tag">自连接</span><span class="tag">汇总表预计算</span></div><h2>5. SQL:连续登录 N 天的用户</h2>
+<p>用 SQL 找出连续登录 7 天的用户。给出至少两种解法。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">date_sub 差值</span><span class="tag">row_number</span><span class="tag">去重</span><span class="tag">分组计数</span></div><h2>6. SQL:行转列与列转行</h2>
+<p>实现 SQL 的行转列(PIVOT)与列转行(UNPIVOT),不用 PIVOT 函数。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">case when</span><span class="tag">union all</span><span class="tag">lateral view</span></div><h2>7. SQL:求 TopN 与累计</h2>
+<p>用 SQL 实现每个部门薪资 Top3,以及按入职日期累计薪资。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">row_number</span><span class="tag">TopN</span><span class="tag">累计窗口</span><span class="tag">rows vs range</span></div><h2>8. SQL:复杂漏斗分析</h2>
+<p>用 SQL 实现一个 5 步漏斗(曝光→点击→加购→下单→支付),支持任意时间窗口约束。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">left join 链</span><span class="tag">时间窗口</span><span class="tag">union 聚合</span><span class="tag">去重</span></div><h2>9. SQL 去重与分组聚合</h2>
+<p>用 SQL 实现行去重、分组去重、按组取 Top1,讲 DISTINCT/GROUP BY/窗口函数。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">DISTINCT</span><span class="tag">GROUP BY</span><span class="tag">ROW_NUMBER</span><span class="tag">RANK</span></div><h2>10. SQL 滑动窗口与累计分析</h2>
+<p>用 SQL 实现滑动窗口(7 日滑动平均)与累计求和,讲窗口函数 RANGE/ROWS。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">滑动窗口</span><span class="tag">ROWS/RANGE</span><span class="tag">累计求和</span><span class="tag">同环比 LAG</span></div><h2>11. SQL:漏斗分析</h2>
+<p>用 SQL 实现一个 4 步漏斗(曝光→点击→加购→下单),输出每步 UV 与转化率。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">left join 链</span><span class="tag">时间窗口</span><span class="tag">去重</span><span class="tag">转化率</span></div><h2>12. SQL:求 TopN 与分组排名</h2>
+<p>用 SQL 实现每个品类销量 Top3 商品。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">row_number</span><span class="tag">partition by</span><span class="tag">TopN</span></div><h2>13. SQL:用户分群 RFM</h2>
+<p>用 SQL 实现用户 RFM 分群(最近消费 R、频次 F、金额 M 各 5 等分)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">ntile</span><span class="tag">RFM</span><span class="tag">分群</span></div><h2>14. SQL:同环比与异常归因</h2>
+<p>用 SQL 计算 GMV 同环比,并对异常(如下降)做归因拆解。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">lag 同环比</span><span class="tag">维度拆解</span><span class="tag">归因</span><span class="tag">LMD</span></div><h2>15. SQL 留存率查询</h2>
+<p>用 SQL 计算某日注册用户的次日/7 日留存率。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">LEFT JOIN</span><span class="tag">COUNT DISTINCT</span><span class="tag">DATEDIFF</span><span class="tag">留存定义</span></div><h2>16. SQL 漏斗分析</h2>
+<p>用 SQL 计算「曝光→点击→加购→下单」漏斗每步转化率。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">CASE WHEN</span><span class="tag">漏斗</span><span class="tag">时间顺序</span><span class="tag">多维分组</span></div><h2>17. SQL:项目进度看板查询</h2>
+<p>用 SQL 从工单系统查询各项目的进度、延期率、负责人工作量。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">完成率</span><span class="tag">延期率</span><span class="tag">个人工作量</span><span class="tag">BI</span></div><h2>18. SQL:DORA 效能度量</h2>
+<p>用 SQL 从 CI/CD 与工单系统算 DORA 四指标:部署频率/Lead Time/变更失败率/MTTR。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">DORA 四指标</span><span class="tag">数据打通</span><span class="tag">P90</span><span class="tag">BI</span></div><h2>19. SQL:招聘漏斗分析</h2>
+<p>用 SQL 从招聘系统统计招聘漏斗各环节转化率。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">漏斗转化率</span><span class="tag">去重</span><span class="tag">状态枚举</span><span class="tag">瓶颈分析</span></div><h2>20. SQL:人均效能分析</h2>
+<p>用 SQL 算人均营收/人均利润/人均成本,按部门与时间对比。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">人均营收</span><span class="tag">在职口径</span><span class="tag">成本分摊</span><span class="tag">行业对标</span></div><h2>21. SQL:HR 仪表盘核心指标</h2>
+<p>用 SQL 构建 HR 仪表盘核心指标:人数/离职/招聘/薪酬/效能。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">5 维度</span><span class="tag">口径一致</span><span class="tag">时间窗口</span><span class="tag">数据中台</span></div><h2>22. SQL:部门人效分析</h2>
+<p>用 SQL 算部门人效(人均营收/人均利润/人均成本),并对比同环比。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">人均营收</span><span class="tag">ROI</span><span class="tag">MoM 增长</span><span class="tag">成本分摊</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

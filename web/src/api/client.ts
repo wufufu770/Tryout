@@ -14,6 +14,8 @@ import type {
   ChatResult, WeaknessAnalysis, ApiError as _ApiError, ErrorCode,
 } from "./types";
 import { ApiError } from "./types";
+import { parseSseLine } from "@/lib/sseParser";
+import type { PiiMapping } from "@/lib/piiPlaceholder";
 
 const BASE = "/api";
 const TOKEN_KEY = "tryout:api_token";
@@ -129,6 +131,9 @@ async function request<T>(
       lastErr = e;
       // 已是 ApiError:判断是否可重试
       if (e instanceof ApiError) {
+        // v16(ISSUE-030):日预算耗尽虽然也是 429,但当天不可能恢复,重试纯属浪费。
+        // 之前只按 status 判断,会对预算错误做满 MAX_RETRY 次无意义退避重试。
+        if (e.code === "TOKEN_BUDGET_EXCEEDED") throw e;
         const retryable = opts.retryable !== false &&
           (RETRYABLE_STATUS.has(e.status) || e.code === "TIMEOUT");
         if (!retryable || attempt === MAX_RETRY) throw e;
@@ -160,7 +165,13 @@ function sleep(ms: number) {
 async function parseError(resp: Response): Promise<ApiError> {
   const text = await resp.text().catch(() => "");
   let body: any = {};
-  try { body = text ? JSON.parse(text) : {}; } catch {}
+  // R28:错误响应体不是 JSON(网关返回 HTML/纯文本很常见)→ 退化为 {} 并用下面的默认值。
+  //   此时拿不到 code/message 是**预期**的,不该因此抛错或刷屏。
+  try {
+    body = text ? JSON.parse(text) : {};
+  } catch {
+    // 见上:保持 body = {}
+  }
   const code = (body.code || "INTERNAL_ERROR") as ErrorCode;
   const message = body.message || body.error || `请求失败(${resp.status})`;
   // v10.2:透传 i18nKey + i18nParams(SSRF / 校验类错误)
@@ -209,11 +220,25 @@ export const api = {
   getAgent: (id: string) => request<Agent>(`/agents/${id}`),
   createAgent: (data: Partial<Agent> & Record<string, any>) =>
     request<Agent>("/agents", { method: "POST", body: JSON.stringify(data) }),
-  updateAgentBasic: (id: string, data: Partial<Agent>) =>
-    request<{ ok: true }>(`/agents/${id}/basic`, { method: "PUT", body: JSON.stringify(data) }),
-  // 后端 createAgentVersion 返回 agent_versions 表行(camelize),对应 AgentVersion 类型
-  createAgentVersion: (id: string, data: { name?: string; promptTemplate: string }) =>
-    request<AgentVersion>(`/agents/${id}/versions`, { method: "POST", body: JSON.stringify(data) }),
+  // R32(ISSUE-065):一次性保存(基本信息 + 新版本),**单请求单事务**。
+  // 此前是两个请求(PUT basic → POST versions),两步之间无回滚:
+  // 第二步失败会留下"基本信息已改、版本没建"的半状态,版本链断裂,
+  // 而前端 store 因 set() 从未执行还显示旧值 —— 用户以为没保存。
+  updateAgent: (id: string, basic: Partial<Agent>, version: {
+    tone?: string; difficulty?: number; focusAreas?: string[];
+    promptTemplate: string; changelog?: string;
+  }) => request<AgentVersion>(`/agents/${id}`, {
+    method: "PUT",
+    body: JSON.stringify({ basic, version }),
+  }),
+  // ↓ R32 刻意**不**再暴露 updateAgentBasic / createAgentVersion。
+  //   保留这两个方法时它们是**陷阱**:调用方会照着它们写出"两步走"的保存逻辑,
+  //   而那正是 ISSUE-065 的成因(basic 改成功、version 失败 → 半状态)。
+  //   R-023 那条教训("存在但零调用方的死代码比缺陷更隐蔽")自己先中了一次 ——
+  //   改完 updateAgent 后这两个方法立刻变成零调用方,却还留着过时签名
+  //   (createAgentVersion 仍声明 { name?, promptTemplate },
+  //    而后端 R32 起已支持 tone/difficulty/focusAreas/changelog)。
+  //   后端两个细粒度端点仍在,需要时直接用 api.updateAgent 或走 REST。
   setAgentCurrentVersion: (id: string, versionId: string) =>
     request<Agent>(`/agents/${id}/current-version`, { method: "PUT", body: JSON.stringify({ versionId }) }),
   deleteAgent: (id: string) => request<{ ok: true }>(`/agents/${id}`, { method: "DELETE" }),
@@ -242,6 +267,12 @@ export const api = {
     request<{ ok: true }>(`/sessions/${id}/group`, { method: "PUT", body: JSON.stringify({ groupId }) }),
 
   getSessionReview: (id: string) => request<any | null>(`/sessions/${id}/review`),
+  // W4-2:本场已问题目(题库去重)
+  listAskedQuestions: (sessionId: string) =>
+    request<any[]>(`/sessions/${sessionId}/asked-questions`),
+  markQuestionAsked: (sessionId: string, data: { questionId: string; industry?: string; type?: string; difficulty?: string }) =>
+    request<{ ok: true }>(`/sessions/${sessionId}/asked-questions`, { method: "POST", body: JSON.stringify(data) }),
+
   createSessionReview: (id: string, data: any) =>
     request<any>(`/sessions/${id}/review`, { method: "POST", body: JSON.stringify(data) }),
   listAllReviews: () => request<any[]>("/reviews"),
@@ -377,6 +408,10 @@ export const api = {
       let content = "";
       let tokensIn = 0, tokensOut = 0;
       let streamError: string | null = null;
+      let streamErrorType: string | undefined = undefined;
+      // v11.3:PII 占位符映射(后端在流式首事件下发,用于渲染时还原明文)
+      // 敏感信息:仅存于本次调用的局部变量,不落库、不写日志
+      let piiMapping: PiiMapping[] | undefined;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -385,31 +420,45 @@ export const api = {
         const lines = buffer.split("\n");
         buffer = lines.pop() || "";
         for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed.startsWith("data:")) continue;
-          const payload = trimmed.slice(5).trim();
-          if (payload === "[DONE]") continue;
-          try {
-            const json = JSON.parse(payload);
-            // v9:流式错误事件
-            if (json.error) {
-              streamError = json.error;
-              continue;
-            }
-            const delta = json.choices?.[0]?.delta?.content || "";
-            if (delta) { content += delta; onToken(delta); }
-            if (json.usage) {
-              tokensIn = json.usage.prompt_tokens || 0;
-              tokensOut = json.usage.completion_tokens || 0;
-            }
-          } catch { /* ignore */ }
+          // R11:解析逻辑已抽为纯函数 sseParser.parseSseLine,
+          // 新增元数据事件只需在那里加字段,不再被静默丢弃
+          const ev = parseSseLine(line.trim());
+          if (!ev) continue;
+          if (ev.error) streamError = ev.error;
+          if (ev.errorType) streamErrorType = ev.errorType;   // R21 已解析,此前无人消费(ISSUE-054)
+          if (ev.delta) { content += ev.delta; onToken(ev.delta); }
+          if (ev.usage) {
+            tokensIn = ev.usage.prompt_tokens || 0;
+            tokensOut = ev.usage.completion_tokens || 0;
+          }
+          if (ev.piiMapping) piiMapping = ev.piiMapping;
         }
       }
       clearTimeout(timer);
       if (streamError) {
-        throw new ApiError(streamError, "UPSTREAM_ERROR", 502);
+        // ⚠️ R24(ISSUE-054):原先无论真实原因一律 `UPSTREAM_ERROR` + **硬编码 502**。
+        //   但流式链路上游能报的错至少有四类,语义完全不同:
+        //     401/403 鉴权、429 限流、配额耗尽、以及真正的网关故障。
+        //   一律报 502 的后果:用户看到"网关错误"而实际是"你请求太频繁",
+        //   `formatApiError` 也拿不到能对症渲染的 i18nKey,排查方向直接被带偏。
+        //
+        //   R21(ISSUE-050)已经在 sseParser 里把 `error.code` 解析进 `errorType`,
+        //   但**这里一直没消费** —— 解析了却不用,等于白解析。
+        //
+        //   同时把**已收到的部分内容**挂在错误上:onToken 已经把 delta 推给 UI 了,
+        //   上层往往会 resetStreaming() 清空,用户会看到"AI 突然消失"。
+        //   带上 partialContent,调用方至少有机会保留或提示。
+        const code = String(streamErrorType || "");
+        const isAuth = /^4(01|03)$/.test(code) || /auth|unauthor|forbidden|api[_-]?key/i.test(code);
+        const isRate = /rate|quota|limit|429|insufficient/i.test(code);
+        const status = isAuth ? 502 : isRate ? 429 : 502;   // 鉴权类仍归 502(BFF 不该对外暴露上游 401)
+        const err = new ApiError(streamError, "UPSTREAM_ERROR", status,
+          undefined, isRate ? "error.network.rateLimited" : undefined);
+        (err as ApiError & { upstreamCode?: string; partialContent?: string }).upstreamCode = code || undefined;
+        (err as ApiError & { upstreamCode?: string; partialContent?: string }).partialContent = content;
+        throw err;
       }
-      return { content, model: provider, tokensIn, tokensOut, finishReason: "stop" };
+      return { content, model: provider, tokensIn, tokensOut, finishReason: "stop", piiMapping };
     }
 
     clearTimeout(timer);

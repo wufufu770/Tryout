@@ -32,34 +32,75 @@ export interface ParsedReview {
   nextFocus: string;
 }
 
-// 解析 LLM 输出为结构化评价
+/**
+ * 解析 LLM 输出为结构化评价。
+ *
+ * ⚠️ R24:此前是 `Number(parsed.overallScore) || 0`。
+ *   LLM 漏掉 overallScore 或返回非数字时,**静默变成 0 分** ——
+ *   用户看到"本次面试 0 分",而真相是"我没解析出来"。
+ *   这是"假数据"模式的第五次出现(前四次:PEER_BENCHMARK / expressionScore /
+ *   matchScore / radarData)。
+ *
+ * 现在的规则:
+ *   - 必需字段缺失/类型错误 → 返回 null,让调用方走"解析失败"分支
+ *   - overallScore 为 0 本身是**有效值**(真的 0 分),不能被当成缺失
+ *   - improvements[].priority 非法值做**归一**而非丢弃整个结果
+ *     (内容仍可用,只是优先级未知)
+ */
 export function parseReviewResult(text: string): ParsedReview | null {
   if (!text) return null;
-  // 尝试提取 JSON(可能包裹在 ```json ... ``` 中)
-  let jsonStr = text.trim();
+  // 尝试提取 JSON(可能包裹在 ```json ... ``` 或 <think> 块中)
+  let jsonStr = text.trim()
+    .replace(/<think>[\s\S]*?<\/think>/gi, "")
+    .replace(/<think>[\s\S]*/i, "")
+    .trim();
   const codeFenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (codeFenceMatch) {
     jsonStr = codeFenceMatch[1].trim();
   }
-  // 找第一个 { 到最后一个 }
   const firstBrace = jsonStr.indexOf("{");
   const lastBrace = jsonStr.lastIndexOf("}");
-  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-    jsonStr = jsonStr.slice(firstBrace, lastBrace + 1);
-  }
+  if (firstBrace === -1 || lastBrace <= firstBrace) return null;
+  jsonStr = jsonStr.slice(firstBrace, lastBrace + 1);
+
+  let parsed: any;
   try {
-    const parsed = JSON.parse(jsonStr);
-    return {
-      overallScore: Number(parsed.overallScore) || 0,
-      strengths: Array.isArray(parsed.strengths) ? parsed.strengths : [],
-      weaknesses: Array.isArray(parsed.weaknesses) ? parsed.weaknesses : [],
-      improvements: Array.isArray(parsed.improvements) ? parsed.improvements : [],
-      performance: parsed.performance || "",
-      nextFocus: parsed.nextFocus || "",
-    };
+    parsed = JSON.parse(jsonStr);
   } catch {
     return null;
   }
+  if (!parsed || typeof parsed !== "object") return null;
+
+  // overallScore 必须是有限数字(0 是合法值,不能用 || 判定)
+  if (typeof parsed.overallScore !== "number" || !Number.isFinite(parsed.overallScore)) return null;
+
+  // 必需数组字段:必须是字符串数组
+  for (const key of ["strengths", "weaknesses", "improvements"] as const) {
+    if (!Array.isArray(parsed[key])) return null;
+  }
+  if (!parsed.strengths.every((x: unknown) => typeof x === "string")) return null;
+  if (!parsed.weaknesses.every((x: unknown) => typeof x === "string")) return null;
+
+  // improvements 元素必须完整;priority 非法则归一为 medium
+  const PRIORITIES = new Set(["high", "medium", "low"]);
+  for (const it of parsed.improvements) {
+    if (!it || typeof it !== "object") return null;
+    if (typeof it.area !== "string" || typeof it.suggestion !== "string") return null;
+  }
+  const improvements = parsed.improvements.map((it: any) => ({
+    area: it.area,
+    suggestion: it.suggestion,
+    priority: PRIORITIES.has(it.priority) ? it.priority : ("medium" as const),
+  }));
+
+  return {
+    overallScore: parsed.overallScore,
+    strengths: parsed.strengths,
+    weaknesses: parsed.weaknesses,
+    improvements,
+    performance: typeof parsed.performance === "string" ? parsed.performance : "",
+    nextFocus: typeof parsed.nextFocus === "string" ? parsed.nextFocus : "",
+  };
 }
 
 // 构建评价 prompt

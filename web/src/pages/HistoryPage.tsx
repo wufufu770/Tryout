@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "@/api/client";
 import { cn, formatTime } from "@/shared";
-import { generateEvaluationPrompt, parseEvaluationResult, PEER_BENCHMARK } from "@/lib/evaluation/starEvaluator";
+import { EVALUATION_DIMENSIONS } from "@/lib/evaluation/starEvaluator";
+import { computePersonalBaseline, shouldShowBaseline } from "@/lib/evaluation/baseline";
+import { scoreWithRetry, aggregateScores } from "@/lib/evaluation/scoringEngine";
+import { createLimit } from "@/lib/limit";
 import { scoreExpression } from "@/lib/evaluation/expressionScorer";
 import { analyzeWeakness, type WeaknessResult } from "@/lib/analysis/weaknessAnalyzer";
 import { computeGroupSummaryLocal, type GroupSummary } from "@/lib/groupSummary";
@@ -46,30 +49,8 @@ interface Evaluation {
   id?: string;
 }
 
-// 工程 P0:手写信号量(p-limit 风格),用于 LLM 调用并发限流,避免 N+1 串行
-function createLimit(concurrency: number) {
-  let active = 0;
-  const queue: Array<() => void> = [];
-  const next = () => {
-    if (active >= concurrency) return;
-    const fn = queue.shift();
-    if (fn) {
-      active++;
-      fn();
-    }
-  };
-  return <T,>(task: () => Promise<T>): Promise<T> =>
-    new Promise<T>((resolve, reject) => {
-      const run = () => {
-        task().then(resolve, reject).finally(() => {
-          active--;
-          next();
-        });
-      };
-      queue.push(run);
-      next();
-    });
-}
+// 并发限流统一走 @/lib/limit(该实现有单测覆盖:抛错必须释放槽位、
+// 并发数 <=0 归一化为 1 以免死锁)。此处不再保留副本。
 
 export function HistoryPage() {
   const { t } = useI18n();
@@ -98,6 +79,13 @@ export function HistoryPage() {
   // 分组归纳数据
   const [allReviews, setAllReviews] = useState<any[]>([]);
   const [allEvals, setAllEvals] = useState<Evaluation[]>([]);
+  // W5-1(P2-4):个人历史基准,替代此前硬编码 3.5 的"同岗位平均"假线。
+  // 数据来自用户自己的全部评估;样本不足时不显示,而不是画一条编出来的线。
+  const personalBaseline = useMemo(
+    () => computePersonalBaseline((allEvals as any[]).map((e) => e.dimensions || [])),
+    [allEvals]
+  );
+  const showBaseline = shouldShowBaseline(allEvals.length);
   const [groupSummary, setGroupSummary] = useState<GroupSummary | null>(null);
 
   // 成长热力图数据(基于全局评估聚合最近 26 周活跃度)
@@ -301,20 +289,23 @@ export function HistoryPage() {
 
       const evaluatePair = async (pair: { question: string; answer: string; messageId?: string }) => {
         try {
-          // P1-3:使用 6 维度 + STAR + 薄弱点 prompt(替代旧版 4 维度 STAR_PROMPT)
-          const prompt = generateEvaluationPrompt(pair.question, pair.answer);
-          let acc = "";
-          const result = (await api.chat(providerId, { messages: [{ role: "user", content: prompt }] }, (t) => {
-            acc += t;
-          })) as any;
-          const text = result?.content || acc;
-          const parsed = parseEvaluationResult(text);
-          if (!parsed) return;
+          /*
+           * v2(ADR-001):每个维度独立评分,互不可见。
+           * 旧实现是"一次调用输出 6 个维度 + 总分",会让维度间互相污染
+           * (arXiv:2608.14684:联合评估仅 36% 样本级一致),且总分由 LLM 直接
+           * 给出会重新引入锚定偏见(d=0.71)。现在总分由 6 个独立分数推导。
+           */
+          const scores = await Promise.all(
+            EVALUATION_DIMENSIONS.map((d) =>
+              limit(() => scoreWithRetry(d, pair.question, pair.answer, undefined, providerId))
+            )
+          );
+          const agg = aggregateScores(scores);
+
           // P1-1:接入表达能力评分(纯文本分析,零 LLM 调用)
           const expr = scoreExpression(pair.answer);
           const speedLabel = expr.speedLevel === "slow" ? t("history.speedSlow") : expr.speedLevel === "fast" ? t("history.speedFast") : t("history.speedNormal");
           const exprLine = t("history.expressionLine", {
-            score: expr.expressionScore,
             speed: expr.speakingSpeed,
             speedLabel,
             fillerCount: expr.fillerCount,
@@ -322,16 +313,34 @@ export function HistoryPage() {
             avgLen: expr.avgSentenceLength,
             connectorCount: expr.connectorCount,
           });
-          const fullReport = parsed.report + exprLine;
+          // report 由可解释的汇总 + 逐维度锚点判定 + 原文依据拼成
+          const dimLines = agg.dimensions
+            .map(
+              (d) =>
+                `- ${d.dimensionName}: ${d.score}/5 (锚点 ${d.matchedAnchorId}${
+                  d.noEvidence ? ",缺原文依据" : ""
+                })${d.evidence.length ? ` 例:"${d.evidence[0].slice(0, 40)}"` : ""}`
+            )
+            .join("\n");
+          const fullReport = [agg.overallSummary, dimLines, exprLine].join("\n");
+
           // 每个 pair 完成后立即写入 DB,不等全部完成
           await api.createEvaluation({
             sessionId: selected.sessionId,
             messageId: pair.messageId,
-            overallScore: parsed.overallScore,
+            overallScore: agg.overallScore,
             report: fullReport,
-            improvementAdvice: parsed.improvementAdvice,
-            betterAnswerSample: parsed.betterAnswerSample,
-            dimensions: parsed.dimensions,
+            improvementAdvice: agg.weaknesses.length
+              ? `建议重点改进:${agg.weaknesses.map((w) => w.dimensionName).join("、")}`
+              : undefined,
+            dimensions: agg.dimensions.map((d) => ({
+              dimensionName: d.dimensionName,
+              // 雷达图量纲是 1-5,与维度分一致
+              score: d.score,
+              comment: `锚点 ${d.matchedAnchorId}${d.noEvidence ? "（缺原文依据）" : ""}${
+                d.evidence.length ? ` 依据:${d.evidence[0].slice(0, 60)}` : ""
+              }`,
+            })),
           });
           successCount++;
         } catch (e) {
@@ -584,7 +593,7 @@ export function HistoryPage() {
               <EvaluationRadar
                 dimensions={crossFieldRadar.dimensions}
                 maxScore={5}
-                benchmark={PEER_BENCHMARK}
+                baseline={showBaseline ? personalBaseline : undefined}
               />
             )}
           </div>
@@ -709,7 +718,7 @@ export function HistoryPage() {
                         </div>
                         {ev.dimensions && ev.dimensions.length > 0 && (
                           <div className="mb-2">
-                            <EvaluationRadar dimensions={ev.dimensions} maxScore={5} benchmark={PEER_BENCHMARK} />
+                            <EvaluationRadar dimensions={ev.dimensions} maxScore={5} baseline={showBaseline ? personalBaseline : undefined} />
                           </div>
                         )}
                         {ev.dimensions && ev.dimensions.length > 0 && (

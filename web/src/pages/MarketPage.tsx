@@ -411,7 +411,13 @@ export function MarketPage() {
               <div className="flex items-center gap-1.5 text-sm font-medium text-ide-fg">
                 <Link2 size={14} className="text-ide-accent" /> {t("market.importCommunityAgent")}
               </div>
-              <button onClick={() => setImportDialogOpen(false)} className="text-ide-fg-muted hover:text-ide-fg">
+              {/* R32(ISSUE-022):纯图标按钮 24×24 + aria-label(与 InterviewPage/MarketPage 同类,一次性修) */}
+              <button
+                onClick={() => setImportDialogOpen(false)}
+                className="flex min-h-6 min-w-6 shrink-0 items-center justify-center text-ide-fg-muted hover:text-ide-fg"
+                aria-label={t("common.close")}
+                title={t("common.close")}
+              >
                 <X size={14} />
               </button>
             </div>

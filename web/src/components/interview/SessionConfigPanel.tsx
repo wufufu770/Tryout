@@ -9,8 +9,9 @@ import { DifficultySelector } from "@/components/DifficultySelector";
 import { InfoTip } from "@/components/InfoTip";
 import { ROLE_LABELS } from "@/components/interview/MessageBubble";
 import type { Agent } from "@/types/agent";
+import { INDUSTRIES } from "@/data/questionMeta";
 import type { SessionDifficulty, StageAgentBinding, StageAskMode } from "@/types/session";
-import { Sparkles, Settings, Flag, Trash2, Plus, CheckSquare, Square, Users, User, X } from "lucide-react";
+import { Sparkles, Settings, Flag, Trash2, Plus, CheckSquare, Square, Users, User, X, Target, Briefcase } from "lucide-react";
 
 interface Provider {
   id: string;
@@ -34,6 +35,13 @@ interface SessionConfigPanelProps {
   // 难度
   difficulty: SessionDifficulty;
   setDifficulty: (d: SessionDifficulty) => void;
+  // 目标行业与岗位(W3-3):决定提问时从题库抽哪一档题
+  industry: string;
+  setIndustry: (v: string) => void;
+  position: string;
+  setPosition: (v: string) => void;
+  /** 题库统计(行业 id → 题数);null 表示尚未加载或不可用 */
+  bankStats: { total: number; available?: boolean; industries: { id: string; count: number }[] } | null;
   // 流程
   flow: string;
   setFlow: (v: string) => void;
@@ -89,6 +97,9 @@ export function SessionConfigPanel(props: SessionConfigPanelProps) {
     showScenarioPicker, setShowScenarioPicker,
     selectedScenarioId, applyScenario,
     difficulty, setDifficulty,
+    industry, setIndustry,
+    position, setPosition,
+    bankStats,
     flow, setFlow, isCustomFlow, customStages,
     handleStageChange, handleAddStage, handleRemoveStage,
     stages, stageIndex, setStageIndex, setStageAgentMap, stageNameI18n,
@@ -113,7 +124,9 @@ export function SessionConfigPanel(props: SessionConfigPanelProps) {
         <div>
           <button
             onClick={() => setShowScenarioPicker((v) => !v)}
-            className="flex w-full items-center gap-1 text-xs text-ide-fg-muted hover:text-ide-fg"
+            // R32(ISSUE-022):min-h-6 把 16px 撑到 24px(WCAG 2.5.8 AA)。
+            //   这是个整行可点的折叠按钮(实测 263×16),宽度本来就够,只差高度。
+            className="flex min-h-6 w-full items-center gap-1 text-xs text-ide-fg-muted hover:text-ide-fg"
           >
             <span className="text-ide-accent">{showScenarioPicker ? "▾" : "▸"}</span>
             <Sparkles size={11} className="text-ide-accent" />
@@ -205,6 +218,55 @@ export function SessionConfigPanel(props: SessionConfigPanelProps) {
                 <InfoTip text={t("interview.tips.difficulty")} />
               </label>
               <DifficultySelector value={difficulty} onChange={(v) => setDifficulty(v as SessionDifficulty)} />
+              <p className="mt-1 text-[10px] text-ide-fg-muted">
+                {t(`interview.difficultyHint.${difficulty}`)}
+              </p>
+            </div>
+
+            {/* 目标行业与岗位(W3-3)
+                决定提问时从题库抽哪一档题。不选行业则提问侧不猜岗位
+                (questionPlanner 返回 needsIndustry),所以这里给出明确引导。 */}
+            <div>
+              <label className="mb-1 flex items-center gap-1 text-xs text-ide-fg-muted">
+                <Target size={11} /> {t("interview.targetIndustry")}
+              </label>
+              <select
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                className="w-full border-l-2 border-ide-accent bg-transparent px-2 py-1.5 text-xs text-ide-fg outline-none focus:border-ide-accent"
+              >
+                <option value="">{t("interview.targetIndustryPlaceholder")}</option>
+                {INDUSTRIES.map((ind) => {
+                  const hit = bankStats?.industries?.find((x) => x.id === ind.id);
+                  const cnt = hit?.count ?? 0;
+                  return (
+                    <option key={ind.id} value={ind.id} disabled={bankStats ? cnt === 0 : false}>
+                      {ind.icon} {ind.label}
+                      {bankStats ? (cnt > 0 ? ` (${cnt})` : " — 0") : ""}
+                    </option>
+                  );
+                })}
+              </select>
+              {industry && bankStats && (
+                <p className="mt-1 text-[10px] text-ide-fg-muted">
+                  {t("interview.bankCount", { n: bankStats.industries.find((x) => x.id === industry)?.count ?? 0 })}
+                </p>
+              )}
+              {bankStats?.available === false && (
+                <p className="mt-1 text-[10px] text-ide-warning">{t("interview.bankUnavailable")}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="mb-1 flex items-center gap-1 text-xs text-ide-fg-muted">
+                <Briefcase size={11} /> {t("interview.targetPosition")}
+              </label>
+              <input
+                value={position}
+                onChange={(e) => setPosition(e.target.value)}
+                placeholder={t("interview.targetPositionPlaceholder")}
+                className="w-full border-l-2 border-ide-accent bg-transparent px-2 py-1.5 text-xs text-ide-fg placeholder:text-ide-fg-muted focus:border-ide-accent focus:outline-none"
+              />
             </div>
 
             {/* 面试流程 */}

@@ -36,6 +36,14 @@ export const logger = {
 export function requestLogger(req, res, next) {
   req.id = req.headers["x-request-id"] || crypto.randomBytes(8).toString("hex");
   req.startTime = Date.now();
+  // v16(ISSUE-033):**立刻**定格路径。
+  //   req.path 是基于 req.url 实时计算的,而 `app.use("/api/chat", limiter)` 这类
+  //   挂载会把 req.url 改写成挂载点内的相对路径("/"),且短路返回 429 时不会还原。
+  //   于是 finish 回调里读到的 req.path 变成 "/" —— 实测 36 条成功请求记的是
+  //   "/api/chat",2 条被限流的却记成 "/"。也就是说:**访问日志恰恰在最需要排查的
+  //   限流请求上失真**,运维无法从日志判断是哪个接口在被限。
+  //   必须在任何 app.use 改写之前抓一次,而不是在 finish 里现算。
+  const loggedPath = req.path;
   // 暴露给下游:res.locals.logger 带 requestId 上下文
   const ctx = { requestId: req.id };
   res.locals.log = {
@@ -52,7 +60,7 @@ export function requestLogger(req, res, next) {
     write(level, "request", {
       requestId: req.id,
       method: req.method,
-      path: req.path,
+      path: loggedPath,
       status: res.statusCode,
       ms,
       ip: req.ip,

@@ -2,16 +2,104 @@
 
 // 评估维度常量:单一数据源,所有消费方复用,避免名称不一致
 // 同时作为 i18n key 后缀:前端用 t(`report.dim.${key}`) 渲染本地化名称
+//
+// v2(ADR-002):每个维度增加行为锚点(Behaviorally Anchored Rating Scale)。
+// 为什么:形容词量表的致命缺陷是——两个评分者打"4 分"时心里想的完全不是一回事。
+// 给每个分值锚定一个具体、可观察的行为后,判断才有可对照的依据。
+//
+// 为什么只写两端(1 分与 5 分),不摊到 1/3/5:
+//   Choi et al. 2025(*Journal of AI in Education*)的定量对照显示,
+//   只锚两端时人机一致性 QWK = 0.59,优于把锚点摊到 1/3/6 档的 0.39。
+//   且每档 1 个锚点 ≈ 每档 3 个(QWK 0.65),中间档用梯度插值即可。
+//   ⚠️ 勿改回三档锚点,该错误已记录在 STATE.md「本轮教训」。
 export const EVALUATION_DIMENSIONS = [
-  { key: "technical", name: "技术深度" },
-  { key: "communication", name: "沟通表达" },
-  { key: "logic", name: "逻辑思维" },
-  { key: "problemSolving", name: "问题解决" },
-  { key: "resilience", name: "抗压能力" },
-  { key: "culture", name: "文化匹配" },
+  {
+    key: "technical", name: "技术深度",
+    anchors: {
+      1: "只背诵结论,无法解释为什么,被追问后转向复述定义",
+      5: "能主动指出方案的技术前提和失效边界,讨论替代方案的成本权衡",
+    },
+  },
+  {
+    key: "communication", name: "沟通表达",
+    anchors: {
+      1: "长时间停留在症状描述,不给结论,被追问后组织语言困难",
+      5: "能用非本领域听众听得懂的话解释复杂问题,并主动确认对方是否跟上",
+    },
+  },
+  {
+    key: "logic", name: "逻辑思维",
+    anchors: {
+      1: "结论先行但推导过程无法还原,被追问时改口",
+      5: "结论与推导过程一致,能自己指出论证中的薄弱环节",
+    },
+  },
+  {
+    key: "problemSolving", name: "问题解决",
+    anchors: {
+      1: "描述问题多于解决问题,遇到追问转为讨论技术名词",
+      5: "能拆解问题、说明取舍依据,并说明放弃了什么方案及原因",
+    },
+  },
+  {
+    key: "resilience", name: "抗压能力",
+    anchors: {
+      1: "被追问技术细节时回避或改变话题",
+      5: "承认不知道的部分,明确说明会如何验证,并回到问题本身",
+    },
+  },
+  {
+    key: "culture", name: "文化匹配",
+    anchors: {
+      1: "只给口号式回答(如\"我很有责任心\"),无具体事例",
+      5: "用具体事例说明如何在冲突中达成共识或让步",
+    },
+  },
 ] as const;
 
+// ADR-003:分档 ID 用降序字母表。
+//   量表用 0-5 而非 1-10/1-100 —— arXiv:2601.03444 实测人机 ICC:
+//   0-5 为 0.853,0-100 为 0.840,0-10 为 0.805。
+//   降序排列提升裁判准确率(arXiv:2506.22316);随机打乱会全面拉低。
+export const ANCHOR_IDS = ["A", "B", "C", "D", "E"] as const;
+export type AnchorId = (typeof ANCHOR_IDS)[number];
+
+/** A..E → 5..1。非法输入返回 null,让调用方决定降级策略。 */
+export function anchorIdToScore(id: string): number | null {
+  const idx = ANCHOR_IDS.indexOf(id.trim().toUpperCase() as AnchorId);
+  if (idx < 0) return null;
+  return 5 - idx;
+}
+
 export const DIMENSION_NAME_LIST = EVALUATION_DIMENSIONS.map(d => d.name);
+
+/** 评估维度的结构类型(供函数参数使用;数组本身为 as const 字面量类型) */
+export interface EvaluationDimension {
+  key: string;
+  name: string;
+  anchors: { 1: string; 5: string };
+}
+
+/**
+ * 为**单个**维度生成评分标准块,注入 prompt 供裁判做锚点匹配。
+ *
+ * 关键约束(ADR-001):块内只含该维度的锚点。
+ * 把多个维度塞进同一次调用会产生系统性 rubric 干扰
+ * —— arXiv:2608.14684 实测 Qwen3-32B 联合评估仅 36% 样本级完全一致,
+ * 且仅仅重排 rubric 顺序就能翻转判定。独立评分由 scoringEngine 负责。
+ */
+export function buildRubricBlock(dim: EvaluationDimension): string {
+  return [
+    `【${dim.name}】`,
+    `A(5) = ${dim.anchors[5]}`,
+    `B(4) = 接近 A,明显超过 E`,
+    `C(3) = 介于 A 与 E 之间`,
+    `D(2) = 接近 E,明显弱于 A`,
+    `E(1) = ${dim.anchors[1]}`,
+    `中间档按上述两端做梯度插值,不另设独立标准。`,
+    `评分纪律:本维度不因回答长度得分;50 字的完整回答与 500 字的完整回答同分。`,
+  ].join("\n");
+}
 
 // 根据维度中文名查 key(用于 i18n 查找)
 export function getDimensionKey(name: string): string | undefined {
@@ -87,9 +175,3 @@ export function parseEvaluationResult(content: string): EvaluationResult | null 
     return null;
   }
 }
-
-// 同岗位平均水平基准(内置,非用户数据)
-export const PEER_BENCHMARK = EVALUATION_DIMENSIONS.map(d => ({
-  dimensionName: d.name,
-  score: 3.5,
-}));

@@ -32,8 +32,12 @@ export function MessageInput({ input, setInput, isStreaming, sendMessage }: Mess
       <div className="mb-1.5 flex items-center gap-1">
         <button
           onClick={() => setInputMode("text")}
+          // aria-pressed 让读屏用户知道当前处于哪个输入模式(视觉高亮对读屏不可见)
+          aria-pressed={inputMode === "text"}
           className={cn(
-            "flex items-center gap-1 px-2 py-0.5 text-[11px] border",
+            // shrink-0:flex 容器会把这排按钮压扁(实测 375px 下仅 18px 宽),
+            // min-h-6:保证 24px 最小点击目标(WCAG 2.2 SC 2.5.8 AA)
+            "flex shrink-0 items-center gap-1 px-2 py-0.5 min-h-6 text-[11px] border",
             inputMode === "text"
               ? "border-ide-accent bg-ide-accent/10 text-ide-accent"
               : "border-ide-border text-ide-fg-muted hover:text-ide-fg"
@@ -43,8 +47,12 @@ export function MessageInput({ input, setInput, isStreaming, sendMessage }: Mess
         </button>
         <button
           onClick={() => setInputMode("code")}
+          // aria-pressed 让读屏用户知道当前处于哪个输入模式(视觉高亮对读屏不可见)
+          aria-pressed={inputMode === "code"}
           className={cn(
-            "flex items-center gap-1 px-2 py-0.5 text-[11px] border",
+            // shrink-0:flex 容器会把这排按钮压扁(实测 375px 下仅 18px 宽),
+            // min-h-6:保证 24px 最小点击目标(WCAG 2.2 SC 2.5.8 AA)
+            "flex shrink-0 items-center gap-1 px-2 py-0.5 min-h-6 text-[11px] border",
             inputMode === "code"
               ? "border-ide-accent bg-ide-accent/10 text-ide-accent"
               : "border-ide-border text-ide-fg-muted hover:text-ide-fg"
@@ -54,8 +62,12 @@ export function MessageInput({ input, setInput, isStreaming, sendMessage }: Mess
         </button>
         <button
           onClick={() => setInputMode("whiteboard")}
+          // aria-pressed 让读屏用户知道当前处于哪个输入模式(视觉高亮对读屏不可见)
+          aria-pressed={inputMode === "whiteboard"}
           className={cn(
-            "flex items-center gap-1 px-2 py-0.5 text-[11px] border",
+            // shrink-0:flex 容器会把这排按钮压扁(实测 375px 下仅 18px 宽),
+            // min-h-6:保证 24px 最小点击目标(WCAG 2.2 SC 2.5.8 AA)
+            "flex shrink-0 items-center gap-1 px-2 py-0.5 min-h-6 text-[11px] border",
             inputMode === "whiteboard"
               ? "border-ide-accent bg-ide-accent/10 text-ide-accent"
               : "border-ide-border text-ide-fg-muted hover:text-ide-fg"

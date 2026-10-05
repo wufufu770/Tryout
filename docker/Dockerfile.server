@@ -11,11 +11,16 @@ WORKDIR /app
 
 # 安装依赖(better-sqlite3 源码编译用本地 Node 头文件，零外网下载)
 COPY server/package.json server/package-lock.json ./
+# ⚠️ R48:下面这条 RUN 里的 npm ci 去掉了 `--silent`(web 镜像那边同样去掉,两处一致)。
+#   理由**不是**它修好了构建(R47 的失败原因至今未定),
+#   而是七轮里镜像段失败/超时我一次都没能定位原因 ——
+#   `--silent` 吞掉错误,`--progress=plain` 也拿不到。
+#   代价只是日志变长,换来出错可诊断。
 RUN sed -i "s|deb.debian.org|${APT_MIRROR}|g" /etc/apt/sources.list.d/debian.sources \
  && apt-get update \
  && apt-get install -y --no-install-recommends python3 make g++ wget ca-certificates \
  && rm -rf /var/lib/apt/lists/* \
- && npm ci --silent --registry=${NPM_REGISTRY}
+ && npm ci --registry=${NPM_REGISTRY}
 
 COPY server/ ./
 

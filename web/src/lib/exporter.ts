@@ -1,6 +1,6 @@
 // 面试报告多格式导出:Markdown / JSON / PDF(打印)
 // 仅使用浏览器原生 API,不引入额外依赖。
-import { toastWarning } from "@/shared";
+import { toastWarning, parseTimestamp } from "@/shared";
 
 interface ExportMessage {
   role: string;
@@ -29,7 +29,9 @@ interface ExportSession {
 function formatTimeSafe(ts?: string): string {
   if (!ts) return "-";
   try {
-    const d = new Date(ts);
+    // R24(ISSUE-053):走 parseTimestamp —— 导出文件里的时间同样会被读,
+    //   不能让导出件与界面显示不一致(SQLite 的 UTC 串在本地会被当成本地时间)。
+    const d = parseTimestamp(ts);
     if (isNaN(d.getTime())) return ts;
     return d.toLocaleString();
   } catch {
@@ -66,9 +68,48 @@ function safe(s: unknown): string {
   return String(s);
 }
 
+/**
+ * 把对话内容转义成**不会破坏 Markdown 结构**的纯文本。
+ *
+ * 动机(R24):此前消息内容被原样拼进导出的 Markdown。
+ * 对话里出现 `**加粗**`、`# 标题`、``` `代码` ``` 时,
+ * 导出的文件结构会被破坏 —— 而这是用户要**发给别人的**文档。
+ *
+ * 不做完整 Markdown 转义(那会让正文全是反斜杠,可读性更差),
+ * 只中和**会改变块结构的行首标记**,其余原样保留。
+ */
+function neutralizeBlockStructure(s: string): string {
+  return s
+    .split("\n")
+    .map((line) => {
+      // 块级标记:标题 / 引用 / 列表 / 代码围栏 / 分割线
+      // 前面可能有引用符(>),一并处理
+      const m = line.match(/^(\s*(?:>\s*)*)(.*)$/);
+      if (!m) return line;
+      const [, prefix, body] = m;
+      if (/^(#{1,6}\s|[-*+]\s|\d+\.\s|>)/.test(body) || /^(-{3,}|\*{3,}|_{3,})$/.test(body) || /^`{3,}/.test(body)) {
+        // 前缀一个零宽空格:视觉不变,Markdown 不再解析为块级标记
+        return prefix + "\u200B" + body;
+      }
+      return line;
+    })
+    .join("\n");
+}
+
 // ============ Markdown ============
 
-export function exportSessionAsMarkdown(
+/*
+ * R24:把「生成内容」与「触发下载」拆开。
+ *
+ * 动机:此前 exportSessionAsMarkdown 生成内容后**直接触发浏览器下载**,
+ * 两者混在一个函数里,导致:
+ *   - 在 Node/测试环境下 `document is not defined` → 导出内容完全无法测试
+ *   - 想验证"导出的 Markdown 结构对不对"只能人肉打开下载的文件
+ *
+ * 拆开后 buildSessionMarkdown 是纯函数(可单测),
+ * exportSessionAsMarkdown 保留原有调用方式(生成 + 下载)。
+ */
+export function buildSessionMarkdown(
   session: ExportSession,
   messages: ExportMessage[],
   evaluations: ExportEvaluation[]
@@ -90,16 +131,16 @@ export function exportSessionAsMarkdown(
     const time = m.createdAt ? ` _${formatTimeSafe(m.createdAt)}_` : "";
     if (m.role === "user") {
       lines.push(`> **用户**${time}:`);
-      lines.push(`> ${m.content.split("\n").join("\n> ")}`);
+      lines.push(`> ${neutralizeBlockStructure(m.content).split("\n").join("\n> ")}`);
       lines.push("");
     } else if (m.role === "assistant" || m.role === "system") {
       const speaker = m.agentName || (m.role === "system" ? "系统" : "面试官");
       lines.push(`● **${speaker}**${time}:`);
-      lines.push(m.content);
+      lines.push(neutralizeBlockStructure(m.content));
       lines.push("");
     } else {
       lines.push(`● **${m.role}**${time}:`);
-      lines.push(m.content);
+      lines.push(neutralizeBlockStructure(m.content));
       lines.push("");
     }
   }
@@ -136,36 +177,51 @@ export function exportSessionAsMarkdown(
       if (ev.improvementAdvice) {
         lines.push("**改进建议:**");
         lines.push("");
-        lines.push(ev.improvementAdvice);
+        lines.push(neutralizeBlockStructure(ev.improvementAdvice));
         lines.push("");
       }
       if (ev.betterAnswerSample) {
         lines.push("");
         lines.push("**优化回答示例:**");
-        lines.push(ev.betterAnswerSample);
+        lines.push(neutralizeBlockStructure(ev.betterAnswerSample));
       }
     });
   }
 
-  const md = lines.join("\n");
+  return lines.join("\n");
+}
+
+/** 生成 Markdown 并触发下载(保持原有调用方式) */
+export function exportSessionAsMarkdown(
+  session: ExportSession,
+  messages: ExportMessage[],
+  evaluations: ExportEvaluation[]
+): string {
+  const md = buildSessionMarkdown(session, messages, evaluations);
+  const title = session?.title || "面试会话";
   triggerDownload(md, `${sanitizeFileName(title)}.md`, "text/markdown;charset=utf-8");
   return md;
 }
 
 // ============ JSON ============
 
+/** 生成 JSON 字符串(纯函数) */
+export function buildSessionJSON(
+  session: ExportSession,
+  messages: ExportMessage[],
+  evaluations: ExportEvaluation[],
+  exportedAt: string = new Date().toISOString()
+): string {
+  return JSON.stringify({ session, messages, evaluations, exportedAt }, null, 2);
+}
+
+/** 生成 JSON 并触发下载 */
 export function exportSessionAsJSON(
   session: ExportSession,
   messages: ExportMessage[],
   evaluations: ExportEvaluation[]
 ): string {
-  const payload = {
-    session,
-    messages,
-    evaluations,
-    exportedAt: new Date().toISOString(),
-  };
-  const json = JSON.stringify(payload, null, 2);
+  const json = buildSessionJSON(session, messages, evaluations);
   const title = session?.title || "session";
   triggerDownload(json, `${sanitizeFileName(title)}.json`, "application/json;charset=utf-8");
   return json;

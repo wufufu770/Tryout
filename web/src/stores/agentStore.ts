@@ -44,8 +44,12 @@ export const useAgentStore = create<AgentState>((set) => ({
 
   updateAgent: async (id, basic, version) => {
     set({ error: null });
-    await api.updateAgentBasic(id, basic);
-    const rawVersion = await api.createAgentVersion(id, version);
+    // R32(ISSUE-065):改为**一次请求**。
+    // 此前是 await updateAgentBasic() → await createAgentVersion() 两步,
+    // 第二步失败时第一步已落库:后端半状态 + 版本链断裂,而前端 set() 从未执行,
+    // 仍显示旧值 —— 用户看到"保存失败",刷新后才发现基本信息其实改了。
+    // 现在由服务端在一个事务里完成,失败则两边都不变。
+    const rawVersion = await api.updateAgent(id, basic, version);
     const updated = normalizeAgent({
       ...(rawVersion || {}),
       agentId: id,

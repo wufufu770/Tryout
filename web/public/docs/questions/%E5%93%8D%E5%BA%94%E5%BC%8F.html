@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>响应式 面试题 · 6 道</title>
+<meta name="description" content="响应式 相关面试题共 6 道,高频考点:Proxy 响应式。涵盖 senior/mid/junior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"响应式 面试题 · 6 道","description":"响应式 相关面试题共 6 道,高频考点:Proxy 响应式。涵盖 senior/mid/junior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"手撕简易状态管理(类 Pinia/Vuex)","text":"实现一个响应式 store,支持 state/getter/action,且组件订阅变化自动更新。","acceptedAnswer":{"@type":"Answer","text":"Proxy 响应式、依赖收集、computed、effect"}},{"@type":"Question","name":"CSS Container Queries 与组件级响应式","text":"讲 CSS Container Queries(`@container`)与 Media Query 的差异,以及容器查询单元(cqw/cqh/cqi)。","acceptedAnswer":{"@type":"Answer","text":"container-type、@container、cqi 单元、组件响应式"}},{"@type":"Question","name":"实现一个响应式 Store","text":"实现一个类似 Pinia 的响应式 store,支持 state/getters/actions 与订阅。","acceptedAnswer":{"@type":"Answer","text":"defineProperty、getters、subscribe、actions"}},{"@type":"Question","name":"Vue 与 React 响应式原理对比","text":"对比 Vue3 与 React 的响应式实现差异、依赖收集方式,以及在 Vue 中 reactive 解构丢响应的原因。","acceptedAnswer":{"@type":"Answer","text":"Proxy 响应式、track/trigger、解构丢响应、细粒度"}},{"@type":"Question","name":"iOS:实现一个响应式绑定","text":"用 Swift 实现一个简单的双向绑定(类 RxSwift),支持属性订阅。","acceptedAnswer":{"@type":"Answer","text":"Observable、属性包装器、双向绑定、循环引用"}},{"@type":"Question","name":"实现响应式状态管理库","text":"实现一个响应式状态管理库(类 RxJava/Flow),讲 Observable/Observer/操作符/线程调度。","acceptedAnswer":{"@type":"Answer","text":"观察者、操作符链、线程调度、背压、Disposable"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>响应式 面试题</h1>
+<p>共 <b>6</b> 道,高频考点 1 个。</p>
+<div class="stats">
+  <div class="stat"><b>6</b><span>题目数</span></div>
+  <div class="stat"><b>2</b><span>高级</span></div><div class="stat"><b>3</b><span>中级</span></div><div class="stat"><b>1</b><span>初级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">Proxy 响应式</span></div>
+<h2>题目列表</h2>
+<h2>1. 手撕简易状态管理(类 Pinia/Vuex)</h2>
+<p>实现一个响应式 store,支持 state/getter/action,且组件订阅变化自动更新。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">Proxy 响应式</span><span class="tag">依赖收集</span><span class="tag">computed</span><span class="tag">effect</span></div><h2>2. CSS Container Queries 与组件级响应式</h2>
+<p>讲 CSS Container Queries(`@container`)与 Media Query 的差异,以及容器查询单元(cqw/cqh/cqi)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">container-type</span><span class="tag">@container</span><span class="tag">cqi 单元</span><span class="tag">组件响应式</span></div><h2>3. 实现一个响应式 Store</h2>
+<p>实现一个类似 Pinia 的响应式 store,支持 state/getters/actions 与订阅。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">defineProperty</span><span class="tag">getters</span><span class="tag">subscribe</span><span class="tag">actions</span></div><h2>4. Vue 与 React 响应式原理对比</h2>
+<p>对比 Vue3 与 React 的响应式实现差异、依赖收集方式,以及在 Vue 中 reactive 解构丢响应的原因。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Proxy 响应式</span><span class="tag">track/trigger</span><span class="tag">解构丢响应</span><span class="tag">细粒度</span></div><h2>5. iOS:实现一个响应式绑定</h2>
+<p>用 Swift 实现一个简单的双向绑定(类 RxSwift),支持属性订阅。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Observable</span><span class="tag">属性包装器</span><span class="tag">双向绑定</span><span class="tag">循环引用</span></div><h2>6. 实现响应式状态管理库</h2>
+<p>实现一个响应式状态管理库(类 RxJava/Flow),讲 Observable/Observer/操作符/线程调度。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">观察者</span><span class="tag">操作符链</span><span class="tag">线程调度</span><span class="tag">背压</span><span class="tag">Disposable</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

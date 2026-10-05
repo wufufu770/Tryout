@@ -14,6 +14,11 @@ export interface GroupSummary {
   trend: "up" | "down" | "stable" | "insufficient";
   advice: string;
   llmAdvice?: string; // LLM 增强归纳的自然语言建议
+  /**
+   * R25:有评估但全部缺分的会话 id。
+   * 之前这些会话会被静默丢弃,导致 totalSessions 与 progressPoints 对不上。
+   */
+  noScoreSessionIds?: string[];
 }
 
 // 本地聚合计算(不调用 LLM)
@@ -39,6 +44,8 @@ export function computeGroupSummaryLocal(
   }
   // 用 evaluation 补充(review 没覆盖的会话)
   const reviewSessionIds = new Set(reviews.map((r) => r.sessionId));
+  /** 有评估但无有效分数的会话 —— 显式记录,而不是让它们凭空消失 */
+  const noScoreSessionIds: string[] = [];
   const evalBySession = new Map<string, any[]>();
   for (const e of evaluations) {
     if (!evalBySession.has(e.sessionId)) evalBySession.set(e.sessionId, []);
@@ -48,15 +55,31 @@ export function computeGroupSummaryLocal(
     if (reviewSessionIds.has(sid)) continue;
     const sess = sessionMap.get(sid);
     if (!sess) continue;
-    const avg = evals.reduce((a, b) => a + (Number(b.overallScore) || 0), 0) / evals.length;
-    if (!isNaN(avg) && avg > 0) {
-      scoredPoints.push({
-        score: avg,
-        date: sess.createdAt || evals[0]?.generatedAt,
-        sessionId: sid,
-        title: sess.title || "未命名",
-      });
+    /*
+     * ⚠️ R25:此处曾有一处静默丢弃。
+     * 旧写法:先对每个 overallScore 做 `|| 0` 再求平均,最后用 `avg > 0` 过滤。
+     * 后果:某 session 的评估**全部缺分**时 avg 算成 0,被静默丢弃,
+     * 但 `totalSessions` 仍然计入它 —— 导致两者数量对不上、趋势计算失真,
+     * 而用户看到的只是一个"少了点"的分段归纳,无从察觉。
+     *
+     * 现在:只对**有有效分数**的评估求平均;
+     * 一个有效分数都没有时,明确排除出 progressPoints,
+     * 并在 noScoreSessionIds 中记下来,供 UI 说明"有 N 场未评分"。
+     */
+    const valid = evals
+      .map((e) => Number(e?.overallScore))
+      .filter((n) => Number.isFinite(n));
+    if (valid.length === 0) {
+      noScoreSessionIds.push(sid);
+      continue;
     }
+    const avg = valid.reduce((a, b) => a + b, 0) / valid.length;
+    scoredPoints.push({
+      score: avg,
+      date: sess.createdAt || evals[0]?.generatedAt,
+      sessionId: sid,
+      title: sess.title || "未命名",
+    });
   }
 
   // 按时间排序
@@ -146,6 +169,7 @@ export function computeGroupSummaryLocal(
     weakDimensions,
     trend,
     advice,
+    noScoreSessionIds: noScoreSessionIds.length ? noScoreSessionIds : undefined,
   };
 }
 

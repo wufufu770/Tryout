@@ -1,0 +1,47 @@
+name: Bug 报告
+description: 报告一个可复现的问题
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 发生了什么
+      description: 描述你观察到的行为
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 你期望什么
+      description: 你认为正确行为应该是什么
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 启动方式（docker compose / 本地 npm）
+        2. 打开某个页面
+        3. 点击 X
+        4. 出现 Y
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      placeholder: Windows 11 / macOS 14.2 / Ubuntu 24.04，Node v20.11.0，Docker 27
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 错误日志或截图
+      description: 后端控制台输出、浏览器 console、界面截图都可以
+    validations:
+      required: false

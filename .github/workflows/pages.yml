@@ -1,0 +1,91 @@
+name: Deploy Docs to GitHub Pages
+
+# 把 web/dist(含 428 个题库内容页 + sitemap.xml)发布到 GitHub Pages。
+#
+# 为什么需要:题库是本项目唯一"别人抄不走"的资产(808 道题带参考答案),
+# 但它此前只存在于站内浏览页 —— 搜索引擎没有任何线索能发现它。
+# 部署到 Pages 后,这些页面才可能通过搜索进入。
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "web/src/**"
+      - "web/public/docs/**"
+      - "web/scripts/generate-question-pages.mjs"
+      - "web/scripts/generate-sitemap.mjs"
+      - "data/questionbank-src/**"
+      - "server/data/questionbank.json"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 只允许一个部署并发;不取消进行中的部署
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 生成题库内容页与 sitemap
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: web/package-lock.json
+
+      - name: 安装依赖
+        run: npm ci
+
+      # ⚠️ 必须在 build 之前生成 —— Vite 会把 public/ 原样拷进 dist/。
+      #   gen:pages 依赖 data/questionbank-src/,而 export:questionbank 依赖
+      #   node_modules 里的 esbuild(需先 npm ci)。这里直接跑 gen:all 的两步:
+      #   1) 从数据源重新生成 server/data/questionbank.json
+      #   2) 由它生成 428 个内容页
+      #   3) 再由内容页生成 sitemap(URL 依赖实际存在的页面)
+      - name: 生成题库 JSON
+        run: npm run export:questionbank
+
+      - name: 生成题库内容页
+        run: npm run gen:pages
+
+      - name: 生成 sitemap 与 robots.txt
+        run: npm run gen:sitemap
+
+      - name: 构建
+        run: npm run build
+
+      - name: 校验产物
+        run: |
+          test -f dist/index.html            || { echo "缺少 dist/index.html"; exit 1; }
+          test -f dist/sitemap.xml          || { echo "缺少 sitemap.xml"; exit 1; }
+          test -f dist/robots.txt           || { echo "缺少 robots.txt"; exit 1; }
+          n=$(ls dist/docs/questions/*.html 2>/dev/null | wc -l)
+          echo "题库内容页: $n 个"
+          test "$n" -gt 0 || { echo "题库内容页为 0,请先执行 npm run gen:pages"; exit 1; }
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    name: 部署到 GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -58,3 +58,24 @@ docker/web/verify_*.py
 # Claude/Cursor agent 配置(如出现)
 .claude/
 .cursor/
+
+# W5-4 题库内容页:提交进仓库,便于 GitHub Pages 托管与外部检索
+# (构建产物 web/dist 已被 Vite 处理,不入库)
+
+# ── 自主测试循环的中间产物(R33~R49)──────────────────────────
+# 评测/生成脚本会把结果写成 dotfile,几十轮跑下来会在 web/scripts/ 攒出几十个。
+# 结论已固化进 qa/ISSUES.md 与 qa/RESEARCH.md,原始数据归档在 qa/logs/evidence/,
+# 这里的只是一次性中间物,不入库。
+web/scripts/.*.jsonl
+web/scripts/.gen-*.json
+web/scripts/.probe*.json*
+web/scripts/.tmp-*.jsonl
+
+# 归档的实验证据(有据可查,但体积大且可由脚本重跑)
+qa/logs/evidence/*.jsonl
+
+# QA 工作记录(本地,不推送)
+qa/
+
+# 本地运维脚本(不入库)
+scripts/push-via-api.py

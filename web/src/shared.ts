@@ -2,8 +2,35 @@ import type { SessionDifficulty } from "@/types/session";
 
 export const cn = (...args: any[]) => args.filter(Boolean).join(" ");
 
+/**
+ * 解析后端 SQLite 的时间戳字符串。
+ *
+ * ⚠️ R24(ISSUE-053):SQLite 的 `datetime('now')` 产出的是 **UTC**,
+ *   格式为 `"YYYY-MM-DD HH:MM:SS"` —— 空格分隔、**不带时区标记**。
+ *   而 JS 的 `new Date("2026-10-03 21:56:55")` 对这种非 ISO-8601 格式是
+ *   **实现定义**的,V8 把它当成**本地时间**。
+ *   于是 UTC 时刻被当成本地时刻重解释,再 `toLocaleString` 输出 →
+ *   **UTC+8 用户看到的时间整整偏 8 小时**。
+ *
+ *   实测(本机最新一条 session):DB 里 `2026-10-03 21:56:55`(UTC)
+ *   真实本地显示应为 `10/04 05:56`,而界面显示的是 `10/03 21:56`。
+ *
+ * 修法:识别「空格分隔且无时区后缀」这种 SQLite 专有形态,显式补 `Z` 按 UTC 解析。
+ * 已是标准 ISO 串(带 `Z` 或 `+08:00`)或 epoch 数字的**原样不动**,
+ * 避免把 `new Date(m.createdAt).toISOString()` 这类已被正确处理的入参二次偏移。
+ */
+const SQLITE_TS = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+
+export function parseTimestamp(value: string | number | Date): Date {
+  if (value instanceof Date) return value;
+  if (typeof value === "number") return new Date(value);
+  const s = String(value).trim();
+  if (SQLITE_TS.test(s)) return new Date(`${s.replace(" ", "T")}Z`);  // SQLite 的 UTC 串
+  return new Date(s);   // 标准 ISO(含时区)/epoch 毫秒串,交给引擎解析
+}
+
 export function formatTime(iso: string): string {
-  return new Date(iso).toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+  return parseTimestamp(iso).toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
 }
 
 export const FLOW_TEMPLATES: Record<string, { name: string; stages: string[] }> = {

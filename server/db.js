@@ -7,13 +7,18 @@ import Database from "better-sqlite3";
 import { nanoid } from "nanoid";
 import path from "path";
 import fs from "fs";
+import { DB_DIR as PATHS_DB_DIR } from "./paths.js";
 import { redactPii } from "./pii.js";
 import { encryptSecret, decryptSecret } from "./crypto.js";
 
 // DB_DIR 解析:优先环境变量 → Docker /data → 本地 ./data
-// 跨平台兼容:Windows 下 "/data" 会被解析为 "<盘符>:\data" 导致 EPERM
-const DB_DIR = process.env.DB_DIR || (process.platform === "win32" ? path.join(process.cwd(), "data") : "/data");
-if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
+// Docker 判定沿用 index.js:50 的既有惯例(DOCKER=1 由 Dockerfile/compose 注入),
+// 不能用 platform 判断:非 Windows 的本地 Linux/macOS 会误落到根目录 /data,
+// 非 root 运行时 mkdir '/data' 直接 EACCES(Windows 下 "/data" 也会被解析成盘符根导致 EPERM)。
+// v22:数据目录解析抽到 paths.js,与 crypto.js 共用同一来源。
+//   详见 paths.js 顶部注释 —— 原先两处默认值不一致,会导致主密钥落在
+//   数据目录之外、备份不含密钥、设 DB_DIR 后已存密文静默失效(ISSUE-051)。
+const DB_DIR = PATHS_DB_DIR;
 const DB_BASE = fs.existsSync(path.join(DB_DIR, "tryout.db")) || !fs.existsSync(path.join(DB_DIR, "interviewx.db"))
   ? "tryout"
   : "interviewx";
@@ -273,8 +278,19 @@ function backupDatabase() {
     // 当天已备份则跳过
     if (!fs.existsSync(backupPath)) {
       // 使用 SQLite Online Backup API(保证 WAL 库一致性,避免 fs.copyFileSync 复制到一半的页)
-      db.backup(backupPath);
-      console.log(`[backup] 已备份到 ${backupPath}`);
+      //
+      // ⚠️ db.backup() 是 **async**,返回 Promise。必须挂 .catch():
+      //   外层 try/catch 只能捕获**同步**抛出,捕获不到 Promise rejection。
+      //   若备份过程中连接被关闭(如启动后很快退出 / 进程收到信号),
+      //   会产生 unhandled rejection —— Node 15+ 默认**直接终止进程**,
+      //   与本函数"备份失败不阻塞启动"的意图正好相反。
+      //   (2026-10-04 实测:db.backup(); db.close(); → 崩 "The database connection is not open")
+      db.backup(backupPath)
+        .then(() => console.log(`[backup] 已备份到 ${backupPath}`))
+        .catch((e) => {
+          // 备份失败不阻塞启动,只记录(真正做到注释承诺的语义)
+          console.warn(`[backup] 备份失败(不阻塞启动): ${e.message}`);
+        });
     }
     // 清理 7 天前的旧备份
     const files = fs.readdirSync(backupDir).filter(f => f.startsWith(`${DB_BASE}-`) && f.endsWith(".db"));
@@ -330,6 +346,30 @@ addColumnIfMissing("session_groups", "deleted_at", "TEXT");
 // v9:token 配额与成本控制(按 IP/用户维度,日预算)
 addColumnIfMissing("sessions", "tokens_total", "INTEGER NOT NULL DEFAULT 0");
 addColumnIfMissing("sessions", "cost_usd", "REAL NOT NULL DEFAULT 0");
+
+// ---- W3-2:目标岗位与题库关联 ----
+// 此前会话不知道用户要面什么行业,题库(W3-1 已服务端化)完全没有调用入口。
+// industry 对应题库的 industry 字段;position 是自由文本岗位名(题库按行业而非具体岗位组织)。
+addColumnIfMissing("sessions", "industry", "TEXT");
+addColumnIfMissing("sessions", "position", "TEXT");
+addColumnIfMissing("messages", "question_id", "TEXT");   // 命中的题库题 id
+addColumnIfMissing("messages", "q_source", "TEXT");     // bank(题库) / free(自由发挥)
+
+// 已问题目:避免同一场面试重复问同一题
+// 独立成表而非只用 messages.question_id:后者受消息删除/归档影响,
+// 且需要额外查询才能判断"是否已问过"。
+db.exec(`
+CREATE TABLE IF NOT EXISTS asked_questions (
+  session_id TEXT NOT NULL,
+  question_id TEXT NOT NULL,
+  industry TEXT,
+  q_type TEXT,
+  difficulty TEXT,
+  asked_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (session_id, question_id)
+);
+`);
+db.exec("CREATE INDEX IF NOT EXISTS idx_asked_q_session ON asked_questions(session_id, asked_at);");
 
 // ---- v11:语音答题与逐题反馈(ALPHA 新增表,向后兼容,老库自动创建) ----
 db.exec(`
@@ -617,17 +657,26 @@ export function createAgent(input) {
   return getAgent(agentId);
 }
 
-export function createAgentVersion(agentId, input) {
-  if (!input?.promptTemplate) throw new ValidationError("promptTemplate 为必填");
+/**
+ * 版本插入的**内部**实现(不开事务)。
+ * 抽出来是为了让 `updateAgentWithVersion()` 能把「改基本信息 + 建版本」
+ * 放进同一个事务 —— 拆成两次调用就会留下中间态。
+ */
+function _insertAgentVersion(agentId, input) {
   const versionId = genId("ver");
   const maxNo = db.prepare("SELECT MAX(version_no) as m FROM agent_versions WHERE agent_id = ?").get(agentId)?.m || 0;
-  const tx = db.transaction(() => {
-    db.prepare(`INSERT INTO agent_versions (version_id, agent_id, version_no, tone, focus_areas, difficulty, prompt_template, changelog) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
-      .run(versionId, agentId, maxNo + 1, input.tone || "neutral", JSON.stringify(input.focusAreas || []), input.difficulty || 5, input.promptTemplate, input.changelog || null);
-    db.prepare("UPDATE agents SET current_version_id = ? WHERE agent_id = ?").run(versionId, agentId);
-  });
-  tx();
+  db.prepare(`INSERT INTO agent_versions (version_id, agent_id, version_no, tone, focus_areas, difficulty, prompt_template, changelog) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+    .run(versionId, agentId, maxNo + 1, input.tone || "neutral", JSON.stringify(input.focusAreas || []), input.difficulty || 5, input.promptTemplate, input.changelog || null);
+  db.prepare("UPDATE agents SET current_version_id = ? WHERE agent_id = ?").run(versionId, agentId);
   return camelize(db.prepare("SELECT * FROM agent_versions WHERE version_id = ?").get(versionId));
+}
+
+export function createAgentVersion(agentId, input) {
+  if (!input?.promptTemplate) throw new ValidationError("promptTemplate 为必填");
+  let created = null;
+  const tx = db.transaction(() => { created = _insertAgentVersion(agentId, input); });
+  tx();
+  return created;
 }
 
 // 切换 Agent 当前生效版本
@@ -642,8 +691,12 @@ export function setAgentCurrentVersion(agentId, versionId) {
 
 export function updateAgentBasic(agentId, input) {
   const { name, avatar, role, iconType, iconValue, preferredProviderId, agentKind, candidatePersona } = input || {};
-  if (!name) throw new ValidationError("name 为必填");
-  if (!role) throw new ValidationError("role 为必填");
+  // ⚠️ 不要再要求 name/role 必填(ISSUE-023):
+  //   路由层用 `AgentSchema.partial().pick([...])` —— 声明这是**部分更新**;
+  //   前端 `updateAgentBasic(id, data: Partial<Agent>)` 的类型也承诺部分更新。
+  //   但这里原先 `if (!name) throw` / `if (!role) throw` 且 UPDATE 里是无条件赋值,
+  //   导致"只改名字"这种最常见的部分更新被拒(400 role 为必填),契约与实现矛盾。
+  //   现改为与其余字段一致的 COALESCE 语义:name/role 传了才更新,没传则保持原值。
   const existing = getAgent(agentId);
   if (!existing) throw new NotFoundError("Agent");
   if (existing.isTemplate) throw new ValidationError("模板 Agent 不可修改");
@@ -656,16 +709,16 @@ export function updateAgentBasic(agentId, input) {
     ? { mode: "keep" }
     : { mode: "set", value: candidatePersona ? String(candidatePersona) : null };
   db.prepare(`UPDATE agents SET
-    name = ?,
+    name = COALESCE(?, name),
     avatar = COALESCE(?, avatar),
-    role = ?,
+    role = COALESCE(?, role),
     icon_type = COALESCE(?, icon_type),
     icon_value = COALESCE(?, icon_value),
     preferred_provider_id = ${providerValue.mode === "keep" ? "preferred_provider_id" : "?"},
     agent_kind = COALESCE(?, agent_kind),
     candidate_persona = ${personaValue.mode === "keep" ? "candidate_persona" : "?"}
     WHERE agent_id = ?`)
-    .run(name, avatar ?? null, role,
+    .run(name ?? null, avatar ?? null, role ?? null,
       iconType ?? null, iconValue ?? null,
       ...(providerValue.mode === "set" ? [providerValue.value] : []),
       agentKind ?? null,
@@ -673,8 +726,48 @@ export function updateAgentBasic(agentId, input) {
       agentId);
 }
 
-export function deleteAgent(agentId) {
-  // v9:软删除(保留 agent_versions 与历史会话引用,数据可恢复)
+/**
+ * R32(ISSUE-065):一次事务里完成「改基本信息 + 建新版本」。
+ *
+ * ## 为什么要合并
+ * 前端 `agentStore.updateAgent` 此前是两个请求:
+ *   1. PUT  /api/agents/:id/basic       —— 改 name/avatar/role/...
+ *   2. POST /api/agents/:id/versions     —— 建版本、切 current_version_id
+ * 两步之间**没有任何回滚**。第 2 步失败(网络抖动、promptTemplate 超长、
+ * 命中唯一约束、限流 429)时第 1 步已经落库,后果是:
+ *   - 基本信息改了,但**没有对应版本记录** —— 版本链断裂
+ *   - 前端 `set()` 从未执行,store 里还是旧值,用户看到"保存失败"
+ *   - 用户刷新页面才发现基本信息其实改了,且改了什么无从追溯
+ * 这是全项目唯一一处会真正造成**数据不一致**(而不是仅显示错误)的写路径。
+ *
+ * ## 为什么不选"前端补偿回滚"
+ * 回滚本身也可能失败(同样的网络/限流原因),失败后就从"半状态"变成
+ * "不确定状态",比原状更难收拾。而且并发场景下回滚会覆盖别人的写入。
+ * 单事务是唯一能真正消除中间态的做法。
+ *
+ * 任一步抛错 → 整个事务回滚 → agents 表与 agent_versions 表都不变。
+ *
+ * 保留 updateAgentBasic / createAgentVersion 两个独立导出:
+ * 已有 API 与测试仍依赖它们,不做破坏性改动。
+ */
+export function updateAgentWithVersion(agentId, basic, version) {
+  if (!version?.promptTemplate) throw new ValidationError("promptTemplate 为必填");
+  // 存在性与模板保护要在事务内先查,否则查完到写之间有窗口
+  const existing = getAgent(agentId);
+  if (!existing) throw new NotFoundError("Agent");
+  if (existing.isTemplate) throw new ValidationError("模板 Agent 不可修改");
+
+  let created = null;
+  const tx = db.transaction(() => {
+    // 复用既有实现,保证「部分更新」的 COALESCE 语义与单接口路径完全一致
+    updateAgentBasic(agentId, basic || {});
+    created = _insertAgentVersion(agentId, version);
+  });
+  tx();
+  return created;
+}
+
+export function deleteAgent(agentId) {  // v9:软删除(保留 agent_versions 与历史会话引用,数据可恢复)
   const tx = db.transaction(() => {
     const result = db.prepare("UPDATE agents SET deleted_at = datetime('now') WHERE agent_id = ? AND is_template = 0 AND deleted_at IS NULL").run(agentId);
     return result.changes;
@@ -693,9 +786,30 @@ export function createSession(input) {
   const sessionType = input.sessionType && VALID_SESSION_TYPES.includes(input.sessionType) ? input.sessionType : "interview";
   const sessionId = genId("sess");
   const groupConfig = input.groupConfig ? JSON.stringify(input.groupConfig) : null;
-  db.prepare(`INSERT INTO sessions (session_id, title, model_id, flow_template, difficulty, group_id, session_type, group_config) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
-    .run(sessionId, input.title, input.modelId, input.flowTemplate || null, difficulty, input.groupId || null, sessionType, groupConfig);
+  db.prepare(`INSERT INTO sessions (session_id, title, model_id, flow_template, difficulty, group_id, session_type, group_config, industry, position) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .run(sessionId, input.title, input.modelId, input.flowTemplate || null, difficulty, input.groupId || null,
+         sessionType, groupConfig, input.industry || null, input.position || null);
   return camelize(db.prepare("SELECT * FROM sessions WHERE session_id = ?").get(sessionId));
+}
+
+// ---- W3-2:已问题目(题库去重) ----
+export function markQuestionAsked({ sessionId, questionId, industry, type, difficulty }) {
+  if (!sessionId || !questionId) throw new ValidationError("sessionId 与 questionId 为必填");
+  db.prepare(`INSERT OR IGNORE INTO asked_questions (session_id, question_id, industry, q_type, difficulty) VALUES (?, ?, ?, ?, ?)`)
+    .run(sessionId, questionId, industry || null, type || null, difficulty || null);
+  return true;
+}
+
+export function listAskedQuestions(sessionId) {
+  if (!sessionId) return [];
+  return db.prepare(`SELECT question_id AS questionId, industry, q_type AS type, difficulty, asked_at AS askedAt
+                     FROM asked_questions WHERE session_id = ? ORDER BY asked_at ASC`).all(sessionId);
+}
+
+export function listAskedQuestionIds(sessionId) {
+  if (!sessionId) return [];
+  return db.prepare(`SELECT question_id FROM asked_questions WHERE session_id = ?`).all(sessionId)
+    .map((r) => r.question_id);
 }
 
 export function getSession(sessionId) {

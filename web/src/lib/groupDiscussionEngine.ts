@@ -39,11 +39,16 @@ export interface ScheduleResult {
  * 3. 用户刚发言后,呼应型候选人(leader/aggressive)更可能回应
  * 4. 加权随机选择,避免轮流坐庄
  */
+/** 讨论阶段默认消息数上限(约 12 轮问答) */
+export const DEFAULT_DISCUSSION_MAX_MSGS = 24;
+
 export function scheduleNextSpeaker(
   candidates: Agent[],
   history: DiscussionMessage[],
   userJustSpoke: boolean,
   stage: GroupStage,
+  /** 讨论阶段消息数上限;不传或非法值用默认值 */
+  maxDiscussionMsgs?: number,
 ): ScheduleResult {
   if (stage !== "discussion") {
     return { nextSpeakerId: "", nextSpeakerKind: "candidate", reason: "非讨论阶段", shouldEnd: false };
@@ -106,9 +111,15 @@ export function scheduleNextSpeaker(
     if (rand <= 0) { winner = s; break; }
   }
 
-  // 阶段结束判断:讨论阶段消息数 >= 20 且无人长时间发言
+  // 阶段结束判断:讨论阶段消息数达到阈值。
+  // W5-3:此前硬编码 24,无依据也不可配 —— 群面时长差异很大
+  // (10 分钟群面和 40 分钟群面显然不该用同一个上限)。
+  // 现在由参数控制,默认值保持向后兼容。
   const discussionMsgs = history.filter((m) => m.speakerKind === "candidate" || m.speakerKind === "user");
-  const shouldEnd = discussionMsgs.length >= 24; // 阈值可调
+  const limit = typeof maxDiscussionMsgs === "number" && maxDiscussionMsgs > 0
+    ? Math.floor(maxDiscussionMsgs)
+    : DEFAULT_DISCUSSION_MAX_MSGS;
+  const shouldEnd = discussionMsgs.length >= limit;
 
   return {
     nextSpeakerId: winner.id,

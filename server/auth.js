@@ -18,8 +18,16 @@
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
+import { DB_DIR } from "./paths.js";
 
-const TOKEN_FILE = path.join(process.env.DB_DIR || process.cwd(), ".api_token");
+// ⚠️ R23(ISSUE-052):原先同样是 `process.env.DB_DIR || process.cwd()` ——
+//   与 crypto.js 的 ISSUE-051 **完全同构**的第三例。
+//   `npm start` 不设 DB_DIR 时,token 会落到 <cwd>/.api_token,而数据库在
+//   <cwd>/data/。后果:日后有人设了 DB_DIR,服务端就会读**另一个** token 文件,
+//   此前所有客户端立刻 401「认证 token 无效」;且备份 data/ 也不含 token。
+//   本机已实测到两个 token 文件并存(server/data/.api_token 与 server/.api_token)。
+//   现统一从 paths.js 取值。
+const TOKEN_FILE = path.join(DB_DIR, ".api_token");
 const EXEMPT_PATHS = new Set(["/api/health"]);
 
 // v10:GET 浏览免认证"精确路径"集合(只读列表接口,不涉及敏感数据/资源消耗)
@@ -27,14 +35,17 @@ const EXEMPT_PATHS = new Set(["/api/health"]);
 // (例:/sessions 豁免,但 /sessions/:id/messages 不豁免,避免未授权读取他人会话消息)
 // 注意:authMiddleware 通过 app.use("/api", ...) 挂载,Express 会自动剥离 /api 前缀,
 // 因此这里的 path 应使用剥离 /api 后的路径(如 /agents 而非 /api/agents)
+//
+// ISSUE-003b(2026-10-04 自主测试循环发现):此前此处有 7 条,其中 5 条是**死条目** ——
+// /experiences、/question-bank(实际路由为 /questionbank)、/flow-templates、
+// /integration、/stats(实际为 /questionbank/stats)均无任何对应路由,
+// 是历史改名(路由改名/重排)后未同步留下的,豁免形同虚设却仍在白名单里,
+// 掩盖了白名单的真实状态。已清理,仅保留确实存在的路径。
+// 回归保护:scripts/e2e-auth-routes.mjs 的 E 组会自动扫描路由表,
+// 一旦白名单里出现无对应路由的条目即失败,防止再次漂移。
 const GET_EXEMPT_EXACT_PATHS = new Set([
-  "/experiences",
-  "/question-bank",
-  "/evaluations",
-  "/flow-templates",
-  "/integration",
-  "/stats",
-  "/analysis/weakness", // 聚合接口,无 PII
+  "/evaluations",       // 该路径仅注册了 POST;GET 豁免当前不生效,保留以免行为变化
+  "/analysis/weakness", // 聚合接口,无 PII。⚠️ 见 ISSUE-003:实际会泄露 recentScores[].sessionId,待产品决策
 ]);
 
 let validTokens = null;

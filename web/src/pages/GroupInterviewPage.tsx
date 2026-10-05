@@ -3,7 +3,7 @@
 // 流程:配置 → 规则介绍 → 自我介绍 → 讨论 → 总结 → 面试官点评 → 结束
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/api/client";
-import { cn, getDifficultyConfig } from "@/shared";
+import { cn, getDifficultyConfig, toastWarning } from "@/shared";
 import { useI18n } from "@/i18n";
 import { useLayoutContext } from "@/components/IdeLayout";
 import { normalizeAgent, type Agent } from "@/types/agent";
@@ -136,7 +136,22 @@ export function GroupInterviewPage() {
           agentId: msg.speakerKind === "user" ? undefined : msg.speakerId,
           stage: stage === "intro" ? 0 : stage === "self_intro" ? 1 : stage === "discussion" ? 2 : stage === "summary" ? 3 : 4,
         });
-      } catch {}
+      } catch (e) {
+        // ⚠️ R28(ISSUE-057):原先是 `catch {}` —— **完全静默**。
+        //   这里是乐观更新(先 setMessages 再落库),失败不回滚也不提示,
+        //   结果是:UI 里消息在、DB 里没有,**刷新页面就凭空消失**,
+        //   而用户从头到尾不知道有过一次丢失。
+        //   R24 前端审计报出此条,R28 核实属实并修复。
+        //
+        //   为什么不回滚(把消息从 UI 移除)?
+        //   这是**用户或 AI 说出的话**,内容本身是有价值的;
+        //   因为一次网络抖动就把用户已经说过的话从界面上抹掉,
+        //   比"留在界面上但没存住、并且明确告知"更糟。
+        //   故:保留消息 + 明确告警。更完整的方案(未保存队列 + 自动重试)
+        //   属于产品决策,本轮不做。
+        console.error("[group] 消息持久化失败(消息仅存在于当前界面,刷新后丢失):", e);
+        toastWarning(t("group.messageNotSaved"));
+      }
     }
     return full;
   }, [currentSessionId, resolveModel, stage]);
