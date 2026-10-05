@@ -105,8 +105,17 @@ export function createVoiceVisualizer(
     stop() {
       if (rafId !== null) cancelAnimationFrame(rafId);
       rafId = null;
-      try { source?.disconnect(); } catch {}
-      try { audioCtx?.close(); } catch {}
+      // R28:释放 WebAudio —— disconnect()/close() 在已断开/已关闭时抛,属幂等清理。
+      try {
+        source?.disconnect();
+      } catch {
+        // 见上
+      }
+      try {
+        audioCtx?.close();
+      } catch {
+        // 见上
+      }
       audioCtx = null;
       analyser = null;
       source = null;

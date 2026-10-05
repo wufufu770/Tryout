@@ -4,6 +4,17 @@ import { api } from "@/api/client";
 import { cn, FLOW_TEMPLATES, getDifficultyConfig, type InterviewScenario } from "@/shared";
 import { useI18n } from "@/i18n";
 import { useModalA11y } from "@/lib/useModalA11y";
+import { fetchQuestionBank, fetchQuestionBankStats, fetchQuestionReference } from "@/lib/questionBankClient";
+import { buildSessionPayload, validatePositionSelection } from "@/lib/positionConfig";
+import { buildExamFocusBlock, buildNoBankNote } from "@/lib/examFocus";
+import { findLatestQaPair, resolveScoringReference, shouldEvaluateNow, type ChatMessage } from "@/lib/liveCoach";
+import { buildContextWindow } from "@/lib/contextWindow";
+import { shouldAdvanceStage, parseStageSignal, stripStageMarkers, DEFAULT_STAGE_TURNS } from "@/lib/evaluation/stageAdvance";
+import { LiveCoachPanel, type LiveCoachState } from "@/components/interview/LiveCoachPanel";
+import { scoreWithRetry, aggregateScores } from "@/lib/evaluation/scoringEngine";
+import { EVALUATION_DIMENSIONS } from "@/lib/evaluation/starEvaluator";
+import { planNextQuestion } from "@/lib/questionPlanner";
+import type { QuestionLite } from "@/lib/questionSelector";
 import { useLayoutContext } from "@/components/IdeLayout";
 import { useSessionStore } from "@/stores/sessionStore";
 import { buildSystemPrompt, type TeamAgentInfo } from "@/lib/contextInjector";
@@ -105,6 +116,24 @@ export function InterviewPage() {
 
   // 会话配置
   const [title, setTitle] = useState("");
+  // W3-3:目标行业与岗位 —— 决定提问时从题库抽哪一档题
+  const [targetIndustry, setTargetIndustry] = useState("");
+  const [targetPosition, setTargetPosition] = useState("");
+  const [bankStats, setBankStats] = useState<
+    { total: number; available?: boolean; industries: { id: string; count: number }[] } | null
+  >(null);
+  // W4-2:本场题库进度。currentQuestion 为 null 表示本轮按自由发挥提问。
+  const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionLite | null>(null);
+  // W4-3:现场评估。评估每 N 轮跑一次(默认 2),只评 2 个关键维度 ——
+  // 面试中给"更好的回答"会打断心流且诱导照抄,完整示范留到会话结束。
+  const [liveCoach, setLiveCoach] = useState<LiveCoachState>({ status: "idle" });
+  const lastEvaluatedRoundRef = useRef(0);
+  const liveEvalBusyRef = useRef(false);
+  const LIVE_EVAL_INTERVAL = 2;
+  // W5-2:进入当前阶段时的用户轮次基线,用于算"本阶段已聊几轮"
+  const stageTurnBaseRef = useRef(0);
+  const LIVE_EVAL_DIMS = ["technical", "communication"];
   const [flow, setFlow] = useState<string>("tech");
   const [customStages, setCustomStages] = useState<string[]>(["自我介绍", "项目提问", "反问环节"]);
   const [focusDirection, setFocusDirection] = useState("");
@@ -206,6 +235,21 @@ export function InterviewPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastUserContentRef = useRef<string>("");
   const sendingRef = useRef(false);
+
+  // 题库统计:面板显示"该行业有多少题",以及在题库不可用时给出提示
+  useEffect(() => {
+    let cancelled = false;
+    fetchQuestionBankStats()
+      .then((st) => {
+        if (cancelled) return;
+        if (st) setBankStats({ ...st, available: true });
+        else setBankStats({ total: 0, available: false, industries: [] });
+      })
+      .catch(() => {
+        if (!cancelled) setBankStats({ total: 0, available: false, industries: [] });
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   const isCustomFlow = flow === "custom";
   const stages = isCustomFlow ? customStages : FLOW_TEMPLATES[flow]?.stages || [];
@@ -369,6 +413,89 @@ export function InterviewPage() {
     };
   }, [agentMode, agentTeam, getAgentById]);
 
+  // W4-3:现场评估。
+  // 只评 2 个关键维度而非 6 个 —— 面试中的反馈要快、要省;
+  // 完整 6 维留到会话结束(历史页)。
+  // 题目若命中题库,则带上参考答案作基准(服务端内部取,不经前端)。
+  const runLiveEvaluation = useCallback(async (msgs: ChatMessage[], sessionId: string) => {
+    if (liveEvalBusyRef.current) return;      // 上一轮还在跑就跳过,不等
+    const pair = findLatestQaPair(msgs);
+    if (!pair) return;
+    if (!shouldEvaluateNow({
+      answeredRounds: pair.round,
+      lastEvaluatedRound: lastEvaluatedRoundRef.current,
+      interval: LIVE_EVAL_INTERVAL,
+    })) return;
+
+    liveEvalBusyRef.current = true;
+    lastEvaluatedRoundRef.current = pair.round;
+    setLiveCoach({ status: "evaluating" });
+    try {
+      const dims = EVALUATION_DIMENSIONS.filter((d) => LIVE_EVAL_DIMS.includes(d.key));
+      // R32(ISSUE-038):把当前题的参考答案接上,评分器才有题目级判据。
+      // 此前这里一直传 undefined —— 注释与 UI 都在声称"用了题库作基准",实际没有。
+      // 拉取失败/未抽到题库题 → 降级为无基准评估,并由 resolveScoringReference
+      // 保证 bankReferenced 如实为 false,不会对用户谎称有基准。
+      const rawRef = currentQuestion ? await fetchQuestionReference(currentQuestion.id) : null;
+      const { reference, bankReferenced } = resolveScoringReference(rawRef);
+      const scores = await Promise.all(
+        dims.map((d) =>
+          scoreWithRetry(d, pair.question, pair.answer, reference, currentModel, 2)
+        )
+      );
+      const agg = aggregateScores(scores);
+      setLiveCoach({
+        status: "ready",
+        result: agg,
+        bankReferenced,
+      });
+    } catch {
+      setLiveCoach({ status: "failed" });
+    } finally {
+      liveEvalBusyRef.current = false;
+    }
+  }, [currentModel, currentQuestion, LIVE_EVAL_INTERVAL, LIVE_EVAL_DIMS]);
+
+  // W4-2:抽题 + 标记已问。
+  // 每次面试官要提问前调一次;抽不到就保持 null(自由发挥降级)。
+  const pickNextExamQuestion = useCallback(async (sessionId: string) => {
+    if (!targetIndustry) {
+      setCurrentQuestion(null);   // 未设行业:明确降级,不猜岗位
+      return null;
+    }
+    try {
+      // 拉该行业的候选题(服务端已剔除 referenceAnswer)
+      const res = await fetchQuestionBank({
+        industry: targetIndustry,
+        sessionDifficulty: difficulty,
+        excludeIds: askedQuestionIds,
+        limit: 5,
+      });
+      const plan = planNextQuestion(res.questions as QuestionLite[], {
+        industry: targetIndustry,
+        sessionDifficulty: difficulty,
+        askedIds: askedQuestionIds,
+      });
+      if (plan.kind !== "ask") {
+        setCurrentQuestion(null);
+        return null;
+      }
+      setCurrentQuestion(plan.question);
+      // 标记已问(失败不阻断 —— 最坏情况是下一轮重复问一题)
+      api.markQuestionAsked(sessionId, {
+        questionId: plan.question.id,
+        industry: plan.question.industry,
+        type: plan.question.type,
+        difficulty: plan.question.difficulty,
+      }).catch(() => { /* 忽略 */ });
+      setAskedQuestionIds((prev) => [...prev, plan.question.id]);
+      return plan.question;
+    } catch {
+      setCurrentQuestion(null);
+      return null;
+    }
+  }, [targetIndustry, difficulty, askedQuestionIds]);
+
   const getSystemPrompt = useCallback((speakerAgent: Agent, askMode?: StageAskMode) => {
     const tpl = speakerAgent.config?.promptTemplate || t("interview.prompts.defaultInterviewer");
     const { active, team } = buildTeamInfo(speakerAgent);
@@ -378,8 +505,13 @@ export function InterviewPage() {
       teamAgents: team,
       difficultyPrompt: diffCfg.prompt,
       askMode: askMode || currentStageAskMode,
+      // W4-2:题库知识锚点。题库不可用时降级为"不限定方向"的说明,
+      // 而不是让模型以为出了配置错误。
+      examFocus: currentQuestion
+        ? buildExamFocusBlock(currentQuestion)
+        : buildNoBankNote(),
     });
-  }, [buildTeamInfo, currentStageName, materials, focusDirection, difficulty, currentStageAskMode]);
+  }, [buildTeamInfo, currentStageName, materials, focusDirection, difficulty, currentStageAskMode, currentQuestion]);
 
   // 资料勾选:加载内容并注入
   const handleToggleMaterial = useCallback(async (matId: string) => {
@@ -511,12 +643,18 @@ export function InterviewPage() {
       }
 
       const sess = await api.createSession({
-        title: title || t("interview.unnamedSession"),
-        modelId: currentModel,
+        ...buildSessionPayload(
+          { industry: targetIndustry, position: targetPosition },
+          { title: title || t("interview.unnamedSession"), modelId: currentModel, difficulty },
+        ),
         flowTemplate: isCustomFlow ? "custom" : flow,
-        difficulty,
       });
       setSession(sess);
+
+      // W4-2:载入本场已问题目(续接/多端场景)
+      api.listAskedQuestions(sess.sessionId)
+        .then((list) => setAskedQuestionIds((list || []).map((x: any) => x.questionId)))
+        .catch(() => { /* 读不到就当作没问过,最坏情况是重复问一题 */ });
 
       // 注册 Agent 到会话
       const teamToRegister = agentMode === "multi" ? agentTeam : (currentAgent?.id ? [currentAgent.id] : []);
@@ -579,11 +717,27 @@ export function InterviewPage() {
       setError(t("interview.errors.selectModelFirst"));
       return;
     }
+    // W3-3:开始前校验目标行业。
+    // 必须在**开跑之前**拦 —— 否则用户答完几轮才发现题库用不上,
+    // 白等 LLM 调用。questionPlanner 在无行业时会返回 needsIndustry(不猜岗位),
+    // 这里把那个"晚到的失败"提前到"点开始的那一瞬间"。
+    const posCheck = validatePositionSelection(
+      { industry: targetIndustry, position: targetPosition },
+      bankStats || { total: 0, available: false, industries: [] }
+    );
+    if (!posCheck.ok) {
+      // 只在"题库可用但选错了行业"时阻断(明确的配置错误)。
+      // 题库未就绪是放行 + 非阻断提示 —— 新 clone 未跑导出脚本时仍可正常面试。
+      setError(t("interview.noQuestionsForIndustry"));
+      return;
+    }
     let sess = currentSession;
     if (!sess) {
       sess = await createSession();
       if (!sess) return;
     }
+    // W4-2:开跑前先抽第一题,让 system prompt 一开始就带上知识锚点
+    await pickNextExamQuestion(sess.sessionId);
     sendingRef.current = true;
     setStreaming(true);
     setStreamingContent("");
@@ -705,13 +859,32 @@ export function InterviewPage() {
     const nextMessages = [...messages, userMsgObj];
     setMessages(nextMessages);
 
+    // W4-3:异步触发现场评估 —— **不 await**。
+    // 评估要走 2 个维度的 LLM 调用(ADR-001),await 会让提问卡住好几秒,
+    // 用户会以为界面死了。评估结果异步填进侧边栏即可。
+    if (currentSession?.sessionId) {
+      void runLiveEvaluation(nextMessages as ChatMessage[], currentSession.sessionId);
+    }
+
+    // W4-2:每 2 轮用户回答换一道题。
+    // 为什么不是每轮都换:真实面试是"围绕一个点深挖若干轮"再换方向,
+    // 每轮换题会把对话打散成八个互不相干的问答,失去模拟价值。
+    // 为什么是 2 轮:这是个粗粒度启发式,可后续按真实反馈调。
+    const userTurns = nextMessages.filter((m) => m.role === "user").length;
+    if (currentSession?.sessionId && userTurns > 0 && userTurns % 2 === 0) {
+      await pickNextExamQuestion(currentSession.sessionId);
+    }
+
     sendingRef.current = true;
     setStreaming(true);
     setStreamingContent("");
     try {
-      const history = nextMessages
-        .filter((m) => m.role !== "system")
+      // W4-4:历史消息窗口。此前是全量传,长会话会撑爆 context。
+      // buildContextWindow 保证:system 恒在、只留最近 N 条、超预算继续收紧。
+      const history = buildContextWindow(nextMessages as ChatMessage[]).recent
         .map((m) => ({ role: m.role, content: m.content }));
+      // W5-2:面试官本轮回复,供阶段信号解析使用(块内赋值,块外读取)
+      let lastAiContent = "";
 
       // 同时提问模式:多 Agent 并行
       if (agentMode === "multi" && currentStageAskMode === "simultaneous" && currentStageBindings.length > 1) {
@@ -734,7 +907,9 @@ export function InterviewPage() {
         const groupItems = results.filter((r) => r.content).map((r) => ({
           agentId: r.agent.id, agentName: r.agent.name, agentRole: r.agent.role, content: r.content,
         }));
-        const combinedContent = groupItems.map((g) => `【${g.agentName}】${g.content}`).join("\n\n");
+        const combinedRaw = groupItems.map((g) => `【${g.agentName}】${g.content}`).join("\n\n");
+        const combinedContent = stripStageMarkers(combinedRaw);
+        lastAiContent = combinedRaw;
         const aiMsg = await api.addMessage(currentSession.sessionId, {
           role: "assistant", content: combinedContent, modelVersion: currentModel,
           agentId: activeAgent.id, agentVersionId: activeAgent.currentVersionId, stage: stageIndex,
@@ -756,7 +931,10 @@ export function InterviewPage() {
           acc += t;
           appendStreamingContent(t);
         })) as any;
-        const aiContent = result?.content || acc;
+        const rawContent = result?.content || acc;
+        // W5-2:程序标记不得入库/展示,否则历史回看会看到 [STAGE_STATUS:advance]
+        const aiContent = stripStageMarkers(rawContent);
+        lastAiContent = rawContent;   // 信号解析用原文(标记还在)
         const aiMsg = await api.addMessage(currentSession.sessionId, {
           role: "assistant", content: aiContent, modelVersion: currentModel,
           agentId: activeAgent.id, agentVersionId: activeAgent.currentVersionId, stage: stageIndex,
@@ -768,9 +946,19 @@ export function InterviewPage() {
         } as Message);
       }
 
-      // 阶段自动推进:每 3 轮对话(6 条消息)推进一个阶段
-      const totalMessages = messages.length + 2;
-      const newStage = Math.min(Math.floor(totalMessages / 6), stages.length - 1);
+      // W5-2:阶段推进改为内容驱动。
+      // 此前是 `Math.floor(totalMessages / 6)` —— 不管聊的是什么,每 6 条消息跳一个阶段。
+      // 现在:面试官回复里的 [STAGE_STATUS] 信号优先,轮数上限兜底(防卡死)。
+      const stageTurns = nextMessages.filter((m) => m.role === "user").length - stageTurnBaseRef.current;
+      const advance = shouldAdvanceStage({
+        totalTurns: Math.max(0, stageTurns),
+        signal: parseStageSignal(lastAiContent),
+        stageIndex,
+        totalStages: stages.length,
+        minTurns: 1,
+        maxTurns: DEFAULT_STAGE_TURNS,
+      });
+      const newStage = advance ? Math.min(stageIndex + 1, stages.length - 1) : stageIndex;
       if (newStage !== stageIndex && currentSession?.sessionId) {
         setStageIndex(newStage);
         // 多 Agent 模式:阶段切换时更新 activeAgent 为新阶段的 primary
@@ -782,6 +970,7 @@ export function InterviewPage() {
             setActiveAgentId(newPrimary.agentId);
           }
         }
+        stageTurnBaseRef.current = nextMessages.filter((m) => m.role === "user").length;
         try {
           await api.request(`/sessions/${currentSession.sessionId}/stage`, {
             method: "PUT", body: JSON.stringify({ stage: newStage }),
@@ -809,7 +998,8 @@ export function InterviewPage() {
       const sysPrompt = getSystemPrompt(activeAgent);
       const reqMessages = [
         { role: "system", content: sysPrompt },
-        ...messages.filter((m) => m.role !== "system").map((m) => ({ role: m.role, content: m.content })),
+        ...buildContextWindow(messages as ChatMessage[]).recent
+          .map((m) => ({ role: m.role, content: m.content })),
       ];
       let acc = "";
       const result = (await api.chat(currentModel, { messages: reqMessages }, (t) => {
@@ -1084,6 +1274,11 @@ export function InterviewPage() {
         applyScenario={applyScenario}
         difficulty={difficulty}
         setDifficulty={setDifficulty}
+        industry={targetIndustry}
+        setIndustry={setTargetIndustry}
+        position={targetPosition}
+        setPosition={setTargetPosition}
+        bankStats={bankStats}
         flow={flow}
         setFlow={setFlow}
         isCustomFlow={isCustomFlow}
@@ -1142,7 +1337,11 @@ export function InterviewPage() {
               </span>
             )}
             <button onClick={handleOpenMaterialPicker} title={t("interview.addMaterialTip")}
-              className="flex items-center gap-1 px-1.5 py-0.5 text-ide-fg-muted hover:bg-ide-bg-active hover:text-ide-fg">
+              // 移动端实测被 flex 压到 12px 宽(远低于 WCAG 2.2 AA 的 24px);
+              // shrink-0 阻止压缩,min-h-6 保证最小点击高度。
+              // aria-label 兼顾读屏(移动端 title 不会显示)
+              aria-label={t("interview.addMaterial")}
+              className="flex shrink-0 items-center gap-1 px-1.5 py-0.5 min-h-6 text-ide-fg-muted hover:bg-ide-bg-active hover:text-ide-fg">
               <Paperclip size={12} /> {t("interview.addMaterial")}
             </button>
             {/* v6:视图模式切换(仅会话开始后可用) */}
@@ -1203,7 +1402,15 @@ export function InterviewPage() {
           <div className="border-b border-ide-border bg-ide-bg-alt p-2">
             <div className="mb-1.5 flex items-center justify-between text-xs">
               <span className="text-ide-fg-muted">{t("interview.selectMaterial")}</span>
-              <button onClick={() => setShowMaterialPicker(false)} className="text-ide-fg-muted hover:text-ide-fg"><X size={14} /></button>
+              <button
+                onClick={() => setShowMaterialPicker(false)}
+                // R32(ISSUE-022):纯图标按钮 24×24(实测原为 16×16,全站最难点)。
+                //   同时补 aria-label —— 原先既无 title 也无 aria-label,
+                //   读屏用户只会听到"按钮",这比尺寸问题更严重。
+                className="flex min-h-6 min-w-6 shrink-0 items-center justify-center text-ide-fg-muted hover:text-ide-fg"
+                aria-label={t("common.close")}
+                title={t("common.close")}
+              ><X size={14} /></button>
             </div>
             {availableMaterials.length === 0 ? (
               <div className="py-2 text-xs text-ide-fg-muted">{t("interview.noMaterials")}</div>
@@ -1228,7 +1435,20 @@ export function InterviewPage() {
             <AlertCircle size={14} />
             <span className="flex-1">{error}</span>
             <button onClick={handleRetry} disabled={isStreaming}
-              className="flex items-center gap-1 px-1.5 py-0.5 hover:bg-ide-danger/20 disabled:opacity-50">
+              // R27(ISSUE-056 / ISSUE-022):原先 `px-1.5 py-0.5` 只有 12px 高,
+              // 低于 WCAG 2.2 SC 2.5.8 的 24px 最低值。
+              // 修法说明:ISSUE-022 原先列了两个选项 —— (a) 撑大 padding、
+              // (b) 用 `::after` 伪元素扩大热区。**这里选 (a),因为 (b) 不可验证**:
+              // a11y 断言量的是 `getBoundingClientRect()`,即元素自身的 border box,
+              // 伪元素不参与计算 —— 实测加 `::after{top:-6px;bottom:-6px}` 后,
+              // 元素仍报 36×21,测试照样判失败。
+              // ⚠️ `shrink-0` 同样必需:错误条是 `flex` 容器,错误文案是 `flex-1`,
+              //   窄屏(375px)下会把按钮**横向挤扁**。我第一版只加了 min-h,
+              //   实测变成 16 宽 × 40 高 —— 高度达标、宽度反而更糟,
+              //   而 e2e 的 <16px 阈值恰好放过了它(16 落在"16–24px 可接受"档)。
+              //   这也说明:<16px 当失败线偏弱,真达标要看 24px。
+              // 错误条是临时元素,适度增大它不影响全局密排布局。
+              className="flex min-h-[24px] shrink-0 items-center gap-1 px-2 py-1 hover:bg-ide-danger/20 disabled:opacity-50">
               <RotateCcw size={12} /> {t("common.retry")}
             </button>
             <button onClick={() => setError(null)} className="hover:underline">{t("common.close")}</button>
@@ -1286,7 +1506,8 @@ export function InterviewPage() {
                   <div className="flex w-full justify-start">
                     <div className="bubble bubble-assistant">
                       {streamingContent ? (
-                        <span>{streamingContent}<span className="prompt-cursor text-ide-accent">█</span></span>
+                        // W5-2:流式渲染时同步剥离,否则标记会随 token 逐字闪现
+                        <span>{stripStageMarkers(streamingContent)}<span className="prompt-cursor text-ide-accent">█</span></span>
                       ) : (
                         <span className="inline-flex items-center gap-2 text-ide-fg-muted">
                           <Loader2 size={12} className="animate-spin" /> thinking...
@@ -1297,6 +1518,15 @@ export function InterviewPage() {
                 )}
               </div>
             </div>
+
+            {/* W4-3:实时教练 —— 评估反馈在面试现场可见,
+                而不是只留在历史页。只评 2 个关键维度、每 2 轮一次,
+                弱项优先展示,"缺依据/评分失败"如实显示。 */}
+            {currentSession && (
+              <div className="flex-shrink-0 border-t border-ide-border bg-ide-bg-alt px-3 py-2">
+                <LiveCoachPanel state={liveCoach} />
+              </div>
+            )}
 
             {/* v5:多 Agent 顺序模式 - 切换发言按钮 */}
             {agentMode === "multi" && agentTeam.length > 1 && currentStageAskMode === "sequential" && currentSession && !isStreaming && (

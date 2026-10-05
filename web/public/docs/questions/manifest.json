@@ -1,0 +1,3457 @@
+{
+ "generatedFrom": "server/data/questionbank.json",
+ "totalQuestions": 808,
+ "totalEntries": 427,
+ "entries": [
+  {
+   "tag": "行为",
+   "count": 150,
+   "hotPoints": [
+    "量化",
+    "复盘",
+    "机制化",
+    "折中方案",
+    "根因",
+    "灰度",
+    "量化收益",
+    "降低成本"
+   ],
+   "url": "/docs/questions/%E8%A1%8C%E4%B8%BA"
+  },
+  {
+   "tag": "反问",
+   "count": 120,
+   "hotPoints": [
+    "带人机会",
+    "影响力",
+    "组织架构",
+    "双通道",
+    "技术栈",
+    "考核",
+    "晋升标准",
+    "预期"
+   ],
+   "url": "/docs/questions/%E5%8F%8D%E9%97%AE"
+  },
+  {
+   "tag": "高级",
+   "count": 54,
+   "hotPoints": [
+    "带人机会",
+    "影响力",
+    "组织架构",
+    "双通道",
+    "创新",
+    "发挥空间",
+    "战略",
+    "技术规划"
+   ],
+   "url": "/docs/questions/%E9%AB%98%E7%BA%A7"
+  },
+  {
+   "tag": "Python",
+   "count": 47,
+   "hotPoints": [
+    "alg=none",
+    "fixture",
+    "kubernetes client",
+    "pandas merge",
+    "t 检验",
+    "z 检验",
+    "去重",
+    "并发"
+   ],
+   "url": "/docs/questions/Python"
+  },
+  {
+   "tag": "字节跳动",
+   "count": 45,
+   "hotPoints": [
+    "STAR",
+    "Hooks 链表",
+    "召回排序",
+    "哑节点",
+    "滑动窗口"
+   ],
+   "url": "/docs/questions/%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8"
+  },
+  {
+   "tag": "STAR",
+   "count": 35,
+   "hotPoints": [
+    "STAR",
+    "根因",
+    "量化",
+    "量化结果",
+    "AB 验证",
+    "MTTR",
+    "复现",
+    "影响评估"
+   ],
+   "url": "/docs/questions/STAR"
+  },
+  {
+   "tag": "阿里",
+   "count": 34,
+   "hotPoints": [
+    "STAR",
+    "数据驱动",
+    "等价类"
+   ],
+   "url": "/docs/questions/%E9%98%BF%E9%87%8C"
+  },
+  {
+   "tag": "战略",
+   "count": 23,
+   "hotPoints": [
+    "组织架构",
+    "战略",
+    "技术规划",
+    "投入",
+    "影响力",
+    "业务价值",
+    "产品矩阵",
+    "公司战略"
+   ],
+   "url": "/docs/questions/%E6%88%98%E7%95%A5"
+  },
+  {
+   "tag": "SQL",
+   "count": 22,
+   "hotPoints": [
+    "去重",
+    "row_number",
+    "时间窗口",
+    "BI",
+    "left join 链",
+    "TopN",
+    "人均营收",
+    "成本分摊"
+   ],
+   "url": "/docs/questions/SQL"
+  },
+  {
+   "tag": "新人",
+   "count": 20,
+   "hotPoints": [
+    "业务方向",
+    "导师制度",
+    "技术栈",
+    "晋升",
+    "培训",
+    "导师",
+    "数据规模",
+    "流程"
+   ],
+   "url": "/docs/questions/%E6%96%B0%E4%BA%BA"
+  },
+  {
+   "tag": "K8s",
+   "count": 17,
+   "hotPoints": [
+    "Reconcile",
+    "CRD",
+    "JSONPatch",
+    "kubernetes client",
+    "Mutating Webhook",
+    "PSA"
+   ],
+   "url": "/docs/questions/K8s"
+  },
+  {
+   "tag": "美团",
+   "count": 17,
+   "hotPoints": [
+    "STAR"
+   ],
+   "url": "/docs/questions/%E7%BE%8E%E5%9B%A2"
+  },
+  {
+   "tag": "业务",
+   "count": 16,
+   "hotPoints": [
+    "创新",
+    "发挥空间",
+    "天花板",
+    "业务挑战",
+    "业务方向",
+    "业务规模",
+    "创新机会",
+    "变革机会"
+   ],
+   "url": "/docs/questions/%E4%B8%9A%E5%8A%A1"
+  },
+  {
+   "tag": "团队",
+   "count": 16,
+   "hotPoints": [
+    "带人机会",
+    "双通道",
+    "影响力",
+    "机制化",
+    "激励",
+    "话语权"
+   ],
+   "url": "/docs/questions/%E5%9B%A2%E9%98%9F"
+  },
+  {
+   "tag": "Google",
+   "count": 15,
+   "hotPoints": [
+    "STAR"
+   ],
+   "url": "/docs/questions/Google"
+  },
+  {
+   "tag": "中级",
+   "count": 15,
+   "hotPoints": [
+    "技术栈",
+    "AB 实验",
+    "技术债",
+    "数据驱动",
+    "架构",
+    "话语权"
+   ],
+   "url": "/docs/questions/%E4%B8%AD%E7%BA%A7"
+  },
+  {
+   "tag": "架构",
+   "count": 15,
+   "hotPoints": [
+    "技术债",
+    "架构演进",
+    "团队赋能",
+    "技术栈",
+    "架构",
+    "风险对齐"
+   ],
+   "url": "/docs/questions/%E6%9E%B6%E6%9E%84"
+  },
+  {
+   "tag": "腾讯",
+   "count": 15,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%85%BE%E8%AE%AF"
+  },
+  {
+   "tag": "LLM",
+   "count": 13,
+   "hotPoints": [
+    "RAG",
+    "LoRA",
+    "RAGAS",
+    "Rerank",
+    "RLHF",
+    "自愈",
+    "量化"
+   ],
+   "url": "/docs/questions/LLM"
+  },
+  {
+   "tag": "Redis",
+   "count": 13,
+   "hotPoints": [
+    "Lua 原子",
+    "ZSET 滑动窗口",
+    "令牌桶 refill",
+    "时钟依赖",
+    "ZSET",
+    "时间轮",
+    "滑动窗口"
+   ],
+   "url": "/docs/questions/Redis"
+  },
+  {
+   "tag": "晋升",
+   "count": 13,
+   "hotPoints": [
+    "晋升标准",
+    "预期",
+    "考核",
+    "考核维度",
+    "晋升",
+    "预期目标"
+   ],
+   "url": "/docs/questions/%E6%99%8B%E5%8D%87"
+  },
+  {
+   "tag": "沟通",
+   "count": 13,
+   "hotPoints": [
+    "折中方案",
+    "理解约束",
+    "复盘",
+    "数据说话",
+    "权威背书"
+   ],
+   "url": "/docs/questions/%E6%B2%9F%E9%80%9A"
+  },
+  {
+   "tag": "JS",
+   "count": 12,
+   "hotPoints": [
+    "并发控制",
+    "队列调度"
+   ],
+   "url": "/docs/questions/JS"
+  },
+  {
+   "tag": "Go",
+   "count": 11,
+   "hotPoints": [
+    "CRD",
+    "GMP",
+    "JSONPatch",
+    "Mutating Webhook",
+    "Reconcile",
+    "work stealing"
+   ],
+   "url": "/docs/questions/Go"
+  },
+  {
+   "tag": "推动",
+   "count": 10,
+   "hotPoints": [
+    "折中方案"
+   ],
+   "url": "/docs/questions/%E6%8E%A8%E5%8A%A8"
+  },
+  {
+   "tag": "Android",
+   "count": 9,
+   "hotPoints": [],
+   "url": "/docs/questions/Android"
+  },
+  {
+   "tag": "故障",
+   "count": 9,
+   "hotPoints": [
+    "特征穿越",
+    "离线在线一致性",
+    "回滚优先",
+    "复盘",
+    "流程改进",
+    "监控",
+    "监控告警"
+   ],
+   "url": "/docs/questions/%E6%95%85%E9%9A%9C"
+  },
+  {
+   "tag": "缓存",
+   "count": 9,
+   "hotPoints": [
+    "O(1)",
+    "minFreq 维护",
+    "频次链表",
+    "同频 LRU"
+   ],
+   "url": "/docs/questions/%E7%BC%93%E5%AD%98"
+  },
+  {
+   "tag": "跨团队",
+   "count": 9,
+   "hotPoints": [
+    "机制化",
+    "跨团队",
+    "降低成本",
+    "平台化"
+   ],
+   "url": "/docs/questions/%E8%B7%A8%E5%9B%A2%E9%98%9F"
+  },
+  {
+   "tag": "HRBP",
+   "count": 8,
+   "hotPoints": [],
+   "url": "/docs/questions/HRBP"
+  },
+  {
+   "tag": "LeetCode",
+   "count": 8,
+   "hotPoints": [
+    "哑节点"
+   ],
+   "url": "/docs/questions/LeetCode"
+  },
+  {
+   "tag": "Microsoft",
+   "count": 8,
+   "hotPoints": [
+    "STAR"
+   ],
+   "url": "/docs/questions/Microsoft"
+  },
+  {
+   "tag": "SRE",
+   "count": 8,
+   "hotPoints": [
+    "SLI/SLO",
+    "SLO",
+    "无 blame"
+   ],
+   "url": "/docs/questions/SRE"
+  },
+  {
+   "tag": "字符串",
+   "count": 8,
+   "hotPoints": [
+    "left 跳跃条件",
+    "O(n)",
+    "滑动窗口",
+    "AC 自动机",
+    "Trie"
+   ],
+   "url": "/docs/questions/%E5%AD%97%E7%AC%A6%E4%B8%B2"
+  },
+  {
+   "tag": "考核",
+   "count": 8,
+   "hotPoints": [
+    "预期",
+    "晋升标准",
+    "考核",
+    "晋升",
+    "考核维度",
+    "预期目标"
+   ],
+   "url": "/docs/questions/%E8%80%83%E6%A0%B8"
+  },
+  {
+   "tag": "Flutter",
+   "count": 7,
+   "hotPoints": [
+    "三棵树"
+   ],
+   "url": "/docs/questions/Flutter"
+  },
+  {
+   "tag": "React",
+   "count": 7,
+   "hotPoints": [
+    "createElement",
+    "Hooks 链表",
+    "vdom",
+    "函数组件"
+   ],
+   "url": "/docs/questions/React"
+  },
+  {
+   "tag": "Web安全",
+   "count": 7,
+   "hotPoints": [
+    "SSRF"
+   ],
+   "url": "/docs/questions/Web%E5%AE%89%E5%85%A8"
+  },
+  {
+   "tag": "产品",
+   "count": 7,
+   "hotPoints": [
+    "STAR",
+    "用户研究"
+   ],
+   "url": "/docs/questions/%E4%BA%A7%E5%93%81"
+  },
+  {
+   "tag": "冲突",
+   "count": 7,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%86%B2%E7%AA%81"
+  },
+  {
+   "tag": "团队管理",
+   "count": 7,
+   "hotPoints": [
+    "授权",
+    "paper reading",
+    "人才梯队",
+    "分工",
+    "机制"
+   ],
+   "url": "/docs/questions/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86"
+  },
+  {
+   "tag": "复盘",
+   "count": 7,
+   "hotPoints": [
+    "复盘",
+    "坦诚",
+    "失败经历"
+   ],
+   "url": "/docs/questions/%E5%A4%8D%E7%9B%98"
+  },
+  {
+   "tag": "外企",
+   "count": 7,
+   "hotPoints": [
+    "STAR",
+    "Amazon LP"
+   ],
+   "url": "/docs/questions/%E5%A4%96%E4%BC%81"
+  },
+  {
+   "tag": "工程化",
+   "count": 7,
+   "hotPoints": [
+    "工程化",
+    "工程支持",
+    "数据质量",
+    "监控",
+    "算力"
+   ],
+   "url": "/docs/questions/%E5%B7%A5%E7%A8%8B%E5%8C%96"
+  },
+  {
+   "tag": "并发",
+   "count": 7,
+   "hotPoints": [
+    "并发控制",
+    "队列调度"
+   ],
+   "url": "/docs/questions/%E5%B9%B6%E5%8F%91"
+  },
+  {
+   "tag": "成长",
+   "count": 7,
+   "hotPoints": [
+    "导师制度",
+    "导师",
+    "晋升",
+    "技术分享"
+   ],
+   "url": "/docs/questions/%E6%88%90%E9%95%BF"
+  },
+  {
+   "tag": "百度",
+   "count": 7,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%99%BE%E5%BA%A6"
+  },
+  {
+   "tag": "算法",
+   "count": 7,
+   "hotPoints": [
+    "paper reading",
+    "人才梯队",
+    "晋升标准"
+   ],
+   "url": "/docs/questions/%E7%AE%97%E6%B3%95"
+  },
+  {
+   "tag": "认证",
+   "count": 7,
+   "hotPoints": [
+    "alg=none"
+   ],
+   "url": "/docs/questions/%E8%AE%A4%E8%AF%81"
+  },
+  {
+   "tag": "限流",
+   "count": 7,
+   "hotPoints": [
+    "Lua 原子",
+    "ZSET 滑动窗口",
+    "令牌桶 refill",
+    "时钟依赖",
+    "令牌桶",
+    "滑动窗口"
+   ],
+   "url": "/docs/questions/%E9%99%90%E6%B5%81"
+  },
+  {
+   "tag": "JWT",
+   "count": 6,
+   "hotPoints": [
+    "alg=none"
+   ],
+   "url": "/docs/questions/JWT"
+  },
+  {
+   "tag": "LRU",
+   "count": 6,
+   "hotPoints": [
+    "O(1)",
+    "哈希+双向链表",
+    "淘汰尾",
+    "虚拟头尾"
+   ],
+   "url": "/docs/questions/LRU"
+  },
+  {
+   "tag": "PM",
+   "count": 6,
+   "hotPoints": [
+    "STAR",
+    "关键路径"
+   ],
+   "url": "/docs/questions/PM"
+  },
+  {
+   "tag": "主导",
+   "count": 6,
+   "hotPoints": [
+    "量化",
+    "灰度推进",
+    "量化收益"
+   ],
+   "url": "/docs/questions/%E4%B8%BB%E5%AF%BC"
+  },
+  {
+   "tag": "分布式",
+   "count": 6,
+   "hotPoints": [
+    "哈希环",
+    "虚拟节点",
+    "最小迁移"
+   ],
+   "url": "/docs/questions/%E5%88%86%E5%B8%83%E5%BC%8F"
+  },
+  {
+   "tag": "响应式",
+   "count": 6,
+   "hotPoints": [
+    "Proxy 响应式"
+   ],
+   "url": "/docs/questions/%E5%93%8D%E5%BA%94%E5%BC%8F"
+  },
+  {
+   "tag": "学习",
+   "count": 6,
+   "hotPoints": [
+    "分享",
+    "学习",
+    "对比学习",
+    "沉淀"
+   ],
+   "url": "/docs/questions/%E5%AD%A6%E4%B9%A0"
+  },
+  {
+   "tag": "安全",
+   "count": 6,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%AE%89%E5%85%A8"
+  },
+  {
+   "tag": "应急",
+   "count": 6,
+   "hotPoints": [
+    "取证",
+    "根因",
+    "灰度"
+   ],
+   "url": "/docs/questions/%E5%BA%94%E6%80%A5"
+  },
+  {
+   "tag": "性能",
+   "count": 6,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%80%A7%E8%83%BD"
+  },
+  {
+   "tag": "性能优化",
+   "count": 6,
+   "hotPoints": [
+    "启动优化",
+    "STAR"
+   ],
+   "url": "/docs/questions/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"
+  },
+  {
+   "tag": "招聘",
+   "count": 6,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%8B%9B%E8%81%98"
+  },
+  {
+   "tag": "推荐",
+   "count": 6,
+   "hotPoints": [
+    "DeepFM",
+    "业务影响",
+    "双塔",
+    "多路召回",
+    "量化收益"
+   ],
+   "url": "/docs/questions/%E6%8E%A8%E8%8D%90"
+  },
+  {
+   "tag": "数据治理",
+   "count": 6,
+   "hotPoints": [
+    "血缘",
+    "DataHub",
+    "元数据"
+   ],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86"
+  },
+  {
+   "tag": "跨端",
+   "count": 6,
+   "hotPoints": [
+    "JSI"
+   ],
+   "url": "/docs/questions/%E8%B7%A8%E7%AB%AF"
+  },
+  {
+   "tag": "链表",
+   "count": 6,
+   "hotPoints": [
+    "O(n log k)",
+    "分治归并",
+    "哑节点",
+    "小顶堆",
+    "三指针",
+    "边界处理",
+    "递归回溯"
+   ],
+   "url": "/docs/questions/%E9%93%BE%E8%A1%A8"
+  },
+  {
+   "tag": "Amazon",
+   "count": 5,
+   "hotPoints": [
+    "STAR",
+    "Amazon LP"
+   ],
+   "url": "/docs/questions/Amazon"
+  },
+  {
+   "tag": "CI/CD",
+   "count": 5,
+   "hotPoints": [
+    "CI/CD",
+    "GitOps",
+    "回滚"
+   ],
+   "url": "/docs/questions/CI%2FCD"
+  },
+  {
+   "tag": "DevSecOps",
+   "count": 5,
+   "hotPoints": [
+    "威胁建模",
+    "左移"
+   ],
+   "url": "/docs/questions/DevSecOps"
+  },
+  {
+   "tag": "Flink",
+   "count": 5,
+   "hotPoints": [
+    "Flink",
+    "Exactly-once"
+   ],
+   "url": "/docs/questions/Flink"
+  },
+  {
+   "tag": "Meta",
+   "count": 5,
+   "hotPoints": [
+    "STAR"
+   ],
+   "url": "/docs/questions/Meta"
+  },
+  {
+   "tag": "PMO",
+   "count": 5,
+   "hotPoints": [],
+   "url": "/docs/questions/PMO"
+  },
+  {
+   "tag": "PyTorch",
+   "count": 5,
+   "hotPoints": [],
+   "url": "/docs/questions/PyTorch"
+  },
+  {
+   "tag": "Transformer",
+   "count": 5,
+   "hotPoints": [
+    "Self-Attention",
+    "softmax"
+   ],
+   "url": "/docs/questions/Transformer"
+  },
+  {
+   "tag": "优化",
+   "count": 5,
+   "hotPoints": [],
+   "url": "/docs/questions/%E4%BC%98%E5%8C%96"
+  },
+  {
+   "tag": "北极星",
+   "count": 5,
+   "hotPoints": [
+    "北极星",
+    "护栏指标",
+    "AARRR",
+    "OSM 拆解"
+   ],
+   "url": "/docs/questions/%E5%8C%97%E6%9E%81%E6%98%9F"
+  },
+  {
+   "tag": "协作",
+   "count": 5,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%8D%8F%E4%BD%9C"
+  },
+  {
+   "tag": "堆",
+   "count": 5,
+   "hotPoints": [
+    "小顶堆",
+    "O(n log k)",
+    "分治归并",
+    "哑节点"
+   ],
+   "url": "/docs/questions/%E5%A0%86"
+  },
+  {
+   "tag": "工具链",
+   "count": 5,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%B7%A5%E5%85%B7%E9%93%BE"
+  },
+  {
+   "tag": "平台化",
+   "count": 5,
+   "hotPoints": [
+    "平台化",
+    "机制化",
+    "降低成本"
+   ],
+   "url": "/docs/questions/%E5%B9%B3%E5%8F%B0%E5%8C%96"
+  },
+  {
+   "tag": "技术栈",
+   "count": 5,
+   "hotPoints": [
+    "技术栈"
+   ],
+   "url": "/docs/questions/%E6%8A%80%E6%9C%AF%E6%A0%88"
+  },
+  {
+   "tag": "挑战",
+   "count": 5,
+   "hotPoints": [
+    "技术债",
+    "规划"
+   ],
+   "url": "/docs/questions/%E6%8C%91%E6%88%98"
+  },
+  {
+   "tag": "敏捷",
+   "count": 5,
+   "hotPoints": [
+    "Scrum"
+   ],
+   "url": "/docs/questions/%E6%95%8F%E6%8D%B7"
+  },
+  {
+   "tag": "数据驱动",
+   "count": 5,
+   "hotPoints": [
+    "AB 验证",
+    "数据驱动"
+   ],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8"
+  },
+  {
+   "tag": "文化",
+   "count": 5,
+   "hotPoints": [
+    "SLO"
+   ],
+   "url": "/docs/questions/%E6%96%87%E5%8C%96"
+  },
+  {
+   "tag": "治理",
+   "count": 5,
+   "hotPoints": [
+    "RACI"
+   ],
+   "url": "/docs/questions/%E6%B2%BB%E7%90%86"
+  },
+  {
+   "tag": "留存",
+   "count": 5,
+   "hotPoints": [
+    "pandas merge",
+    "去重",
+    "日期差"
+   ],
+   "url": "/docs/questions/%E7%95%99%E5%AD%98"
+  },
+  {
+   "tag": "监控",
+   "count": 5,
+   "hotPoints": [
+    "sendBeacon"
+   ],
+   "url": "/docs/questions/%E7%9B%91%E6%8E%A7"
+  },
+  {
+   "tag": "自动化",
+   "count": 5,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%87%AA%E5%8A%A8%E5%8C%96"
+  },
+  {
+   "tag": "行为面",
+   "count": 5,
+   "hotPoints": [
+    "STAR"
+   ],
+   "url": "/docs/questions/%E8%A1%8C%E4%B8%BA%E9%9D%A2"
+  },
+  {
+   "tag": "设计",
+   "count": 5,
+   "hotPoints": [
+    "minFreq 维护",
+    "O(1)",
+    "频次链表"
+   ],
+   "url": "/docs/questions/%E8%AE%BE%E8%AE%A1"
+  },
+  {
+   "tag": "项目管理",
+   "count": 5,
+   "hotPoints": [],
+   "url": "/docs/questions/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86"
+  },
+  {
+   "tag": "Bug",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/Bug"
+  },
+  {
+   "tag": "Docker",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/Docker"
+  },
+  {
+   "tag": "Excel",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/Excel"
+  },
+  {
+   "tag": "iOS",
+   "count": 4,
+   "hotPoints": [
+    "循环引用"
+   ],
+   "url": "/docs/questions/iOS"
+  },
+  {
+   "tag": "LFU",
+   "count": 4,
+   "hotPoints": [
+    "minFreq 维护",
+    "频次链表",
+    "O(1)",
+    "同频 LRU"
+   ],
+   "url": "/docs/questions/LFU"
+  },
+  {
+   "tag": "Linux",
+   "count": 4,
+   "hotPoints": [
+    "lsof"
+   ],
+   "url": "/docs/questions/Linux"
+  },
+  {
+   "tag": "Lua",
+   "count": 4,
+   "hotPoints": [
+    "Lua 原子",
+    "令牌桶 refill",
+    "时钟依赖",
+    "ZSET 滑动窗口"
+   ],
+   "url": "/docs/questions/Lua"
+  },
+  {
+   "tag": "MLOps",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/MLOps"
+  },
+  {
+   "tag": "MVVM",
+   "count": 4,
+   "hotPoints": [
+    "MVI 单向流"
+   ],
+   "url": "/docs/questions/MVVM"
+  },
+  {
+   "tag": "NLP",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/NLP"
+  },
+  {
+   "tag": "Playwright",
+   "count": 4,
+   "hotPoints": [
+    "POM",
+    "数据驱动",
+    "显式等待"
+   ],
+   "url": "/docs/questions/Playwright"
+  },
+  {
+   "tag": "Promise",
+   "count": 4,
+   "hotPoints": [
+    "队列调度"
+   ],
+   "url": "/docs/questions/Promise"
+  },
+  {
+   "tag": "RAG",
+   "count": 4,
+   "hotPoints": [
+    "RAG",
+    "RAGAS",
+    "Rerank"
+   ],
+   "url": "/docs/questions/RAG"
+  },
+  {
+   "tag": "Spark",
+   "count": 4,
+   "hotPoints": [
+    "数据倾斜"
+   ],
+   "url": "/docs/questions/Spark"
+  },
+  {
+   "tag": "价值观",
+   "count": 4,
+   "hotPoints": [
+    "价值观行为化"
+   ],
+   "url": "/docs/questions/%E4%BB%B7%E5%80%BC%E8%A7%82"
+  },
+  {
+   "tag": "关键路径",
+   "count": 4,
+   "hotPoints": [
+    "关键路径",
+    "CPM"
+   ],
+   "url": "/docs/questions/%E5%85%B3%E9%94%AE%E8%B7%AF%E5%BE%84"
+  },
+  {
+   "tag": "协同",
+   "count": 4,
+   "hotPoints": [
+    "CRDT",
+    "Yjs",
+    "awareness",
+    "WebSocket"
+   ],
+   "url": "/docs/questions/%E5%8D%8F%E5%90%8C"
+  },
+  {
+   "tag": "召回",
+   "count": 4,
+   "hotPoints": [
+    "双塔",
+    "多路召回"
+   ],
+   "url": "/docs/questions/%E5%8F%AC%E5%9B%9E"
+  },
+  {
+   "tag": "哈希",
+   "count": 4,
+   "hotPoints": [
+    "left 跳跃条件",
+    "滑动窗口",
+    "O(n)"
+   ],
+   "url": "/docs/questions/%E5%93%88%E5%B8%8C"
+  },
+  {
+   "tag": "复杂度",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%A4%8D%E6%9D%82%E5%BA%A6"
+  },
+  {
+   "tag": "崩溃",
+   "count": 4,
+   "hotPoints": [
+    "复现",
+    "根因"
+   ],
+   "url": "/docs/questions/%E5%B4%A9%E6%BA%83"
+  },
+  {
+   "tag": "工具",
+   "count": 4,
+   "hotPoints": [
+    "培训"
+   ],
+   "url": "/docs/questions/%E5%B7%A5%E5%85%B7"
+  },
+  {
+   "tag": "异步",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%BC%82%E6%AD%A5"
+  },
+  {
+   "tag": "接口测试",
+   "count": 4,
+   "hotPoints": [
+    "fixture",
+    "断言"
+   ],
+   "url": "/docs/questions/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95"
+  },
+  {
+   "tag": "权限",
+   "count": 4,
+   "hotPoints": [
+    "RBAC",
+    "前后端双校验"
+   ],
+   "url": "/docs/questions/%E6%9D%83%E9%99%90"
+  },
+  {
+   "tag": "滑动窗口",
+   "count": 4,
+   "hotPoints": [
+    "left 跳跃条件",
+    "O(n)",
+    "滑动窗口"
+   ],
+   "url": "/docs/questions/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"
+  },
+  {
+   "tag": "漏斗",
+   "count": 4,
+   "hotPoints": [
+    "left join 链",
+    "去重",
+    "时间窗口",
+    "漏斗"
+   ],
+   "url": "/docs/questions/%E6%BC%8F%E6%96%97"
+  },
+  {
+   "tag": "特征工程",
+   "count": 4,
+   "hotPoints": [
+    "特征穿越",
+    "监控",
+    "离线在线一致性"
+   ],
+   "url": "/docs/questions/%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B"
+  },
+  {
+   "tag": "登录",
+   "count": 4,
+   "hotPoints": [
+    "边界值"
+   ],
+   "url": "/docs/questions/%E7%99%BB%E5%BD%95"
+  },
+  {
+   "tag": "移动",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%A7%BB%E5%8A%A8"
+  },
+  {
+   "tag": "稳定性",
+   "count": 4,
+   "hotPoints": [
+    "SLI/SLO",
+    "团队稳定"
+   ],
+   "url": "/docs/questions/%E7%A8%B3%E5%AE%9A%E6%80%A7"
+  },
+  {
+   "tag": "窗口函数",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0"
+  },
+  {
+   "tag": "网络",
+   "count": 4,
+   "hotPoints": [
+    "TIME_WAIT"
+   ],
+   "url": "/docs/questions/%E7%BD%91%E7%BB%9C"
+  },
+  {
+   "tag": "职责",
+   "count": 4,
+   "hotPoints": [
+    "职责范围",
+    "话语权"
+   ],
+   "url": "/docs/questions/%E8%81%8C%E8%B4%A3"
+  },
+  {
+   "tag": "薪酬",
+   "count": 4,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%96%AA%E9%85%AC"
+  },
+  {
+   "tag": "血缘",
+   "count": 4,
+   "hotPoints": [
+    "血缘",
+    "DataHub",
+    "元数据"
+   ],
+   "url": "/docs/questions/%E8%A1%80%E7%BC%98"
+  },
+  {
+   "tag": "跨部门",
+   "count": 4,
+   "hotPoints": [
+    "机制化"
+   ],
+   "url": "/docs/questions/%E8%B7%A8%E9%83%A8%E9%97%A8"
+  },
+  {
+   "tag": "递归",
+   "count": 4,
+   "hotPoints": [
+    "三指针",
+    "递归回溯"
+   ],
+   "url": "/docs/questions/%E9%80%92%E5%BD%92"
+  },
+  {
+   "tag": "韧性",
+   "count": 4,
+   "hotPoints": [
+    "Chaos Mesh",
+    "爆炸半径",
+    "稳态假设"
+   ],
+   "url": "/docs/questions/%E9%9F%A7%E6%80%A7"
+  },
+  {
+   "tag": "AARRR",
+   "count": 3,
+   "hotPoints": [
+    "AARRR"
+   ],
+   "url": "/docs/questions/AARRR"
+  },
+  {
+   "tag": "Agent",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/Agent"
+  },
+  {
+   "tag": "AI",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/AI"
+  },
+  {
+   "tag": "AI测试",
+   "count": 3,
+   "hotPoints": [
+    "RAG",
+    "自愈"
+   ],
+   "url": "/docs/questions/AI%E6%B5%8B%E8%AF%95"
+  },
+  {
+   "tag": "ARouter",
+   "count": 3,
+   "hotPoints": [
+    "路由表"
+   ],
+   "url": "/docs/questions/ARouter"
+  },
+  {
+   "tag": "Attention",
+   "count": 3,
+   "hotPoints": [
+    "Self-Attention"
+   ],
+   "url": "/docs/questions/Attention"
+  },
+  {
+   "tag": "BERT",
+   "count": 3,
+   "hotPoints": [
+    "Encoder/Decoder"
+   ],
+   "url": "/docs/questions/BERT"
+  },
+  {
+   "tag": "BFS",
+   "count": 3,
+   "hotPoints": [
+    "BFS",
+    "层 size",
+    "按层分组"
+   ],
+   "url": "/docs/questions/BFS"
+  },
+  {
+   "tag": "Chaos Mesh",
+   "count": 3,
+   "hotPoints": [
+    "Chaos Mesh",
+    "爆炸半径"
+   ],
+   "url": "/docs/questions/Chaos%20Mesh"
+  },
+  {
+   "tag": "CPM",
+   "count": 3,
+   "hotPoints": [
+    "CPM",
+    "关键路径"
+   ],
+   "url": "/docs/questions/CPM"
+  },
+  {
+   "tag": "CRDT",
+   "count": 3,
+   "hotPoints": [
+    "CRDT",
+    "Yjs",
+    "awareness",
+    "WebSocket"
+   ],
+   "url": "/docs/questions/CRDT"
+  },
+  {
+   "tag": "CTR",
+   "count": 3,
+   "hotPoints": [
+    "DeepFM"
+   ],
+   "url": "/docs/questions/CTR"
+  },
+  {
+   "tag": "HTTP",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/HTTP"
+  },
+  {
+   "tag": "Java",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/Java"
+  },
+  {
+   "tag": "LP",
+   "count": 3,
+   "hotPoints": [
+    "STAR",
+    "Amazon LP"
+   ],
+   "url": "/docs/questions/LP"
+  },
+  {
+   "tag": "MySQL",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/MySQL"
+  },
+  {
+   "tag": "OKR",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/OKR"
+  },
+  {
+   "tag": "Operator",
+   "count": 3,
+   "hotPoints": [
+    "CRD",
+    "Reconcile"
+   ],
+   "url": "/docs/questions/Operator"
+  },
+  {
+   "tag": "pandas",
+   "count": 3,
+   "hotPoints": [
+    "pandas merge",
+    "去重",
+    "日期差"
+   ],
+   "url": "/docs/questions/pandas"
+  },
+  {
+   "tag": "PPM",
+   "count": 3,
+   "hotPoints": [
+    "战略对齐"
+   ],
+   "url": "/docs/questions/PPM"
+  },
+  {
+   "tag": "PRD",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/PRD"
+  },
+  {
+   "tag": "RBAC",
+   "count": 3,
+   "hotPoints": [
+    "RBAC",
+    "前后端双校验",
+    "审计"
+   ],
+   "url": "/docs/questions/RBAC"
+  },
+  {
+   "tag": "RLHF",
+   "count": 3,
+   "hotPoints": [
+    "RLHF"
+   ],
+   "url": "/docs/questions/RLHF"
+  },
+  {
+   "tag": "RN",
+   "count": 3,
+   "hotPoints": [
+    "JSI"
+   ],
+   "url": "/docs/questions/RN"
+  },
+  {
+   "tag": "Scrum",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/Scrum"
+  },
+  {
+   "tag": "Terraform",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/Terraform"
+  },
+  {
+   "tag": "Vue3",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/Vue3"
+  },
+  {
+   "tag": "一致性哈希",
+   "count": 3,
+   "hotPoints": [
+    "哈希环",
+    "虚拟节点",
+    "最小迁移"
+   ],
+   "url": "/docs/questions/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C"
+  },
+  {
+   "tag": "优先级",
+   "count": 3,
+   "hotPoints": [
+    "RICE",
+    "MoSCoW",
+    "战略对齐"
+   ],
+   "url": "/docs/questions/%E4%BC%98%E5%85%88%E7%BA%A7"
+  },
+  {
+   "tag": "元数据",
+   "count": 3,
+   "hotPoints": [
+    "血缘",
+    "DataHub",
+    "元数据"
+   ],
+   "url": "/docs/questions/%E5%85%83%E6%95%B0%E6%8D%AE"
+  },
+  {
+   "tag": "分治",
+   "count": 3,
+   "hotPoints": [
+    "O(n log k)",
+    "分治归并",
+    "小顶堆",
+    "哑节点"
+   ],
+   "url": "/docs/questions/%E5%88%86%E6%B2%BB"
+  },
+  {
+   "tag": "动态规划",
+   "count": 3,
+   "hotPoints": [
+    "最优子结构",
+    "无后效性",
+    "状态转移"
+   ],
+   "url": "/docs/questions/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"
+  },
+  {
+   "tag": "压测",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%8E%8B%E6%B5%8B"
+  },
+  {
+   "tag": "双向链表",
+   "count": 3,
+   "hotPoints": [
+    "O(1)"
+   ],
+   "url": "/docs/questions/%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8"
+  },
+  {
+   "tag": "合规",
+   "count": 3,
+   "hotPoints": [
+    "合规"
+   ],
+   "url": "/docs/questions/%E5%90%88%E8%A7%84"
+  },
+  {
+   "tag": "员工关系",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%91%98%E5%B7%A5%E5%85%B3%E7%B3%BB"
+  },
+  {
+   "tag": "哈希表",
+   "count": 3,
+   "hotPoints": [
+    "O(1)"
+   ],
+   "url": "/docs/questions/%E5%93%88%E5%B8%8C%E8%A1%A8"
+  },
+  {
+   "tag": "团队建设",
+   "count": 3,
+   "hotPoints": [
+    "技术氛围"
+   ],
+   "url": "/docs/questions/%E5%9B%A2%E9%98%9F%E5%BB%BA%E8%AE%BE"
+  },
+  {
+   "tag": "图片加载",
+   "count": 3,
+   "hotPoints": [
+    "tag 防错位",
+    "三级缓存",
+    "生命周期",
+    "降采样"
+   ],
+   "url": "/docs/questions/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD"
+  },
+  {
+   "tag": "大促",
+   "count": 3,
+   "hotPoints": [
+    "压测"
+   ],
+   "url": "/docs/questions/%E5%A4%A7%E4%BF%83"
+  },
+  {
+   "tag": "失败",
+   "count": 3,
+   "hotPoints": [
+    "坦诚",
+    "复盘",
+    "失败经历"
+   ],
+   "url": "/docs/questions/%E5%A4%B1%E8%B4%A5"
+  },
+  {
+   "tag": "实时",
+   "count": 3,
+   "hotPoints": [
+    "CRDT",
+    "Yjs"
+   ],
+   "url": "/docs/questions/%E5%AE%9E%E6%97%B6"
+  },
+  {
+   "tag": "实时数仓",
+   "count": 3,
+   "hotPoints": [
+    "Flink"
+   ],
+   "url": "/docs/questions/%E5%AE%9E%E6%97%B6%E6%95%B0%E4%BB%93"
+  },
+  {
+   "tag": "实验",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%AE%9E%E9%AA%8C"
+  },
+  {
+   "tag": "容灾",
+   "count": 3,
+   "hotPoints": [
+    "GitOps",
+    "Karmada"
+   ],
+   "url": "/docs/questions/%E5%AE%B9%E7%81%BE"
+  },
+  {
+   "tag": "小程序",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%B0%8F%E7%A8%8B%E5%BA%8F"
+  },
+  {
+   "tag": "平台",
+   "count": 3,
+   "hotPoints": [
+    "数据平台"
+   ],
+   "url": "/docs/questions/%E5%B9%B3%E5%8F%B0"
+  },
+  {
+   "tag": "度量",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%BA%A6%E9%87%8F"
+  },
+  {
+   "tag": "延期",
+   "count": 3,
+   "hotPoints": [
+    "复盘"
+   ],
+   "url": "/docs/questions/%E5%BB%B6%E6%9C%9F"
+  },
+  {
+   "tag": "归因",
+   "count": 3,
+   "hotPoints": [
+    "归因"
+   ],
+   "url": "/docs/questions/%E5%BD%92%E5%9B%A0"
+  },
+  {
+   "tag": "微调",
+   "count": 3,
+   "hotPoints": [
+    "LoRA",
+    "RLHF"
+   ],
+   "url": "/docs/questions/%E5%BE%AE%E8%B0%83"
+  },
+  {
+   "tag": "性能测试",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"
+  },
+  {
+   "tag": "指标",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%8C%87%E6%A0%87"
+  },
+  {
+   "tag": "指标体系",
+   "count": 3,
+   "hotPoints": [
+    "北极星",
+    "护栏指标"
+   ],
+   "url": "/docs/questions/%E6%8C%87%E6%A0%87%E4%BD%93%E7%B3%BB"
+  },
+  {
+   "tag": "排序",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%8E%92%E5%BA%8F"
+  },
+  {
+   "tag": "推动力",
+   "count": 3,
+   "hotPoints": [
+    "利益对齐",
+    "机制化",
+    "跨团队",
+    "降低成本"
+   ],
+   "url": "/docs/questions/%E6%8E%A8%E5%8A%A8%E5%8A%9B"
+  },
+  {
+   "tag": "搜索",
+   "count": 3,
+   "hotPoints": [
+    "召回排序"
+   ],
+   "url": "/docs/questions/%E6%90%9C%E7%B4%A2"
+  },
+  {
+   "tag": "数据",
+   "count": 3,
+   "hotPoints": [
+    "数据驱动"
+   ],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE"
+  },
+  {
+   "tag": "数据中台",
+   "count": 3,
+   "hotPoints": [
+    "数据中台"
+   ],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%8F%B0"
+  },
+  {
+   "tag": "数据结构",
+   "count": 3,
+   "hotPoints": [
+    "Redis 选型",
+    "多层索引",
+    "范围查询",
+    "随机层数"
+   ],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"
+  },
+  {
+   "tag": "数据质量",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE%E8%B4%A8%E9%87%8F"
+  },
+  {
+   "tag": "日志",
+   "count": 3,
+   "hotPoints": [
+    "脱敏"
+   ],
+   "url": "/docs/questions/%E6%97%A5%E5%BF%97"
+  },
+  {
+   "tag": "时间轮",
+   "count": 3,
+   "hotPoints": [
+    "时间轮"
+   ],
+   "url": "/docs/questions/%E6%97%B6%E9%97%B4%E8%BD%AE"
+  },
+  {
+   "tag": "显著性",
+   "count": 3,
+   "hotPoints": [
+    "t 检验",
+    "z 检验",
+    "置信区间"
+   ],
+   "url": "/docs/questions/%E6%98%BE%E8%91%97%E6%80%A7"
+  },
+  {
+   "tag": "机器学习",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0"
+  },
+  {
+   "tag": "模板",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%A8%A1%E6%9D%BF"
+  },
+  {
+   "tag": "流程",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%B5%81%E7%A8%8B"
+  },
+  {
+   "tag": "测试用例",
+   "count": 3,
+   "hotPoints": [
+    "边界值",
+    "等价类"
+   ],
+   "url": "/docs/questions/%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"
+  },
+  {
+   "tag": "渲染",
+   "count": 3,
+   "hotPoints": [
+    "三棵树"
+   ],
+   "url": "/docs/questions/%E6%B8%B2%E6%9F%93"
+  },
+  {
+   "tag": "状态管理",
+   "count": 3,
+   "hotPoints": [
+    "依赖收集"
+   ],
+   "url": "/docs/questions/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86"
+  },
+  {
+   "tag": "系统设计",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1"
+  },
+  {
+   "tag": "组件化",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%BB%84%E4%BB%B6%E5%8C%96"
+  },
+  {
+   "tag": "绩效",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%BB%A9%E6%95%88"
+  },
+  {
+   "tag": "维度建模",
+   "count": 3,
+   "hotPoints": [
+    "SCD Type2"
+   ],
+   "url": "/docs/questions/%E7%BB%B4%E5%BA%A6%E5%BB%BA%E6%A8%A1"
+  },
+  {
+   "tag": "聚类",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%81%9A%E7%B1%BB"
+  },
+  {
+   "tag": "规划",
+   "count": 3,
+   "hotPoints": [
+    "考核指标"
+   ],
+   "url": "/docs/questions/%E8%A7%84%E5%88%92"
+  },
+  {
+   "tag": "调度",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%B0%83%E5%BA%A6"
+  },
+  {
+   "tag": "负载均衡",
+   "count": 3,
+   "hotPoints": [
+    "哈希环",
+    "虚拟节点",
+    "最小迁移"
+   ],
+   "url": "/docs/questions/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"
+  },
+  {
+   "tag": "路由",
+   "count": 3,
+   "hotPoints": [
+    "路由表"
+   ],
+   "url": "/docs/questions/%E8%B7%AF%E7%94%B1"
+  },
+  {
+   "tag": "零信任",
+   "count": 3,
+   "hotPoints": [
+    "微隔离",
+    "BeyondCorp"
+   ],
+   "url": "/docs/questions/%E9%9B%B6%E4%BF%A1%E4%BB%BB"
+  },
+  {
+   "tag": "需求",
+   "count": 3,
+   "hotPoints": [],
+   "url": "/docs/questions/%E9%9C%80%E6%B1%82"
+  },
+  {
+   "tag": "风险管理",
+   "count": 3,
+   "hotPoints": [
+    "Risk Register",
+    "应对策略",
+    "概率×影响"
+   ],
+   "url": "/docs/questions/%E9%A3%8E%E9%99%A9%E7%AE%A1%E7%90%86"
+  },
+  {
+   "tag": "360",
+   "count": 2,
+   "hotPoints": [
+    "持续反馈"
+   ],
+   "url": "/docs/questions/360"
+  },
+  {
+   "tag": "AB实验",
+   "count": 2,
+   "hotPoints": [
+    "MDE",
+    "power",
+    "辛普森悖论"
+   ],
+   "url": "/docs/questions/AB%E5%AE%9E%E9%AA%8C"
+  },
+  {
+   "tag": "AB测试",
+   "count": 2,
+   "hotPoints": [
+    "t 检验",
+    "z 检验",
+    "置信区间"
+   ],
+   "url": "/docs/questions/AB%E6%B5%8B%E8%AF%95"
+  },
+  {
+   "tag": "AUC",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/AUC"
+  },
+  {
+   "tag": "BeyondCorp",
+   "count": 2,
+   "hotPoints": [
+    "BeyondCorp",
+    "微隔离"
+   ],
+   "url": "/docs/questions/BeyondCorp"
+  },
+  {
+   "tag": "BI",
+   "count": 2,
+   "hotPoints": [
+    "人均营收",
+    "成本分摊"
+   ],
+   "url": "/docs/questions/BI"
+  },
+  {
+   "tag": "CNN",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/CNN"
+  },
+  {
+   "tag": "code review",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/code%20review"
+  },
+  {
+   "tag": "CORS",
+   "count": 2,
+   "hotPoints": [
+    "同源策略"
+   ],
+   "url": "/docs/questions/CORS"
+  },
+  {
+   "tag": "CRD",
+   "count": 2,
+   "hotPoints": [
+    "CRD",
+    "Reconcile"
+   ],
+   "url": "/docs/questions/CRD"
+  },
+  {
+   "tag": "CSP",
+   "count": 2,
+   "hotPoints": [
+    "CSP"
+   ],
+   "url": "/docs/questions/CSP"
+  },
+  {
+   "tag": "CSRF",
+   "count": 2,
+   "hotPoints": [
+    "CSRF Token",
+    "SameSite"
+   ],
+   "url": "/docs/questions/CSRF"
+  },
+  {
+   "tag": "DevOps",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/DevOps"
+  },
+  {
+   "tag": "DFS",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/DFS"
+  },
+  {
+   "tag": "diff",
+   "count": 2,
+   "hotPoints": [
+    "key 复用"
+   ],
+   "url": "/docs/questions/diff"
+  },
+  {
+   "tag": "DORA",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/DORA"
+  },
+  {
+   "tag": "DP",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/DP"
+  },
+  {
+   "tag": "Envoy",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Envoy"
+  },
+  {
+   "tag": "FinOps",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/FinOps"
+  },
+  {
+   "tag": "GitOps",
+   "count": 2,
+   "hotPoints": [
+    "GitOps"
+   ],
+   "url": "/docs/questions/GitOps"
+  },
+  {
+   "tag": "Glide",
+   "count": 2,
+   "hotPoints": [
+    "三级缓存",
+    "生命周期"
+   ],
+   "url": "/docs/questions/Glide"
+  },
+  {
+   "tag": "GMP",
+   "count": 2,
+   "hotPoints": [
+    "GMP",
+    "work stealing"
+   ],
+   "url": "/docs/questions/GMP"
+  },
+  {
+   "tag": "GPT",
+   "count": 2,
+   "hotPoints": [
+    "Encoder/Decoder"
+   ],
+   "url": "/docs/questions/GPT"
+  },
+  {
+   "tag": "Handler",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Handler"
+  },
+  {
+   "tag": "HashMap",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/HashMap"
+  },
+  {
+   "tag": "Hooks",
+   "count": 2,
+   "hotPoints": [
+    "Hooks 链表"
+   ],
+   "url": "/docs/questions/Hooks"
+  },
+  {
+   "tag": "HR 分析",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/HR%20%E5%88%86%E6%9E%90"
+  },
+  {
+   "tag": "HR数字化",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/HR%E6%95%B0%E5%AD%97%E5%8C%96"
+  },
+  {
+   "tag": "HTTPS",
+   "count": 2,
+   "hotPoints": [
+    "TLS 握手"
+   ],
+   "url": "/docs/questions/HTTPS"
+  },
+  {
+   "tag": "IaC",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/IaC"
+  },
+  {
+   "tag": "Istio",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Istio"
+  },
+  {
+   "tag": "JMeter",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/JMeter"
+  },
+  {
+   "tag": "Kafka",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Kafka"
+  },
+  {
+   "tag": "Kanban",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Kanban"
+  },
+  {
+   "tag": "Kappa",
+   "count": 2,
+   "hotPoints": [
+    "Flink"
+   ],
+   "url": "/docs/questions/Kappa"
+  },
+  {
+   "tag": "KMeans",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/KMeans"
+  },
+  {
+   "tag": "KMP",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/KMP"
+  },
+  {
+   "tag": "KMS",
+   "count": 2,
+   "hotPoints": [
+    "信封加密",
+    "密钥轮换"
+   ],
+   "url": "/docs/questions/KMS"
+  },
+  {
+   "tag": "Kotlin",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Kotlin"
+  },
+  {
+   "tag": "KPI",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/KPI"
+  },
+  {
+   "tag": "Lambda",
+   "count": 2,
+   "hotPoints": [
+    "Flink"
+   ],
+   "url": "/docs/questions/Lambda"
+  },
+  {
+   "tag": "LeSS",
+   "count": 2,
+   "hotPoints": [
+    "LeSS"
+   ],
+   "url": "/docs/questions/LeSS"
+  },
+  {
+   "tag": "Locust",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Locust"
+  },
+  {
+   "tag": "LoRA",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/LoRA"
+  },
+  {
+   "tag": "LSTM",
+   "count": 2,
+   "hotPoints": [
+    "LSTM 门控"
+   ],
+   "url": "/docs/questions/LSTM"
+  },
+  {
+   "tag": "LTV",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/LTV"
+  },
+  {
+   "tag": "MVI",
+   "count": 2,
+   "hotPoints": [
+    "MVI 单向流"
+   ],
+   "url": "/docs/questions/MVI"
+  },
+  {
+   "tag": "MVP",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/MVP"
+  },
+  {
+   "tag": "oncall",
+   "count": 2,
+   "hotPoints": [
+    "oncall"
+   ],
+   "url": "/docs/questions/oncall"
+  },
+  {
+   "tag": "OpenTelemetry",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/OpenTelemetry"
+  },
+  {
+   "tag": "OSM",
+   "count": 2,
+   "hotPoints": [
+    "北极星",
+    "护栏指标"
+   ],
+   "url": "/docs/questions/OSM"
+  },
+  {
+   "tag": "OWASP",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/OWASP"
+  },
+  {
+   "tag": "Pinia",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Pinia"
+  },
+  {
+   "tag": "Pod",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Pod"
+  },
+  {
+   "tag": "POM",
+   "count": 2,
+   "hotPoints": [
+    "POM",
+    "显式等待"
+   ],
+   "url": "/docs/questions/POM"
+  },
+  {
+   "tag": "Portfolio",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Portfolio"
+  },
+  {
+   "tag": "Prometheus",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Prometheus"
+  },
+  {
+   "tag": "PromQL",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/PromQL"
+  },
+  {
+   "tag": "Pytest",
+   "count": 2,
+   "hotPoints": [
+    "fixture"
+   ],
+   "url": "/docs/questions/Pytest"
+  },
+  {
+   "tag": "ResNet",
+   "count": 2,
+   "hotPoints": [
+    "ResNet 残差"
+   ],
+   "url": "/docs/questions/ResNet"
+  },
+  {
+   "tag": "RFM",
+   "count": 2,
+   "hotPoints": [
+    "RFM"
+   ],
+   "url": "/docs/questions/RFM"
+  },
+  {
+   "tag": "RICE",
+   "count": 2,
+   "hotPoints": [
+    "MoSCoW",
+    "RICE"
+   ],
+   "url": "/docs/questions/RICE"
+  },
+  {
+   "tag": "RPC",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/RPC"
+  },
+  {
+   "tag": "SAFe",
+   "count": 2,
+   "hotPoints": [
+    "LeSS"
+   ],
+   "url": "/docs/questions/SAFe"
+  },
+  {
+   "tag": "SCD",
+   "count": 2,
+   "hotPoints": [
+    "SCD Type2"
+   ],
+   "url": "/docs/questions/SCD"
+  },
+  {
+   "tag": "SDK",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/SDK"
+  },
+  {
+   "tag": "SDL",
+   "count": 2,
+   "hotPoints": [
+    "威胁建模"
+   ],
+   "url": "/docs/questions/SDL"
+  },
+  {
+   "tag": "Selenium",
+   "count": 2,
+   "hotPoints": [
+    "POM",
+    "显式等待"
+   ],
+   "url": "/docs/questions/Selenium"
+  },
+  {
+   "tag": "Sentry",
+   "count": 2,
+   "hotPoints": [
+    "sendBeacon",
+    "SourceMap",
+    "指纹分组"
+   ],
+   "url": "/docs/questions/Sentry"
+  },
+  {
+   "tag": "Shell",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Shell"
+  },
+  {
+   "tag": "SIEM",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/SIEM"
+  },
+  {
+   "tag": "SkipList",
+   "count": 2,
+   "hotPoints": [
+    "Redis 选型",
+    "多层索引",
+    "范围查询",
+    "随机层数"
+   ],
+   "url": "/docs/questions/SkipList"
+  },
+  {
+   "tag": "SLO",
+   "count": 2,
+   "hotPoints": [
+    "Burn Rate",
+    "SLI/SLO"
+   ],
+   "url": "/docs/questions/SLO"
+  },
+  {
+   "tag": "SQL注入",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/SQL%E6%B3%A8%E5%85%A5"
+  },
+  {
+   "tag": "TCP",
+   "count": 2,
+   "hotPoints": [
+    "TIME_WAIT"
+   ],
+   "url": "/docs/questions/TCP"
+  },
+  {
+   "tag": "Tinker",
+   "count": 2,
+   "hotPoints": [
+    "签名校验"
+   ],
+   "url": "/docs/questions/Tinker"
+  },
+  {
+   "tag": "TLS",
+   "count": 2,
+   "hotPoints": [
+    "TLS 握手"
+   ],
+   "url": "/docs/questions/TLS"
+  },
+  {
+   "tag": "TopK",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/TopK"
+  },
+  {
+   "tag": "TopN",
+   "count": 2,
+   "hotPoints": [
+    "row_number",
+    "TopN"
+   ],
+   "url": "/docs/questions/TopN"
+  },
+  {
+   "tag": "Trie",
+   "count": 2,
+   "hotPoints": [
+    "Trie"
+   ],
+   "url": "/docs/questions/Trie"
+  },
+  {
+   "tag": "UI 自动化",
+   "count": 2,
+   "hotPoints": [
+    "POM"
+   ],
+   "url": "/docs/questions/UI%20%E8%87%AA%E5%8A%A8%E5%8C%96"
+  },
+  {
+   "tag": "UI自动化",
+   "count": 2,
+   "hotPoints": [
+    "POM",
+    "显式等待"
+   ],
+   "url": "/docs/questions/UI%E8%87%AA%E5%8A%A8%E5%8C%96"
+  },
+  {
+   "tag": "Vite",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/Vite"
+  },
+  {
+   "tag": "vLLM",
+   "count": 2,
+   "hotPoints": [
+    "量化"
+   ],
+   "url": "/docs/questions/vLLM"
+  },
+  {
+   "tag": "WAF",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/WAF"
+  },
+  {
+   "tag": "Web Vitals",
+   "count": 2,
+   "hotPoints": [
+    "sendBeacon"
+   ],
+   "url": "/docs/questions/Web%20Vitals"
+  },
+  {
+   "tag": "Webhook",
+   "count": 2,
+   "hotPoints": [
+    "JSONPatch",
+    "Mutating Webhook"
+   ],
+   "url": "/docs/questions/Webhook"
+  },
+  {
+   "tag": "XSS",
+   "count": 2,
+   "hotPoints": [
+    "CSP"
+   ],
+   "url": "/docs/questions/XSS"
+  },
+  {
+   "tag": "一致性",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E4%B8%80%E8%87%B4%E6%80%A7"
+  },
+  {
+   "tag": "上报",
+   "count": 2,
+   "hotPoints": [
+    "崩溃捕获"
+   ],
+   "url": "/docs/questions/%E4%B8%8A%E6%8A%A5"
+  },
+  {
+   "tag": "二叉树",
+   "count": 2,
+   "hotPoints": [
+    "BFS",
+    "层 size",
+    "按层分组"
+   ],
+   "url": "/docs/questions/%E4%BA%8C%E5%8F%89%E6%A0%91"
+  },
+  {
+   "tag": "云原生",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E4%BA%91%E5%8E%9F%E7%94%9F"
+  },
+  {
+   "tag": "人才盘点",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E4%BA%BA%E6%89%8D%E7%9B%98%E7%82%B9"
+  },
+  {
+   "tag": "人效",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E4%BA%BA%E6%95%88"
+  },
+  {
+   "tag": "令牌桶",
+   "count": 2,
+   "hotPoints": [
+    "滑动窗口"
+   ],
+   "url": "/docs/questions/%E4%BB%A4%E7%89%8C%E6%A1%B6"
+  },
+  {
+   "tag": "企业文化",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E4%BC%81%E4%B8%9A%E6%96%87%E5%8C%96"
+  },
+  {
+   "tag": "低代码",
+   "count": 2,
+   "hotPoints": [
+    "拖拽",
+    "撤销重做"
+   ],
+   "url": "/docs/questions/%E4%BD%8E%E4%BB%A3%E7%A0%81"
+  },
+  {
+   "tag": "倒排索引",
+   "count": 2,
+   "hotPoints": [
+    "BM25",
+    "倒排索引"
+   ],
+   "url": "/docs/questions/%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95"
+  },
+  {
+   "tag": "全链路压测",
+   "count": 2,
+   "hotPoints": [
+    "压测标识",
+    "影子库",
+    "流量录制"
+   ],
+   "url": "/docs/questions/%E5%85%A8%E9%93%BE%E8%B7%AF%E5%8E%8B%E6%B5%8B"
+  },
+  {
+   "tag": "分布式ID",
+   "count": 2,
+   "hotPoints": [
+    "时钟回拨",
+    "趋势递增",
+    "雪花算法"
+   ],
+   "url": "/docs/questions/%E5%88%86%E5%B8%83%E5%BC%8FID"
+  },
+  {
+   "tag": "分流",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%88%86%E6%B5%81"
+  },
+  {
+   "tag": "分类",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%88%86%E7%B1%BB"
+  },
+  {
+   "tag": "加密",
+   "count": 2,
+   "hotPoints": [
+    "信封加密",
+    "密钥轮换"
+   ],
+   "url": "/docs/questions/%E5%8A%A0%E5%AF%86"
+  },
+  {
+   "tag": "劳动法",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%8A%B3%E5%8A%A8%E6%B3%95"
+  },
+  {
+   "tag": "北森",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%8C%97%E6%A3%AE"
+  },
+  {
+   "tag": "协作机制",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%8D%8F%E4%BD%9C%E6%9C%BA%E5%88%B6"
+  },
+  {
+   "tag": "去重",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%8E%BB%E9%87%8D"
+  },
+  {
+   "tag": "双塔",
+   "count": 2,
+   "hotPoints": [
+    "双塔"
+   ],
+   "url": "/docs/questions/%E5%8F%8C%E5%A1%94"
+  },
+  {
+   "tag": "反转",
+   "count": 2,
+   "hotPoints": [
+    "三指针",
+    "递归回溯"
+   ],
+   "url": "/docs/questions/%E5%8F%8D%E8%BD%AC"
+  },
+  {
+   "tag": "取证",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%8F%96%E8%AF%81"
+  },
+  {
+   "tag": "可视化",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%8F%AF%E8%A7%86%E5%8C%96"
+  },
+  {
+   "tag": "号段",
+   "count": 2,
+   "hotPoints": [
+    "时钟回拨",
+    "趋势递增",
+    "雪花算法"
+   ],
+   "url": "/docs/questions/%E5%8F%B7%E6%AE%B5"
+  },
+  {
+   "tag": "向量检索",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2"
+  },
+  {
+   "tag": "启动",
+   "count": 2,
+   "hotPoints": [
+    "启动优化"
+   ],
+   "url": "/docs/questions/%E5%90%AF%E5%8A%A8"
+  },
+  {
+   "tag": "告警",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%91%8A%E8%AD%A6"
+  },
+  {
+   "tag": "周报",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%91%A8%E6%8A%A5"
+  },
+  {
+   "tag": "四大组件",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6"
+  },
+  {
+   "tag": "图论",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%9B%BE%E8%AE%BA"
+  },
+  {
+   "tag": "基础设施",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD"
+  },
+  {
+   "tag": "增长",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%A2%9E%E9%95%BF"
+  },
+  {
+   "tag": "多模态",
+   "count": 2,
+   "hotPoints": [
+    "Q-Former"
+   ],
+   "url": "/docs/questions/%E5%A4%9A%E6%A8%A1%E6%80%81"
+  },
+  {
+   "tag": "多集群",
+   "count": 2,
+   "hotPoints": [
+    "GitOps",
+    "Karmada"
+   ],
+   "url": "/docs/questions/%E5%A4%9A%E9%9B%86%E7%BE%A4"
+  },
+  {
+   "tag": "大规模敏捷",
+   "count": 2,
+   "hotPoints": [
+    "LeSS"
+   ],
+   "url": "/docs/questions/%E5%A4%A7%E8%A7%84%E6%A8%A1%E6%95%8F%E6%8D%B7"
+  },
+  {
+   "tag": "契约测试",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%A5%91%E7%BA%A6%E6%B5%8B%E8%AF%95"
+  },
+  {
+   "tag": "安全文化",
+   "count": 2,
+   "hotPoints": [
+    "透明"
+   ],
+   "url": "/docs/questions/%E5%AE%89%E5%85%A8%E6%96%87%E5%8C%96"
+  },
+  {
+   "tag": "审计",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%AE%A1%E8%AE%A1"
+  },
+  {
+   "tag": "容量",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%AE%B9%E9%87%8F"
+  },
+  {
+   "tag": "密码",
+   "count": 2,
+   "hotPoints": [
+    "bcrypt"
+   ],
+   "url": "/docs/questions/%E5%AF%86%E7%A0%81"
+  },
+  {
+   "tag": "密码学",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%AF%86%E7%A0%81%E5%AD%A6"
+  },
+  {
+   "tag": "层序",
+   "count": 2,
+   "hotPoints": [
+    "BFS",
+    "层 size",
+    "按层分组"
+   ],
+   "url": "/docs/questions/%E5%B1%82%E5%BA%8F"
+  },
+  {
+   "tag": "带人",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%B8%A6%E4%BA%BA"
+  },
+  {
+   "tag": "平衡",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%B9%B3%E8%A1%A1"
+  },
+  {
+   "tag": "应急响应",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94"
+  },
+  {
+   "tag": "延迟队列",
+   "count": 2,
+   "hotPoints": [
+    "时间轮"
+   ],
+   "url": "/docs/questions/%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97"
+  },
+  {
+   "tag": "建模",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%BB%BA%E6%A8%A1"
+  },
+  {
+   "tag": "影子库",
+   "count": 2,
+   "hotPoints": [
+    "压测标识",
+    "影子库",
+    "流量录制"
+   ],
+   "url": "/docs/questions/%E5%BD%B1%E5%AD%90%E5%BA%93"
+  },
+  {
+   "tag": "快排",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E5%BF%AB%E6%8E%92"
+  },
+  {
+   "tag": "手写",
+   "count": 2,
+   "hotPoints": [
+    "createElement",
+    "vdom",
+    "函数组件"
+   ],
+   "url": "/docs/questions/%E6%89%8B%E5%86%99"
+  },
+  {
+   "tag": "技术债",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%8A%80%E6%9C%AF%E5%80%BA"
+  },
+  {
+   "tag": "技术规划",
+   "count": 2,
+   "hotPoints": [
+    "技术债"
+   ],
+   "url": "/docs/questions/%E6%8A%80%E6%9C%AF%E8%A7%84%E5%88%92"
+  },
+  {
+   "tag": "抖音",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%8A%96%E9%9F%B3"
+  },
+  {
+   "tag": "排名",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%8E%92%E5%90%8D"
+  },
+  {
+   "tag": "排查",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%8E%92%E6%9F%A5"
+  },
+  {
+   "tag": "推理优化",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96"
+  },
+  {
+   "tag": "插件化",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%8F%92%E4%BB%B6%E5%8C%96"
+  },
+  {
+   "tag": "搜索引擎",
+   "count": 2,
+   "hotPoints": [
+    "BM25",
+    "倒排索引"
+   ],
+   "url": "/docs/questions/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E"
+  },
+  {
+   "tag": "支付",
+   "count": 2,
+   "hotPoints": [
+    "T+1 对账",
+    "幂等",
+    "防重支付"
+   ],
+   "url": "/docs/questions/%E6%94%AF%E4%BB%98"
+  },
+  {
+   "tag": "救火",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%95%91%E7%81%AB"
+  },
+  {
+   "tag": "数据倾斜",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C"
+  },
+  {
+   "tag": "数据分析",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90"
+  },
+  {
+   "tag": "数据字典",
+   "count": 2,
+   "hotPoints": [
+    "血缘"
+   ],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE%E5%AD%97%E5%85%B8"
+  },
+  {
+   "tag": "数据文化",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%95%B0%E6%8D%AE%E6%96%87%E5%8C%96"
+  },
+  {
+   "tag": "数组",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%95%B0%E7%BB%84"
+  },
+  {
+   "tag": "标签",
+   "count": 2,
+   "hotPoints": [
+    "实时+离线",
+    "标签体系"
+   ],
+   "url": "/docs/questions/%E6%A0%87%E7%AD%BE"
+  },
+  {
+   "tag": "校准",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%A0%A1%E5%87%86"
+  },
+  {
+   "tag": "梯度",
+   "count": 2,
+   "hotPoints": [
+    "LSTM 门控"
+   ],
+   "url": "/docs/questions/%E6%A2%AF%E5%BA%A6"
+  },
+  {
+   "tag": "梯度下降",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D"
+  },
+  {
+   "tag": "检测",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%A3%80%E6%B5%8B"
+  },
+  {
+   "tag": "模型选型",
+   "count": 2,
+   "hotPoints": [
+    "分层策略",
+    "性能权衡",
+    "模型蒸馏"
+   ],
+   "url": "/docs/questions/%E6%A8%A1%E5%9E%8B%E9%80%89%E5%9E%8B"
+  },
+  {
+   "tag": "模拟",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%A8%A1%E6%8B%9F"
+  },
+  {
+   "tag": "正则化",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%AD%A3%E5%88%99%E5%8C%96"
+  },
+  {
+   "tag": "流水线",
+   "count": 2,
+   "hotPoints": [
+    "GitOps"
+   ],
+   "url": "/docs/questions/%E6%B5%81%E6%B0%B4%E7%BA%BF"
+  },
+  {
+   "tag": "测试",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%B5%8B%E8%AF%95"
+  },
+  {
+   "tag": "测试左移",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%B5%8B%E8%AF%95%E5%B7%A6%E7%A7%BB"
+  },
+  {
+   "tag": "测试平台",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0"
+  },
+  {
+   "tag": "测试数据",
+   "count": 2,
+   "hotPoints": [
+    "脱敏"
+   ],
+   "url": "/docs/questions/%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE"
+  },
+  {
+   "tag": "深度学习",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0"
+  },
+  {
+   "tag": "深拷贝",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E6%B7%B1%E6%8B%B7%E8%B4%9D"
+  },
+  {
+   "tag": "混沌工程",
+   "count": 2,
+   "hotPoints": [
+    "Chaos Mesh",
+    "爆炸半径"
+   ],
+   "url": "/docs/questions/%E6%B7%B7%E6%B2%8C%E5%B7%A5%E7%A8%8B"
+  },
+  {
+   "tag": "混沌测试",
+   "count": 2,
+   "hotPoints": [
+    "Chaos Mesh",
+    "爆炸半径",
+    "稳态假设"
+   ],
+   "url": "/docs/questions/%E6%B7%B7%E6%B2%8C%E6%B5%8B%E8%AF%95"
+  },
+  {
+   "tag": "漏洞",
+   "count": 2,
+   "hotPoints": [
+    "影响评估"
+   ],
+   "url": "/docs/questions/%E6%BC%8F%E6%B4%9E"
+  },
+  {
+   "tag": "灰度",
+   "count": 2,
+   "hotPoints": [
+    "灰度"
+   ],
+   "url": "/docs/questions/%E7%81%B0%E5%BA%A6"
+  },
+  {
+   "tag": "热修复",
+   "count": 2,
+   "hotPoints": [
+    "签名校验"
+   ],
+   "url": "/docs/questions/%E7%83%AD%E4%BF%AE%E5%A4%8D"
+  },
+  {
+   "tag": "蒸馏",
+   "count": 2,
+   "hotPoints": [
+    "分层策略",
+    "性能权衡",
+    "模型蒸馏"
+   ],
+   "url": "/docs/questions/%E8%92%B8%E9%A6%8F"
+  },
+  {
+   "tag": "特征平台",
+   "count": 2,
+   "hotPoints": [
+    "Feast"
+   ],
+   "url": "/docs/questions/%E7%89%B9%E5%BE%81%E5%B9%B3%E5%8F%B0"
+  },
+  {
+   "tag": "甘特图",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%94%98%E7%89%B9%E5%9B%BE"
+  },
+  {
+   "tag": "用户画像",
+   "count": 2,
+   "hotPoints": [
+    "标签体系"
+   ],
+   "url": "/docs/questions/%E7%94%A8%E6%88%B7%E7%94%BB%E5%83%8F"
+  },
+  {
+   "tag": "白板",
+   "count": 2,
+   "hotPoints": [
+    "CRDT",
+    "WebSocket",
+    "Yjs"
+   ],
+   "url": "/docs/questions/%E7%99%BD%E6%9D%BF"
+  },
+  {
+   "tag": "看板",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%9C%8B%E6%9D%BF"
+  },
+  {
+   "tag": "研发协作",
+   "count": 2,
+   "hotPoints": [
+    "理解约束"
+   ],
+   "url": "/docs/questions/%E7%A0%94%E5%8F%91%E5%8D%8F%E4%BD%9C"
+  },
+  {
+   "tag": "研发效能",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%A0%94%E5%8F%91%E6%95%88%E8%83%BD"
+  },
+  {
+   "tag": "等价类",
+   "count": 2,
+   "hotPoints": [
+    "判定表",
+    "场景法",
+    "等价类",
+    "边界值"
+   ],
+   "url": "/docs/questions/%E7%AD%89%E4%BB%B7%E7%B1%BB"
+  },
+  {
+   "tag": "索引",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%B4%A2%E5%BC%95"
+  },
+  {
+   "tag": "组件库",
+   "count": 2,
+   "hotPoints": [
+    "CI/CD",
+    "组件库",
+    "脚手架"
+   ],
+   "url": "/docs/questions/%E7%BB%84%E4%BB%B6%E5%BA%93"
+  },
+  {
+   "tag": "组织",
+   "count": 2,
+   "hotPoints": [
+    "稳定性",
+    "组织架构"
+   ],
+   "url": "/docs/questions/%E7%BB%84%E7%BB%87"
+  },
+  {
+   "tag": "组织变革",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%BB%84%E7%BB%87%E5%8F%98%E9%9D%A9"
+  },
+  {
+   "tag": "继任计划",
+   "count": 2,
+   "hotPoints": [
+    "IDP"
+   ],
+   "url": "/docs/questions/%E7%BB%A7%E4%BB%BB%E8%AE%A1%E5%88%92"
+  },
+  {
+   "tag": "编码",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E7%BC%96%E7%A0%81"
+  },
+  {
+   "tag": "节流",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%8A%82%E6%B5%81"
+  },
+  {
+   "tag": "营销",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%90%A5%E9%94%80"
+  },
+  {
+   "tag": "落地",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%90%BD%E5%9C%B0"
+  },
+  {
+   "tag": "虚拟DOM",
+   "count": 2,
+   "hotPoints": [
+    "key 复用"
+   ],
+   "url": "/docs/questions/%E8%99%9A%E6%8B%9FDOM"
+  },
+  {
+   "tag": "虚拟滚动",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%99%9A%E6%8B%9F%E6%BB%9A%E5%8A%A8"
+  },
+  {
+   "tag": "裁员",
+   "count": 2,
+   "hotPoints": [
+    "N+1"
+   ],
+   "url": "/docs/questions/%E8%A3%81%E5%91%98"
+  },
+  {
+   "tag": "证书",
+   "count": 2,
+   "hotPoints": [
+    "证书链"
+   ],
+   "url": "/docs/questions/%E8%AF%81%E4%B9%A6"
+  },
+  {
+   "tag": "评估",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%AF%84%E4%BC%B0"
+  },
+  {
+   "tag": "资源",
+   "count": 2,
+   "hotPoints": [
+    "工程支持",
+    "数据质量",
+    "算力"
+   ],
+   "url": "/docs/questions/%E8%B5%84%E6%BA%90"
+  },
+  {
+   "tag": "超时",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%B6%85%E6%97%B6"
+  },
+  {
+   "tag": "跳表",
+   "count": 2,
+   "hotPoints": [
+    "Redis 选型",
+    "多层索引",
+    "范围查询",
+    "随机层数"
+   ],
+   "url": "/docs/questions/%E8%B7%B3%E8%A1%A8"
+  },
+  {
+   "tag": "转化",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%BD%AC%E5%8C%96"
+  },
+  {
+   "tag": "转化率",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%BD%AC%E5%8C%96%E7%8E%87"
+  },
+  {
+   "tag": "巡检",
+   "count": 2,
+   "hotPoints": [
+    "巡检"
+   ],
+   "url": "/docs/questions/%E5%B7%A1%E6%A3%80"
+  },
+  {
+   "tag": "迁移学习",
+   "count": 2,
+   "hotPoints": [
+    "迁移学习"
+   ],
+   "url": "/docs/questions/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0"
+  },
+  {
+   "tag": "过拟合",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E8%BF%87%E6%8B%9F%E5%90%88"
+  },
+  {
+   "tag": "进度管理",
+   "count": 2,
+   "hotPoints": [
+    "关键路径"
+   ],
+   "url": "/docs/questions/%E8%BF%9B%E5%BA%A6%E7%AE%A1%E7%90%86"
+  },
+  {
+   "tag": "迭代",
+   "count": 2,
+   "hotPoints": [
+    "迭代频率"
+   ],
+   "url": "/docs/questions/%E8%BF%AD%E4%BB%A3"
+  },
+  {
+   "tag": "重构",
+   "count": 2,
+   "hotPoints": [
+    "量化收益"
+   ],
+   "url": "/docs/questions/%E9%87%8D%E6%9E%84"
+  },
+  {
+   "tag": "链路追踪",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA"
+  },
+  {
+   "tag": "长期主义",
+   "count": 2,
+   "hotPoints": [
+    "短期 vs 长期"
+   ],
+   "url": "/docs/questions/%E9%95%BF%E6%9C%9F%E4%B8%BB%E4%B9%89"
+  },
+  {
+   "tag": "闭包",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E9%97%AD%E5%8C%85"
+  },
+  {
+   "tag": "防抖",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E9%98%B2%E6%8A%96"
+  },
+  {
+   "tag": "雪花",
+   "count": 2,
+   "hotPoints": [
+    "时钟回拨",
+    "趋势递增",
+    "雪花算法"
+   ],
+   "url": "/docs/questions/%E9%9B%AA%E8%8A%B1"
+  },
+  {
+   "tag": "需求文档",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E9%9C%80%E6%B1%82%E6%96%87%E6%A1%A3"
+  },
+  {
+   "tag": "项目",
+   "count": 2,
+   "hotPoints": [],
+   "url": "/docs/questions/%E9%A1%B9%E7%9B%AE"
+  }
+ ]
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>腾讯 面试题 · 15 道</title>
+<meta name="description" content="腾讯 相关面试题共 15 道,涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"腾讯 面试题 · 15 道","description":"腾讯 相关面试题共 15 道,涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"Go 的协程与线程的区别","text":"对比 Go goroutine 与操作系统线程在调度、栈大小、切换开销上的差异,以及 GMP 模型的核心思想。","acceptedAnswer":{"@type":"Answer","text":"协程 vs 线程、栈动态伸缩、GMP、work stealing"}},{"@type":"Question","name":"手撕链表表示的两个数相加","text":"给定两个非空链表表示两个非负整数(逆序存储,每位一个数字),返回相加结果的链表。如 (2→4→3)+(5→6→4)=7→0→8(342+465=807)。","acceptedAnswer":{"@type":"Answer","text":"模拟加法、carry 进位、哑节点、边界处理"}},{"@type":"Question","name":"React Hooks 原理与闭包陷阱","text":"讲 React Hooks 的实现原理(useState/useEffect 闭包链表)、闭包陷阱的产生原因与解决方案。","acceptedAnswer":{"@type":"Answer","text":"Hooks 链表、闭包陷阱、函数式更新、useRef"}},{"@type":"Question","name":"实现 LFU 缓存(O(1))","text":"实现 LFU:get/put 均 O(1)。要求支持同频次 LRU 淘汰,讲清 minFreq 维护机制。","acceptedAnswer":{"@type":"Answer","text":"频次链表、minFreq 维护、同频 LRU、O(1)"}},{"@type":"Question","name":"为什么微信不做已读功能?","text":"讲一下为什么微信不做消息已读功能,这个产品决策背后的思考。","acceptedAnswer":{"@type":"Answer","text":"产品决策、社交压力、场景驱动、张小龙"}},{"@type":"Question","name":"TCP TIME_WAIT 过多怎么解决","text":"服务器大量 TIME_WAIT 占满端口,导致新连接失败。讲原因与解决方案。","acceptedAnswer":{"@type":"Answer","text":"TIME_WAIT、2MSL、tcp_tw_reuse、长连接"}},{"@type":"Question","name":"讲一下 SSRF 漏洞原理与绕过技巧","text":"讲 SSRF 原理、危害、常见绕过技巧,以及大厂防护方案。","acceptedAnswer":{"@type":"Answer","text":"SSRF、进制转换、DNS rebinding、IMDSv2"}},{"@type":"Question","name":"讲一次你处理的高危漏洞应急","text":"用 STAR 描述一次高危漏洞(如 Log4Shell 级别)应急响应,有量化的 MTTR/影响范围。","acceptedAnswer":{"@type":"Answer","text":"Log4Shell、应急响应、MTTR、STAR"}},{"@type":"Question","name":"黑盒/白盒/灰盒测试区别","text":"讲黑盒/白盒/灰盒测试的区别、适用场景、典型方法。","acceptedAnswer":{"@type":"Answer","text":"黑/白/灰盒、覆盖率、等价类、集成测试"}},{"@type":"Question","name":"iOS 内存管理与 autorelease","text":"讲 iOS Objective-C/Swift 的引用计数(ARC)原理,以及 autorelease pool 的工作时机。","acceptedAnswer":{"@type":"Answer","text":"ARC、引用计数、autorelease pool、循环引用"}},{"@type":"Question","name":"设计移动端性能监控 APM","text":"为公司设计移动端 APM(Application Performance Monitoring)方案,涵盖启动/卡顿/内存/网络/耗电。","acceptedAnswer":{"@type":"Answer","text":"APM、FPS/ANR、采样上报、Matrix"}},{"@type":"Question","name":"设计跨端动态化方案(类 React Native)","text":"为公司设计跨端动态化方案,要求支持热更新、性能接近原生、复用大厂生态。","acceptedAnswer":{"@type":"Answer","text":"跨端、JSI、Fabric、热更新、Lynx"}},{"@type":"Question","name":"设计跨部门大型项目治理","text":"为公司设计跨 5+ 部门、50+ 人的大型项目治理框架,涵盖组织/流程/工具/度量。","acceptedAnswer":{"@type":"Answer","text":"项目治理、RACI、Steering Committee、里程碑 gate"}},{"@type":"Question","name":"腾讯文化与「瑞雪」机制","text":"讲一下腾讯的企业文化,以及「瑞雪」(反不良行为)机制的设计原理。","acceptedAnswer":{"@type":"Answer","text":"腾讯文化、瑞雪机制、自治、文化守护"}},{"@type":"Question","name":"设计公司降本增效下的人才保留方案","text":"公司面临降本增效,需优化 10% HC 同时保留核心人才。设计完整方案,涵盖识别、沟通、补偿、传播。","acceptedAnswer":{"@type":"Answer","text":"降本增效、九宫格、N+1、留核心、合规"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>腾讯 面试题</h1>
+<p>共 <b>15</b> 道。</p>
+<div class="stats">
+  <div class="stat"><b>15</b><span>题目数</span></div>
+  <div class="stat"><b>7</b><span>初级</span></div><div class="stat"><b>4</b><span>中级</span></div><div class="stat"><b>4</b><span>高级</span></div>
+</div>
+
+<h2>题目列表</h2>
+<h2>1. Go 的协程与线程的区别</h2>
+<p>对比 Go goroutine 与操作系统线程在调度、栈大小、切换开销上的差异,以及 GMP 模型的核心思想。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">协程 vs 线程</span><span class="tag">栈动态伸缩</span><span class="tag">GMP</span><span class="tag">work stealing</span></div><h2>2. 手撕链表表示的两个数相加</h2>
+<p>给定两个非空链表表示两个非负整数(逆序存储,每位一个数字),返回相加结果的链表。如 (2→4→3)+(5→6→4)=7→0→8(342+465=807)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">模拟加法</span><span class="tag">carry 进位</span><span class="tag">哑节点</span><span class="tag">边界处理</span></div><h2>3. React Hooks 原理与闭包陷阱</h2>
+<p>讲 React Hooks 的实现原理(useState/useEffect 闭包链表)、闭包陷阱的产生原因与解决方案。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Hooks 链表</span><span class="tag">闭包陷阱</span><span class="tag">函数式更新</span><span class="tag">useRef</span></div><h2>4. 实现 LFU 缓存(O(1))</h2>
+<p>实现 LFU:get/put 均 O(1)。要求支持同频次 LRU 淘汰,讲清 minFreq 维护机制。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">频次链表</span><span class="tag">minFreq 维护</span><span class="tag">同频 LRU</span><span class="tag">O(1)</span></div><h2>5. 为什么微信不做已读功能?</h2>
+<p>讲一下为什么微信不做消息已读功能,这个产品决策背后的思考。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">产品决策</span><span class="tag">社交压力</span><span class="tag">场景驱动</span><span class="tag">张小龙</span></div><h2>6. TCP TIME_WAIT 过多怎么解决</h2>
+<p>服务器大量 TIME_WAIT 占满端口,导致新连接失败。讲原因与解决方案。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">TIME_WAIT</span><span class="tag">2MSL</span><span class="tag">tcp_tw_reuse</span><span class="tag">长连接</span></div><h2>7. 讲一下 SSRF 漏洞原理与绕过技巧</h2>
+<p>讲 SSRF 原理、危害、常见绕过技巧,以及大厂防护方案。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">SSRF</span><span class="tag">进制转换</span><span class="tag">DNS rebinding</span><span class="tag">IMDSv2</span></div><h2>8. 讲一次你处理的高危漏洞应急</h2>
+<p>用 STAR 描述一次高危漏洞(如 Log4Shell 级别)应急响应,有量化的 MTTR/影响范围。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">Log4Shell</span><span class="tag">应急响应</span><span class="tag">MTTR</span><span class="tag">STAR</span></div><h2>9. 黑盒/白盒/灰盒测试区别</h2>
+<p>讲黑盒/白盒/灰盒测试的区别、适用场景、典型方法。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">黑/白/灰盒</span><span class="tag">覆盖率</span><span class="tag">等价类</span><span class="tag">集成测试</span></div><h2>10. iOS 内存管理与 autorelease</h2>
+<p>讲 iOS Objective-C/Swift 的引用计数(ARC)原理,以及 autorelease pool 的工作时机。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">ARC</span><span class="tag">引用计数</span><span class="tag">autorelease pool</span><span class="tag">循环引用</span></div><h2>11. 设计移动端性能监控 APM</h2>
+<p>为公司设计移动端 APM(Application Performance Monitoring)方案,涵盖启动/卡顿/内存/网络/耗电。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">APM</span><span class="tag">FPS/ANR</span><span class="tag">采样上报</span><span class="tag">Matrix</span></div><h2>12. 设计跨端动态化方案(类 React Native)</h2>
+<p>为公司设计跨端动态化方案,要求支持热更新、性能接近原生、复用大厂生态。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">跨端</span><span class="tag">JSI</span><span class="tag">Fabric</span><span class="tag">热更新</span><span class="tag">Lynx</span></div><h2>13. 设计跨部门大型项目治理</h2>
+<p>为公司设计跨 5+ 部门、50+ 人的大型项目治理框架,涵盖组织/流程/工具/度量。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">项目治理</span><span class="tag">RACI</span><span class="tag">Steering Committee</span><span class="tag">里程碑 gate</span></div><h2>14. 腾讯文化与「瑞雪」机制</h2>
+<p>讲一下腾讯的企业文化,以及「瑞雪」(反不良行为)机制的设计原理。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">腾讯文化</span><span class="tag">瑞雪机制</span><span class="tag">自治</span><span class="tag">文化守护</span></div><h2>15. 设计公司降本增效下的人才保留方案</h2>
+<p>公司面临降本增效,需优化 10% HC 同时保留核心人才。设计完整方案,涵盖识别、沟通、补偿、传播。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">降本增效</span><span class="tag">九宫格</span><span class="tag">N+1</span><span class="tag">留核心</span><span class="tag">合规</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

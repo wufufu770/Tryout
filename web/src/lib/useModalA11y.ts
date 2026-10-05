@@ -54,7 +54,13 @@ export function useModalA11y(onClose: () => void, active: boolean = true) {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = "";
       if (previousFocusRef.current) {
-        try { previousFocusRef.current.focus(); } catch {}
+        // R28:把焦点还给打开弹窗前的元素 —— 该元素可能已从 DOM 卸载(detached),
+        //   focus() 会抛。上面已判空,这一种浏览器差异忽略即可。
+        try {
+          previousFocusRef.current.focus();
+        } catch {
+          // 见上:元素已卸载,忽略
+        }
       }
     };
   }, [active]);

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CI/CD 面试题 · 5 道</title>
+<meta name="description" content="CI/CD 相关面试题共 5 道,高频考点:CI/CD、GitOps、回滚。涵盖 junior/senior/mid 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"CI/CD 面试题 · 5 道","description":"CI/CD 相关面试题共 5 道,高频考点:CI/CD、GitOps、回滚。涵盖 junior/senior/mid 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"设计一个 CI/CD 流水线","text":"为一个小团队设计 CI/CD 流水线,从代码提交到生产部署。","acceptedAnswer":{"@type":"Answer","text":"CI、金丝雀、GitOps、回滚"}},{"@type":"Question","name":"设计一个 CI/CD 流水线","text":"设计一个从代码提交到生产的 CI/CD 流水线,涵盖构建、测试、部署。","acceptedAnswer":{"@type":"Answer","text":"Pipeline as Code、GitOps、灰度、制品不可变"}},{"@type":"Question","name":"设计 DevSecOps 中的质量门禁","text":"为 CI/CD 设计质量门禁(Quality Gate),涵盖各阶段检查项与策略。","acceptedAnswer":{"@type":"Answer","text":"Quality Gate、SAST/SCA、增量质量、回滚"}},{"@type":"Question","name":"设计移动端工程化体系","text":"为公司设计移动端工程化体系:脚手架、CI/CD、组件库、监控、发布。","acceptedAnswer":{"@type":"Answer","text":"脚手架、CI/CD、组件库、灰度发布"}},{"@type":"Question","name":"工具链与平台支持","text":"建议反问:开发工具链、CI/CD、测试设备。","acceptedAnswer":{"@type":"Answer","text":"CI/CD、云真机、监控、跨端"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>CI/CD 面试题</h1>
+<p>共 <b>5</b> 道,高频考点 3 个。</p>
+<div class="stats">
+  <div class="stat"><b>5</b><span>题目数</span></div>
+  <div class="stat"><b>2</b><span>初级</span></div><div class="stat"><b>2</b><span>高级</span></div><div class="stat"><b>1</b><span>中级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">CI/CD</span><span class="tag">GitOps</span><span class="tag">回滚</span></div>
+<h2>题目列表</h2>
+<h2>1. 设计一个 CI/CD 流水线</h2>
+<p>为一个小团队设计 CI/CD 流水线,从代码提交到生产部署。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">CI</span><span class="tag">金丝雀</span><span class="tag">GitOps</span><span class="tag">回滚</span></div><h2>2. 设计一个 CI/CD 流水线</h2>
+<p>设计一个从代码提交到生产的 CI/CD 流水线,涵盖构建、测试、部署。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Pipeline as Code</span><span class="tag">GitOps</span><span class="tag">灰度</span><span class="tag">制品不可变</span></div><h2>3. 设计 DevSecOps 中的质量门禁</h2>
+<p>为 CI/CD 设计质量门禁(Quality Gate),涵盖各阶段检查项与策略。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">Quality Gate</span><span class="tag">SAST/SCA</span><span class="tag">增量质量</span><span class="tag">回滚</span></div><h2>4. 设计移动端工程化体系</h2>
+<p>为公司设计移动端工程化体系:脚手架、CI/CD、组件库、监控、发布。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">脚手架</span><span class="tag">CI/CD</span><span class="tag">组件库</span><span class="tag">灰度发布</span></div><h2>5. 工具链与平台支持</h2>
+<p>建议反问:开发工具链、CI/CD、测试设备。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">CI/CD</span><span class="tag">云真机</span><span class="tag">监控</span><span class="tag">跨端</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

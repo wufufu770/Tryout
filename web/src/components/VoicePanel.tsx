@@ -98,7 +98,14 @@ export function VoicePanel({
   const stopListening = useCallback(() => {
     if (!listening) return;
     setListening(false);
-    try { asrRef.current.stop(); } catch {}
+    // R28:停止识别 —— recognition.stop() 在已停止/组件卸载后会抛 InvalidStateError。
+    //   这是一次性清理,抛了也无从补救,吞掉是正确的;但必须写明,否则无法与
+    //   「静默失败」区分(ISSUE-057 正是因为没写而被判为缺陷)。
+    try {
+      asrRef.current.stop();
+    } catch {
+      // 见上:清理路径的浏览器差异,忽略
+    }
     micStreamRef.current?.getTracks().forEach((tr) => tr.stop());
     micStreamRef.current = null;
     vizRef.current?.stop();
@@ -127,7 +134,12 @@ export function VoicePanel({
   useEffect(() => {
     return () => {
       voiceManager.stop();
-      try { asrRef.current.stop(); } catch {}
+      // R28:与 stopListening 同理 —— 卸载时 stop() 抛错不应阻止后续的定时器/麦克风清理
+      try {
+        asrRef.current.stop();
+      } catch {
+        // 见上
+      }
       if (autoSubmitTimerRef.current !== null) clearTimeout(autoSubmitTimerRef.current);
       micStreamRef.current?.getTracks().forEach((tr) => tr.stop());
     };

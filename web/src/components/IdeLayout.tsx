@@ -176,7 +176,10 @@ export function IdeLayout() {
                     onClick={() => setOpenMenu(openMenu === m.name ? null : m.name)}
                     onMouseEnter={() => openMenu && setOpenMenu(m.name)}
                     className={cn(
-                      "px-2 py-0.5 hover:bg-ide-bg-active hover:text-ide-fg",
+                      // R32(ISSUE-022):min-h-6 把 20px 撑到 24px(WCAG 2.5.8 AA)。
+                      //   顶部栏 h-7(28px)放得下 24px,不会溢出。
+                      //   shrink-0:R27 实测 flex 容器会把这类按钮压扁,不能省。
+                      "min-h-6 shrink-0 px-2 py-0.5 hover:bg-ide-bg-active hover:text-ide-fg",
                       openMenu === m.name && "bg-ide-bg-active text-ide-fg",
                     )}
                   >

@@ -2,7 +2,13 @@
 FROM node:24-alpine AS web-builder
 WORKDIR /web
 COPY web/package.json web/package-lock.json ./
-RUN npm ci --silent
+# ⚠️ R48:去掉了 `--silent`(server 镜像那边同样去掉了,两处保持一致)。
+#   理由**不是**它修好了构建(R47 的失败原因至今未定),而是:
+#   七轮里镜像段失败/超时,我**一次都没能定位原因** ——
+#   `npm ci --silent` 把错误吞掉,`docker build --progress=plain` 也拿不到。
+#   一个"失败了但说不出为什么"的门禁项,和没有门禁项差别不大。
+#   代价只是构建日志变长(几 KB),换来出错可诊断。
+RUN npm ci
 COPY web/ ./
 RUN npm run build
 

@@ -65,7 +65,14 @@ export function OnboardingModal() {
         };
         localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
       }
-    } catch {}
+    } catch (e) {
+      // R28:localStorage 写入失败(隐身模式配额为 0、已用满 5MB、扩展冲突等)
+      //   会让**引导画像丢失** —— 用户下次进来还要重填一遍。
+      //   原先是 `catch {}`,完全静默。这里记 error 以便排查;
+      //   不阻断流程(画像只是个性化增强,不是核心功能),
+      //   但绝不能悄无声息。同一类问题见 `IntegrationSettings.tsx`。
+      console.error("[onboarding] 画像写入 localStorage 失败(下次进入需重填):", e);
+    }
     setOpen(false);
     // 通知其他组件(如首屏推荐可根据画像定制)
     window.dispatchEvent(new CustomEvent("tryout:onboarding-completed", { detail: { skipped: skip } }));
@@ -98,7 +105,15 @@ export function OnboardingModal() {
           </div>
           <button
             onClick={() => complete(true)}
-            className="text-ide-fg-muted hover:text-ide-fg"
+            // R32(ISSUE-022):min-w-6 min-h-6 = 24×24,WCAG 2.5.8 AA 最低值。
+            //   纯图标按钮的热区就等于图标本身(实测 16×16),是全站最难点。
+            //   ⚠️ shrink-0 不可省:R27 实测过 flex 容器会把只写 min-h 的按钮压扁。
+            //   刻意用 min-* 而非伪元素扩热区 —— getBoundingClientRect() 量不到
+            //   ::after,那样改 e2e 仍然量出 16px,等于没修。
+            className="flex min-h-6 min-w-6 shrink-0 items-center justify-center text-ide-fg-muted hover:text-ide-fg"
+            // 图标按钮:title 只在鼠标悬停时显示,触屏与读屏用户拿不到。
+            // aria-label 提供稳定的无障碍名。
+            aria-label={t("onboarding.skip")}
             title={t("onboarding.skip")}
           >
             <X size={16} />

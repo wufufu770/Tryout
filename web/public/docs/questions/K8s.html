@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>K8s 面试题 · 17 道</title>
+<meta name="description" content="K8s 相关面试题共 17 道,高频考点:Reconcile、CRD、JSONPatch、kubernetes client、Mutating Webhook。涵盖 mid/senior/junior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"K8s 面试题 · 17 道","description":"K8s 相关面试题共 17 道,高频考点:Reconcile、CRD、JSONPatch、kubernetes client、Mutating Webhook。涵盖 mid/senior/junior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"Kubernetes 核心概念","text":"讲 K8s 的核心对象 Pod/Deployment/Service/Ingress/ConfigMap 的作用,以及 Pod 调度流程。","acceptedAnswer":{"@type":"Answer","text":"Pod/Service/Deployment、Reconcile、调度流程、CNI/CSI"}},{"@type":"Question","name":"K8s 调度与亲和性","text":"讲 K8s 调度器的工作原理,nodeSelector/Affinity/Taint/Toleration/Topology Spread 的应用场景。","acceptedAnswer":{"@type":"Answer","text":"Filter/Score、Affinity、Taint、Topology Spread"}},{"@type":"Question","name":"设计 K8s 多集群管理","text":"设计一个多 K8s 集群管理方案,涵盖统一认证、应用分发、流量调度、容灾。","acceptedAnswer":{"@type":"Answer","text":"多集群、Karmada、GitOps、容灾"}},{"@type":"Question","name":"你如何学习新技术","text":"举一个你学习新技术(如 K8s)并应用到工作的例子。","acceptedAnswer":{"@type":"Answer","text":"学习、K8s、实践、分享"}},{"@type":"Question","name":"Helm Chart 编写","text":"写一个 Helm Chart 部署一个 Web 服务,支持 Deployment/Service/ConfigMap/HPA。","acceptedAnswer":{"@type":"Answer","text":"Chart 结构、values、模板、HPA"}},{"@type":"Question","name":"K8s Operator 编写","text":"用 Go 或 Python 写一个 K8s Operator,管理一个自定义资源(CRD),实现 Reconcile。","acceptedAnswer":{"@type":"Answer","text":"CRD、Reconcile、幂等、watch"}},{"@type":"Question","name":"Python:K8s 资源利用率分析","text":"用 Python 调 K8s API,统计所有命名空间的资源利用率,输出低利用率清单供优化。","acceptedAnswer":{"@type":"Answer","text":"kubernetes client、metrics-server、owner 解析、聚合"}},{"@type":"Question","name":"Go:写一个 K8s Admission Webhook","text":"用 Go 写一个 Mutating Admission Webhook,强制给所有 Pod 注入 sidecar 或标签。","acceptedAnswer":{"@type":"Answer","text":"Mutating Webhook、JSONPatch、caBundle、高可用"}},{"@type":"Question","name":"Containerd 与 Docker 架构","text":"讲 Containerd 与 Docker 的关系、CRI OCI 标准、runc、底层组件。","acceptedAnswer":{"@type":"Answer","text":"containerd、CRI/OCI、runc、shim"}},{"@type":"Question","name":"K8s 调度器原理与扩展","text":"讲 K8s 调度器(scheduler)的工作流程:预选/优选/绑定,以及扩展机制。","acceptedAnswer":{"@type":"Answer","text":"Predicate/Score、调度框架、Volcano、Gang"}},{"@type":"Question","name":"Python:K8s 资源巡检脚本","text":"写 Python 脚本用 kubernetes 客户端巡检集群异常 Pod,发钉钉告警。","acceptedAnswer":{"@type":"Answer","text":"kubernetes client、Pod 状态、钉钉、巡检"}},{"@type":"Question","name":"Go:实现 K8s Operator","text":"用 Go + controller-runtime 实现一个自定义资源(CRD)的 Operator,管理应用生命周期。","acceptedAnswer":{"@type":"Answer","text":"Reconcile、CRD、controller-runtime、kubebuilder"}},{"@type":"Question","name":"K8s Pod CrashLoopBackOff 排查","text":"K8s Pod 处于 CrashLoopBackOff 状态,讲一下完整的排查思路。","acceptedAnswer":{"@type":"Answer","text":"CrashLoopBackOff、OOMKilled、kubectl logs --previous、probe"}},{"@type":"Question","name":"设计一个云原生安全体系","text":"为 K8s/容器环境设计安全体系,涵盖镜像/运行时/网络/配置/密钥。","acceptedAnswer":{"@type":"Answer","text":"镜像扫描、PSA、NetworkPolicy、Falco、eBPF"}},{"@type":"Question","name":"Go:实现一个 K8s Admission Webhook 安全策略","text":"用 Go 写一个 K8s Mutating Webhook,强制 Pod 安全基线(非 root、禁特权、必 limit)。","acceptedAnswer":{"@type":"Answer","text":"Mutating Webhook、JSONPatch、PSA、非 root"}},{"@type":"Question","name":"Go:实现 K8s 测试 Operator","text":"用 Go 写一个 K8s Operator,自动跑集成测试并报告结果到 CRD Status。","acceptedAnswer":{"@type":"Answer","text":"CRD、Job、Reconcile、Status"}},{"@type":"Question","name":"设计测试环境管理方案","text":"设计公司级测试环境管理方案,覆盖多环境、数据隔离、环境准备与回收。","acceptedAnswer":{"@type":"Answer","text":"环境模板、按需环境、依赖 Mock、自动回收"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>K8s 面试题</h1>
+<p>共 <b>17</b> 道,高频考点 6 个。</p>
+<div class="stats">
+  <div class="stat"><b>17</b><span>题目数</span></div>
+  <div class="stat"><b>8</b><span>中级</span></div><div class="stat"><b>8</b><span>高级</span></div><div class="stat"><b>1</b><span>初级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">Reconcile</span><span class="tag">CRD</span><span class="tag">JSONPatch</span><span class="tag">kubernetes client</span><span class="tag">Mutating Webhook</span><span class="tag">PSA</span></div>
+<h2>题目列表</h2>
+<h2>1. Kubernetes 核心概念</h2>
+<p>讲 K8s 的核心对象 Pod/Deployment/Service/Ingress/ConfigMap 的作用,以及 Pod 调度流程。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Pod/Service/Deployment</span><span class="tag">Reconcile</span><span class="tag">调度流程</span><span class="tag">CNI/CSI</span></div><h2>2. K8s 调度与亲和性</h2>
+<p>讲 K8s 调度器的工作原理,nodeSelector/Affinity/Taint/Toleration/Topology Spread 的应用场景。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">Filter/Score</span><span class="tag">Affinity</span><span class="tag">Taint</span><span class="tag">Topology Spread</span></div><h2>3. 设计 K8s 多集群管理</h2>
+<p>设计一个多 K8s 集群管理方案,涵盖统一认证、应用分发、流量调度、容灾。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">多集群</span><span class="tag">Karmada</span><span class="tag">GitOps</span><span class="tag">容灾</span></div><h2>4. 你如何学习新技术</h2>
+<p>举一个你学习新技术(如 K8s)并应用到工作的例子。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">学习</span><span class="tag">K8s</span><span class="tag">实践</span><span class="tag">分享</span></div><h2>5. Helm Chart 编写</h2>
+<p>写一个 Helm Chart 部署一个 Web 服务,支持 Deployment/Service/ConfigMap/HPA。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Chart 结构</span><span class="tag">values</span><span class="tag">模板</span><span class="tag">HPA</span></div><h2>6. K8s Operator 编写</h2>
+<p>用 Go 或 Python 写一个 K8s Operator,管理一个自定义资源(CRD),实现 Reconcile。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">CRD</span><span class="tag">Reconcile</span><span class="tag">幂等</span><span class="tag">watch</span></div><h2>7. Python:K8s 资源利用率分析</h2>
+<p>用 Python 调 K8s API,统计所有命名空间的资源利用率,输出低利用率清单供优化。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">kubernetes client</span><span class="tag">metrics-server</span><span class="tag">owner 解析</span><span class="tag">聚合</span></div><h2>8. Go:写一个 K8s Admission Webhook</h2>
+<p>用 Go 写一个 Mutating Admission Webhook,强制给所有 Pod 注入 sidecar 或标签。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">Mutating Webhook</span><span class="tag">JSONPatch</span><span class="tag">caBundle</span><span class="tag">高可用</span></div><h2>9. Containerd 与 Docker 架构</h2>
+<p>讲 Containerd 与 Docker 的关系、CRI OCI 标准、runc、底层组件。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">containerd</span><span class="tag">CRI/OCI</span><span class="tag">runc</span><span class="tag">shim</span></div><h2>10. K8s 调度器原理与扩展</h2>
+<p>讲 K8s 调度器(scheduler)的工作流程:预选/优选/绑定,以及扩展机制。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Predicate/Score</span><span class="tag">调度框架</span><span class="tag">Volcano</span><span class="tag">Gang</span></div><h2>11. Python:K8s 资源巡检脚本</h2>
+<p>写 Python 脚本用 kubernetes 客户端巡检集群异常 Pod,发钉钉告警。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">kubernetes client</span><span class="tag">Pod 状态</span><span class="tag">钉钉</span><span class="tag">巡检</span></div><h2>12. Go:实现 K8s Operator</h2>
+<p>用 Go + controller-runtime 实现一个自定义资源(CRD)的 Operator,管理应用生命周期。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">Reconcile</span><span class="tag">CRD</span><span class="tag">controller-runtime</span><span class="tag">kubebuilder</span></div><h2>13. K8s Pod CrashLoopBackOff 排查</h2>
+<p>K8s Pod 处于 CrashLoopBackOff 状态,讲一下完整的排查思路。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">CrashLoopBackOff</span><span class="tag">OOMKilled</span><span class="tag">kubectl logs --previous</span><span class="tag">probe</span></div><h2>14. 设计一个云原生安全体系</h2>
+<p>为 K8s/容器环境设计安全体系,涵盖镜像/运行时/网络/配置/密钥。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">镜像扫描</span><span class="tag">PSA</span><span class="tag">NetworkPolicy</span><span class="tag">Falco</span><span class="tag">eBPF</span></div><h2>15. Go:实现一个 K8s Admission Webhook 安全策略</h2>
+<p>用 Go 写一个 K8s Mutating Webhook,强制 Pod 安全基线(非 root、禁特权、必 limit)。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">Mutating Webhook</span><span class="tag">JSONPatch</span><span class="tag">PSA</span><span class="tag">非 root</span></div><h2>16. Go:实现 K8s 测试 Operator</h2>
+<p>用 Go 写一个 K8s Operator,自动跑集成测试并报告结果到 CRD Status。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">CRD</span><span class="tag">Job</span><span class="tag">Reconcile</span><span class="tag">Status</span></div><h2>17. 设计测试环境管理方案</h2>
+<p>设计公司级测试环境管理方案,覆盖多环境、数据隔离、环境准备与回收。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">环境模板</span><span class="tag">按需环境</span><span class="tag">依赖 Mock</span><span class="tag">自动回收</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

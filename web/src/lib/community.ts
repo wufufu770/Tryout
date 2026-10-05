@@ -219,6 +219,14 @@ export function validateExperience(data: any): { valid: boolean; error?: string 
   if (data.kind !== "interviewx-experience") return { valid: false, error: "文件类型不匹配(期望 interviewx-experience)" };
   if (typeof data.company !== "string" || !data.company) return { valid: false, error: "缺少 company 字段或非字符串" };
   if (!Array.isArray(data.questions)) return { valid: false, error: "缺少 questions 数组" };
+  /*
+   * ⚠️ 空数组必须拒绝(W5 审计补测发现)。
+   * 没有问题的"面经"没有任何价值,却会在列表里占位,
+   * 导入者还会以为自己导入成功了。
+   */
+  if (data.questions.length === 0) {
+    return { valid: false, error: "questions 不能为空(没有问题的面经没有意义)" };
+  }
   // 校验每个 question 元素
   for (let i = 0; i < data.questions.length; i++) {
     const q = data.questions[i];

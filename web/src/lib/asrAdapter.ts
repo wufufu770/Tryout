@@ -121,7 +121,10 @@ export class BrowserASRAdapter implements ASRAdapter {
       this.recognition.onerror = null;
       this.recognition.onend = null;
       this.recognition.stop();
-    } catch {}
+    } catch {
+      // R28:dispose() 里的清理 —— Web Speech API 的 stop() 在未激活时抛错,
+      //   属浏览器实现差异,不应抛到调用方。
+    }
     this.recognition = null;
   }
 }

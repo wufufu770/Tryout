@@ -9,11 +9,28 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "export:questionbank": "node scripts/export-questionbank.mjs"
+    "export:questionbank": "node scripts/export-questionbank.mjs",
+    "i18n:check": "node scripts/check-i18n.mjs",
+    "i18n:validate": "node scripts/validate-i18n.mjs",
+    "i18n:hardcoded": "node scripts/check-hardcoded-i18n.mjs",
+    "no-silent-catch": "node scripts/check-silent-catch.mjs",
+    "gates:web": "npm run i18n:check && npm run i18n:validate && npm run i18n:hardcoded && npm run no-silent-catch",
+    "test:e2e:scoring": "node scripts/e2e-isolated-scoring.mjs",
+    "eval:ab": "node scripts/eval-ab.mjs --mock",
+    "eval:ab:real": "node scripts/eval-ab.mjs",
+    "eval:accuracy": "node scripts/eval-accuracy.mjs",
+    "eval:accuracy:mock": "node scripts/eval-accuracy.mjs --mock",
+    "e2e:browser": "node scripts/e2e-browser.mjs",
+    "gen:pages": "node scripts/generate-question-pages.mjs",
+    "gen:sitemap": "node scripts/generate-sitemap.mjs",
+    "gen:all": "npm run export:questionbank && npm run gen:pages && npm run gen:sitemap",
+    "e2e:browser:flow": "node scripts/e2e-browser-flow.mjs",
+    "gen:tier-rubrics": "node scripts/gen-tier-rubrics.mjs"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
     "lucide-react": "^0.453.0",
+    "monaco-editor": "^0.57.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
@@ -21,15 +38,22 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.20",
+    "jsdom": "^30.1.1",
+    "playwright-core": "^1.63.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.3",
     "vite": "^5.4.9",
     "vitest": "^2.1.4"
+  },
+  "overrides": {
+    "dompurify": "^3.4.16"
   }
 }

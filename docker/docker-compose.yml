@@ -5,7 +5,18 @@ services:
       dockerfile: docker/Dockerfile.server
     container_name: tryout-server
     ports:
-      - "3001:3001"
+      # ⚠️ 必须绑到回环地址,不能是 "3001:3001"(ISSUE-027)
+      #
+      #   下面第 18 行设了 BEHIND_PROXY=1,`index.js:56` 因此会
+      #   `app.set("trust proxy", 1)`,Express 从 X-Forwarded-For 取 req.ip。
+      #   正常路径下 nginx 用 `$remote_addr` **替换** XFF,伪造值无效。
+      #   但若后端端口对局域网开放,攻击者**绕过 nginx 直连 3001** 并自行构造
+      #   X-Forwarded-For,就能让每次请求的 req.ip 都不同 →
+      #     - 限流被完全绕过(实测 200 次不同 XFF,0 次 429)
+      #     - 限流器的 Map key 基数无界
+      #   绑 127.0.0.1 后,只有本机能直连,伪造 XFF 无从下手;
+      #   同时保留本机直接调试后端的便利(README 的 localhost:3001 仍可用)。
+      - "127.0.0.1:3001:3001"
     volumes:
       - tryout-data:/data
     environment:

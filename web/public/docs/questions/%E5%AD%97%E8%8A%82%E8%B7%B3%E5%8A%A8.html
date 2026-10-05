@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>字节跳动 面试题 · 45 道</title>
+<meta name="description" content="字节跳动 相关面试题共 45 道,高频考点:STAR、Hooks 链表、召回排序、哑节点、滑动窗口。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"字节跳动 面试题 · 45 道","description":"字节跳动 相关面试题共 45 道,高频考点:STAR、Hooks 链表、召回排序、哑节点、滑动窗口。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"缓存穿透、击穿、雪崩的区别与解决","text":"讲一下缓存穿透、缓存击穿、缓存雪崩各自的现象、区别和解决方案,并对比布隆过滤器与缓存空值。","acceptedAnswer":{"@type":"Answer","text":"穿透 vs 击穿 vs 雪崩、布隆过滤器、互斥锁、TTL 抖动"}},{"@type":"Question","name":"Go 的协程与线程的区别","text":"对比 Go goroutine 与操作系统线程在调度、栈大小、切换开销上的差异,以及 GMP 模型的核心思想。","acceptedAnswer":{"@type":"Answer","text":"协程 vs 线程、栈动态伸缩、GMP、work stealing"}},{"@type":"Question","name":"Netty Reactor 模型与 IO 多路复用","text":"讲 Netty 的 Reactor 模型、BossGroup 与 WorkerGroup 的分工,以及 Linux 下 epoll/select/poll 的区别。","acceptedAnswer":{"@type":"Answer","text":"Reactor、Boss/Worker、epoll 边沿触发、Netty 优势"}},{"@type":"Question","name":"设计 Twitter/微博 Feed 流系统","text":"设计一个支持亿级用户、千万级并发的 Feed 流系统,要求推拉结合、按时间排序、关注关系动态变化。","acceptedAnswer":{"@type":"Answer","text":"推拉结合、写扩散/读扩散、大 V 处理、Redis ZSET"}},{"@type":"Question","name":"手撕链表表示的两个数相加","text":"给定两个非空链表表示两个非负整数(逆序存储,每位一个数字),返回相加结果的链表。如 (2→4→3)+(5→6→4)=7→0→8(342+465=807)。","acceptedAnswer":{"@type":"Answer","text":"模拟加法、carry 进位、哑节点、边界处理"}},{"@type":"Question","name":"手撕股票买卖(一次与无限次)","text":"给定股票每天价格数组,求(1)只能买卖一次的最大利润;(2)可买卖多次(不可同时持有)的最大利润。","acceptedAnswer":{"@type":"Answer","text":"历史最小值、贪心累加、状态机 DP、K 次推广"}},{"@type":"Question","name":"手撕令牌桶限流器(滑动窗口)","text":"实现一个限流器,要求「任一连续 1 小时窗口内不超过 N 个请求」。要求并发安全、支持分布式。","acceptedAnswer":{"@type":"Answer","text":"滑动窗口、令牌桶 refill、Lua 原子、ZSET、时钟依赖"}},{"@type":"Question","name":"讲一次你做过的最有挑战的项目(字节风格)","text":"用 STAR 描述一个你做过的最有挑战的项目,重点讲清背景复杂性、你的技术决策、推进过程中的难点与最终量化结果。","acceptedAnswer":{"@type":"Answer","text":"STAR、全链路 trace、多级缓存、量化结果"}},{"@type":"Question","name":"Vue 与 React 响应式原理对比","text":"对比 Vue3 与 React 的响应式实现差异、依赖收集方式,以及在 Vue 中 reactive 解构丢响应的原因。","acceptedAnswer":{"@type":"Answer","text":"Proxy 响应式、track/trigger、解构丢响应、细粒度"}},{"@type":"Question","name":"React Hooks 原理与闭包陷阱","text":"讲 React Hooks 的实现原理(useState/useEffect 闭包链表)、闭包陷阱的产生原因与解决方案。","acceptedAnswer":{"@type":"Answer","text":"Hooks 链表、闭包陷阱、函数式更新、useRef"}},{"@type":"Question","name":"TypeScript 类型系统进阶","text":"讲 TS 的类型推导、泛型约束、条件类型、映射类型,以及 const 断言与类型保护。","acceptedAnswer":{"@type":"Answer","text":"泛型约束、条件类型、映射类型、类型保护"}},{"@type":"Question","name":"手撕 promisePool 并发控制","text":"实现 promisePool(limit, tasks):最多同时执行 limit 个异步任务,完成一个补一个,返回所有结果(保序)。","acceptedAnswer":{"@type":"Answer","text":"队列调度、worker 池、保序、并发控制"}},{"@type":"Question","name":"手撕简易 React(支持 hooks 与函数组件)","text":"实现一个最简 React,支持 jsx 转换、createElement、render 到 DOM、useState、useEffect。","acceptedAnswer":{"@type":"Answer","text":"createElement、vdom、函数组件、Hooks 链表"}},{"@type":"Question","name":"讲一次你主导的前端架构演进","text":"用 STAR 描述一次你主导的前端架构演进(如 Webpack→Vite、Vue2→Vue3、SPA→SSR)。","acceptedAnswer":{"@type":"Answer","text":"架构演进、渐进迁移、风险对齐、团队赋能"}},{"@type":"Question","name":"有序数组找缺失数字(O(logn))","text":"给定一个长度为 n 的有序数组,元素都不重复且都在 [0, n] 范围内,找出缺失的那个数字,要求 O(logn) 时间复杂度。","acceptedAnswer":{"@type":"Answer","text":"二分查找、边界条件、整数溢出、O(logn)"}},{"@type":"Question","name":"手撕 multi-head self-attention","text":"用 PyTorch 或 TensorFlow 实现 multi-head self-attention,要求按 Google Transformer 原论文实现思路。","acceptedAnswer":{"@type":"Answer","text":"multi-head、scaled dot-product、softmax、Q/K/V 投影"}},{"@type":"Question","name":"无重复字符的最长子串(滑动窗口)","text":"给定字符串 s,返回不含重复字符的最长子串长度,要求 O(n)。","acceptedAnswer":{"@type":"Answer","text":"滑动窗口、left 跳跃条件、O(n)"}},{"@type":"Question","name":"实现 LFU 缓存(O(1))","text":"实现 LFU:get/put 均 O(1)。要求支持同频次 LRU 淘汰,讲清 minFreq 维护机制。","acceptedAnswer":{"@type":"Answer","text":"频次链表、minFreq 维护、同频 LRU、O(1)"}},{"@type":"Question","name":"合并 K 个有序链表(小顶堆与分治)","text":"合并 K 个有序链表为一个有序链表。给出堆与分治两种解法并分析复杂度。","acceptedAnswer":{"@type":"Answer","text":"小顶堆、分治归并、O(n log k)、哑节点"}},{"@type":"Question","name":"讲一次你算法上线效果下降的经历","text":"用 STAR 描述一次你算法上线后效果不如离线指标的排查经历,以及学到的复盘。","acceptedAnswer":{"@type":"Answer","text":"特征穿越、离线在线一致性、监控告警"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>字节跳动 面试题</h1>
+<p>共 <b>45</b> 道,高频考点 5 个。</p>
+<div class="stats">
+  <div class="stat"><b>45</b><span>题目数</span></div>
+  <div class="stat"><b>12</b><span>初级</span></div><div class="stat"><b>19</b><span>中级</span></div><div class="stat"><b>14</b><span>高级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">STAR</span><span class="tag">Hooks 链表</span><span class="tag">召回排序</span><span class="tag">哑节点</span><span class="tag">滑动窗口</span></div>
+<h2>题目列表</h2>
+<h2>1. 缓存穿透、击穿、雪崩的区别与解决</h2>
+<p>讲一下缓存穿透、缓存击穿、缓存雪崩各自的现象、区别和解决方案,并对比布隆过滤器与缓存空值。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">穿透 vs 击穿 vs 雪崩</span><span class="tag">布隆过滤器</span><span class="tag">互斥锁</span><span class="tag">TTL 抖动</span></div><h2>2. Go 的协程与线程的区别</h2>
+<p>对比 Go goroutine 与操作系统线程在调度、栈大小、切换开销上的差异,以及 GMP 模型的核心思想。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">协程 vs 线程</span><span class="tag">栈动态伸缩</span><span class="tag">GMP</span><span class="tag">work stealing</span></div><h2>3. Netty Reactor 模型与 IO 多路复用</h2>
+<p>讲 Netty 的 Reactor 模型、BossGroup 与 WorkerGroup 的分工,以及 Linux 下 epoll/select/poll 的区别。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Reactor</span><span class="tag">Boss/Worker</span><span class="tag">epoll 边沿触发</span><span class="tag">Netty 优势</span></div><h2>4. 设计 Twitter/微博 Feed 流系统</h2>
+<p>设计一个支持亿级用户、千万级并发的 Feed 流系统,要求推拉结合、按时间排序、关注关系动态变化。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">推拉结合</span><span class="tag">写扩散/读扩散</span><span class="tag">大 V 处理</span><span class="tag">Redis ZSET</span></div><h2>5. 手撕链表表示的两个数相加</h2>
+<p>给定两个非空链表表示两个非负整数(逆序存储,每位一个数字),返回相加结果的链表。如 (2→4→3)+(5→6→4)=7→0→8(342+465=807)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">模拟加法</span><span class="tag">carry 进位</span><span class="tag">哑节点</span><span class="tag">边界处理</span></div><h2>6. 手撕股票买卖(一次与无限次)</h2>
+<p>给定股票每天价格数组,求(1)只能买卖一次的最大利润;(2)可买卖多次(不可同时持有)的最大利润。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">历史最小值</span><span class="tag">贪心累加</span><span class="tag">状态机 DP</span><span class="tag">K 次推广</span></div><h2>7. 手撕令牌桶限流器(滑动窗口)</h2>
+<p>实现一个限流器,要求「任一连续 1 小时窗口内不超过 N 个请求」。要求并发安全、支持分布式。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">滑动窗口</span><span class="tag">令牌桶 refill</span><span class="tag">Lua 原子</span><span class="tag">ZSET</span><span class="tag">时钟依赖</span></div><h2>8. 讲一次你做过的最有挑战的项目(字节风格)</h2>
+<p>用 STAR 描述一个你做过的最有挑战的项目,重点讲清背景复杂性、你的技术决策、推进过程中的难点与最终量化结果。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">STAR</span><span class="tag">全链路 trace</span><span class="tag">多级缓存</span><span class="tag">量化结果</span></div><h2>9. Vue 与 React 响应式原理对比</h2>
+<p>对比 Vue3 与 React 的响应式实现差异、依赖收集方式,以及在 Vue 中 reactive 解构丢响应的原因。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Proxy 响应式</span><span class="tag">track/trigger</span><span class="tag">解构丢响应</span><span class="tag">细粒度</span></div><h2>10. React Hooks 原理与闭包陷阱</h2>
+<p>讲 React Hooks 的实现原理(useState/useEffect 闭包链表)、闭包陷阱的产生原因与解决方案。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Hooks 链表</span><span class="tag">闭包陷阱</span><span class="tag">函数式更新</span><span class="tag">useRef</span></div><h2>11. TypeScript 类型系统进阶</h2>
+<p>讲 TS 的类型推导、泛型约束、条件类型、映射类型,以及 const 断言与类型保护。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">泛型约束</span><span class="tag">条件类型</span><span class="tag">映射类型</span><span class="tag">类型保护</span></div><h2>12. 手撕 promisePool 并发控制</h2>
+<p>实现 promisePool(limit, tasks):最多同时执行 limit 个异步任务,完成一个补一个,返回所有结果(保序)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">队列调度</span><span class="tag">worker 池</span><span class="tag">保序</span><span class="tag">并发控制</span></div><h2>13. 手撕简易 React(支持 hooks 与函数组件)</h2>
+<p>实现一个最简 React,支持 jsx 转换、createElement、render 到 DOM、useState、useEffect。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">createElement</span><span class="tag">vdom</span><span class="tag">函数组件</span><span class="tag">Hooks 链表</span></div><h2>14. 讲一次你主导的前端架构演进</h2>
+<p>用 STAR 描述一次你主导的前端架构演进(如 Webpack→Vite、Vue2→Vue3、SPA→SSR)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">架构演进</span><span class="tag">渐进迁移</span><span class="tag">风险对齐</span><span class="tag">团队赋能</span></div><h2>15. 有序数组找缺失数字(O(logn))</h2>
+<p>给定一个长度为 n 的有序数组,元素都不重复且都在 [0, n] 范围内,找出缺失的那个数字,要求 O(logn) 时间复杂度。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">二分查找</span><span class="tag">边界条件</span><span class="tag">整数溢出</span><span class="tag">O(logn)</span></div><h2>16. 手撕 multi-head self-attention</h2>
+<p>用 PyTorch 或 TensorFlow 实现 multi-head self-attention,要求按 Google Transformer 原论文实现思路。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">multi-head</span><span class="tag">scaled dot-product</span><span class="tag">softmax</span><span class="tag">Q/K/V 投影</span></div><h2>17. 无重复字符的最长子串(滑动窗口)</h2>
+<p>给定字符串 s,返回不含重复字符的最长子串长度,要求 O(n)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">滑动窗口</span><span class="tag">left 跳跃条件</span><span class="tag">O(n)</span></div><h2>18. 实现 LFU 缓存(O(1))</h2>
+<p>实现 LFU:get/put 均 O(1)。要求支持同频次 LRU 淘汰,讲清 minFreq 维护机制。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">频次链表</span><span class="tag">minFreq 维护</span><span class="tag">同频 LRU</span><span class="tag">O(1)</span></div><h2>19. 合并 K 个有序链表(小顶堆与分治)</h2>
+<p>合并 K 个有序链表为一个有序链表。给出堆与分治两种解法并分析复杂度。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">小顶堆</span><span class="tag">分治归并</span><span class="tag">O(n log k)</span><span class="tag">哑节点</span></div><h2>20. 讲一次你算法上线效果下降的经历</h2>
+<p>用 STAR 描述一次你算法上线后效果不如离线指标的排查经历,以及学到的复盘。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">特征穿越</span><span class="tag">离线在线一致性</span><span class="tag">监控告警</span></div><h2>21. 讲一次你推动算法平台化的经历</h2>
+<p>用 STAR 描述一次你推动公司算法平台化/标准化的跨团队协作经历。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">平台化</span><span class="tag">降低成本</span><span class="tag">机制化</span><span class="tag">特征一致性</span></div><h2>22. Hive 数据倾斜如何解决</h2>
+<p>讲 Hive/Spark 数据倾斜的现象、原因与解决方案,以 group by / join 为例。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">数据倾斜</span><span class="tag">MapJoin</span><span class="tag">随机前缀</span><span class="tag">combiner</span></div><h2>23. 数仓分层与维度建模</h2>
+<p>讲 Kimball 维度建模的星型/雪花模型,以及 ODS/DWD/DWS/ADS 分层职责。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">维度建模</span><span class="tag">星型/雪花</span><span class="tag">ODS/DWD/DWS/ADS</span><span class="tag">SCD</span></div><h2>24. Flink 状态管理与 Checkpoint</h2>
+<p>讲 Flink 有状态计算的 State 类型,以及 Checkpoint/Savepoint 原理与 Exactly-Once 实现。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Keyed State</span><span class="tag">RocksDB</span><span class="tag">Barrier 对齐</span><span class="tag">Exactly-Once</span></div><h2>25. 设计实时数仓 Lambda 与 Kappa 架构</h2>
+<p>对比 Lambda 与 Kappa 架构,并设计一个支持秒级延迟的实时数仓方案。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Lambda/Kappa</span><span class="tag">Flink</span><span class="tag">ClickHouse</span><span class="tag">CDC</span></div><h2>26. 设计公司级数据治理体系</h2>
+<p>为公司设计完整数据治理方案,涵盖数据质量/元数据/血缘/安全/资产。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">数据治理</span><span class="tag">血缘</span><span class="tag">元数据</span><span class="tag">DataHub</span></div><h2>27. 产品度量:AARRR 与北极星指标</h2>
+<p>讲 AARRR 海盗指标与北极星指标(NSM),结合抖音/淘宝举例。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">AARRR</span><span class="tag">北极星</span><span class="tag">留存</span><span class="tag">aha moment</span></div><h2>28. 为抖音设计老年人模式</h2>
+<p>为抖音设计「老年人模式」,聚焦于适老化产品改造,讲清楚产品决策。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">适老化</span><span class="tag">用户研究</span><span class="tag">A/B</span><span class="tag">灰度</span></div><h2>29. K8s Pod CrashLoopBackOff 排查</h2>
+<p>K8s Pod 处于 CrashLoopBackOff 状态,讲一下完整的排查思路。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">CrashLoopBackOff</span><span class="tag">OOMKilled</span><span class="tag">kubectl logs --previous</span><span class="tag">probe</span></div><h2>30. 讲一次你主导的稳定性治理项目</h2>
+<p>用 STAR 描述一次你主导的稳定性治理项目,有量化指标(MTTR/可用性/告警数)。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">SLI/SLO</span><span class="tag">burn rate</span><span class="tag">金丝雀回滚</span><span class="tag">告警治理</span></div><h2>31. Transformer Self-Attention 公式与复杂度</h2>
+<p>写出 Self-Attention 的公式,讲清 Q/K/V 计算与 O(n²d) 复杂度来源。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Self-Attention</span><span class="tag">Q/K/V</span><span class="tag">O(n²d)</span><span class="tag">Flash Attention</span></div><h2>32. 梯度消失与 LSTM/ResNet 解决</h2>
+<p>讲梯度消失原因,以及 LSTM 与 ResNet 各自如何解决。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">梯度消失</span><span class="tag">LSTM 门控</span><span class="tag">ResNet 残差</span><span class="tag">Skip Connection</span></div><h2>33. 设计推荐系统召回排序架构</h2>
+<p>为内容平台设计推荐系统,涵盖召回/粗排/精排/重排,以及冷启动处理。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">召回排序</span><span class="tag">DSSM</span><span class="tag">DeepFM</span><span class="tag">冷启动</span><span class="tag">多目标</span></div><h2>34. 设计公司 LLM 微调与部署方案</h2>
+<p>为公司设计基于开源 LLM(LLaMA/Qwen)的微调与部署方案,涵盖数据/SFT/RLHF/推理优化。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">LLM 微调</span><span class="tag">LoRA</span><span class="tag">RLHF</span><span class="tag">vLLM</span><span class="tag">量化</span></div><h2>35. 讲一次你主导的算法项目落地</h2>
+<p>用 STAR 描述一次你主导的算法项目从研究到上线全流程,有量化的业务收益。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">算法落地</span><span class="tag">召回排序</span><span class="tag">STAR</span><span class="tag">量化收益</span></div><h2>36. 讲一次你处理的高危漏洞应急</h2>
+<p>用 STAR 描述一次高危漏洞(如 Log4Shell 级别)应急响应,有量化的 MTTR/影响范围。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">Log4Shell</span><span class="tag">应急响应</span><span class="tag">MTTR</span><span class="tag">STAR</span></div><h2>37. 设计接口自动化测试框架</h2>
+<p>为公司设计 API 自动化测试框架,支持断言/数据驱动/Mock/报告/CI 集成。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">接口自动化</span><span class="tag">数据驱动</span><span class="tag">Allure</span><span class="tag">CI 集成</span></div><h2>38. Android Handler 机制与 Looper 死循环为什么不 ANR</h2>
+<p>讲 Android Handler/Looper/MessageQueue 机制,以及为什么主线程 Looper.loop() 死循环不会 ANR?</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Handler/Looper</span><span class="tag">epoll 阻塞</span><span class="tag">ANR 原理</span><span class="tag">MessageQueue</span></div><h2>39. Flutter 渲染原理与 Skia</h2>
+<p>讲 Flutter 的渲染管线、Widget/Element/RenderObject 三棵树,以及为什么 Flutter 性能接近原生。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">三棵树</span><span class="tag">Skia</span><span class="tag">自绘 UI</span><span class="tag">Impeller</span></div><h2>40. 设计移动端性能监控 APM</h2>
+<p>为公司设计移动端 APM(Application Performance Monitoring)方案,涵盖启动/卡顿/内存/网络/耗电。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">APM</span><span class="tag">FPS/ANR</span><span class="tag">采样上报</span><span class="tag">Matrix</span></div><h2>41. 设计跨端动态化方案(类 React Native)</h2>
+<p>为公司设计跨端动态化方案,要求支持热更新、性能接近原生、复用大厂生态。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">跨端</span><span class="tag">JSI</span><span class="tag">Fabric</span><span class="tag">热更新</span><span class="tag">Lynx</span></div><h2>42. 讲一次你主导的移动端性能优化</h2>
+<p>用 STAR 描述一次你主导的移动端性能优化项目,有量化的启动时间/包大小/卡顿率指标。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">启动优化</span><span class="tag">包大小</span><span class="tag">卡顿治理</span><span class="tag">STAR</span></div><h2>43. 为什么选择字节跳动?</h2>
+<p>请告诉我你为什么选择字节跳动?(Why ByteDance?)</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">公司理解</span><span class="tag">岗位匹配</span><span class="tag">字节范儿</span></div><h2>44. 字节跳动 OKR 与绩效考核机制</h2>
+<p>讲一下字节跳动 OKR 实施机制,以及与 KPI 在考核激励上的差异。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">OKR</span><span class="tag">双月</span><span class="tag">Context not Control</span><span class="tag">8 档绩效</span></div><h2>45. 设计公司降本增效下的人才保留方案</h2>
+<p>公司面临降本增效,需优化 10% HC 同时保留核心人才。设计完整方案,涵盖识别、沟通、补偿、传播。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">降本增效</span><span class="tag">九宫格</span><span class="tag">N+1</span><span class="tag">留核心</span><span class="tag">合规</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

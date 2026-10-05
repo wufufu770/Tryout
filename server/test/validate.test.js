@@ -181,3 +181,35 @@ test("嵌套 schema:对象中的数组", () => {
   assert.ok(schema.safeParse({ tags: ["a", "b"], count: 5 }).ok);
   assert.ok(!schema.safeParse({ tags: ["a", "b", "c", "d"], count: 5 }).ok);
 });
+
+// ---- W3-2:目标岗位字段 ----
+// 回归防护:白名单式 schema 会**静默剥离**未声明的字段。
+// 漏加 industry/position 会导致前端传了却存不进去、且不报任何错。
+test("SessionSchema 保留 W3-2 的 industry/position", () => {
+  const r = SessionSchema.safeParse({
+    title: "后端面试",
+    modelId: "gpt-4",
+    industry: "backend",
+    position: "后端工程师",
+  });
+  assert.ok(r.ok, "解析应成功");
+  assert.equal(r.value.industry, "backend", "industry 必须被保留(不能被静默剥离)");
+  assert.equal(r.value.position, "后端工程师", "position 必须被保留");
+});
+
+test("SessionSchema 允许 industry/position 为空(未设岗位是合法状态)", () => {
+  const r = SessionSchema.safeParse({ title: "x", modelId: "m", industry: null, position: null });
+  assert.ok(r.ok);
+  assert.equal(r.value.industry, null);
+});
+
+test("SessionSchema 拒绝过长的 industry/position", () => {
+  assert.ok(!SessionSchema.safeParse({ title: "x", modelId: "m", industry: "a".repeat(51) }).ok);
+  assert.ok(!SessionSchema.safeParse({ title: "x", modelId: "m", position: "a".repeat(101) }).ok);
+});
+
+test("SessionSchema 未传 industry/position 时不报错(向后兼容老库)", () => {
+  const r = SessionSchema.safeParse({ title: "x", modelId: "m" });
+  assert.ok(r.ok);
+  assert.equal(r.value.industry, undefined);
+});

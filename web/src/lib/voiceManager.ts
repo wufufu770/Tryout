@@ -104,10 +104,13 @@ class VoiceManager {
       opts.onEnd?.();
       return;
     }
-    // 先取消正在朗读的
+    // 先取消正在朗读的。R28:synth.cancel() 在未 speak 时调用会抛
+    //   InvalidStateError,属正常调用序列(先 stop 再 speak 是常见用法)。
     try {
       this.synth.cancel();
-    } catch {}
+    } catch {
+      // 见上
+    }
 
     const utter = new SpeechSynthesisUtterance(text);
     const voices = this.getVoices();
@@ -148,9 +151,12 @@ class VoiceManager {
   /** 停止朗读 */
   stop() {
     if (!this.synth) return;
+    // R28:synth.cancel() 在已停止时抛 InvalidStateError —— stop() 是幂等的,忽略。
     try {
       this.synth.cancel();
-    } catch {}
+    } catch {
+      // 见上
+    }
     this.setSpeaking(false);
   }
 }

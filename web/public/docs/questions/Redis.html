@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Redis 面试题 · 13 道</title>
+<meta name="description" content="Redis 相关面试题共 13 道,高频考点:Lua 原子、ZSET 滑动窗口、令牌桶 refill、时钟依赖、ZSET。涵盖 mid/junior/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"Redis 面试题 · 13 道","description":"Redis 相关面试题共 13 道,高频考点:Lua 原子、ZSET 滑动窗口、令牌桶 refill、时钟依赖、ZSET。涵盖 mid/junior/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"Redis 持久化 RDB 与 AOF 对比","text":"对比 Redis 的 RDB 和 AOF 两种持久化方式的原理、优缺点,以及混合持久化如何工作?","acceptedAnswer":{"@type":"Answer","text":"RDB fork、AOF 重写、混合持久化、everysec"}},{"@type":"Question","name":"设计一个简单的限流器","text":"实现一个 API 限流器,要求每个用户每分钟最多调用 100 次。给出算法选型和数据结构。","acceptedAnswer":{"@type":"Answer","text":"令牌桶、滑动窗口、Redis+Lua、临界突刺"}},{"@type":"Question","name":"设计一个秒杀系统","text":"设计一个商品秒杀系统,QPS 10万级,库存 1000 件。要求不超卖、防黄牛、低延迟。给出完整架构与关键流程。","acceptedAnswer":{"@type":"Answer","text":"Redis 原子扣减、MQ 异步下单、乐观锁兜底、风控"}},{"@type":"Question","name":"设计一个延迟队列","text":"设计一个支持百万级任务的延迟队列,任务到期自动触发。给出至少两种方案并对比。","acceptedAnswer":{"@type":"Answer","text":"ZSET 轮询、死信队列、时间轮、分片"}},{"@type":"Question","name":"你如何学习新技术","text":"举一个最近学习的技术的例子,说明你的学习路径和如何把它用到项目里。","acceptedAnswer":{"@type":"Answer","text":"学习方法、原理先行、落地+监控、知识沉淀"}},{"@type":"Question","name":"手撕实现一个限流器(滑动窗口+令牌桶)","text":"实现分布式安全的限流器:(1) 滑动窗口计数(2) 令牌桶。要求并发安全。","acceptedAnswer":{"@type":"Answer","text":"Lua 原子、ZSET 滑动窗口、令牌桶 refill、时钟依赖"}},{"@type":"Question","name":"设计一个分布式延迟队列","text":"设计支持亿级任务的分布式延迟队列,涵盖投递、触发、可靠、消费。","acceptedAnswer":{"@type":"Answer","text":"ZSET、时间轮、多层轮、死信"}},{"@type":"Question","name":"实现分布式锁(Redis)","text":"用 Redis 实现分布式锁,考虑可重入、续约、安全性。","acceptedAnswer":{"@type":"Answer","text":"SET NX、Lua 原子、看门狗续约、Redlock"}},{"@type":"Question","name":"缓存穿透、击穿、雪崩的区别与解决","text":"讲一下缓存穿透、缓存击穿、缓存雪崩各自的现象、区别和解决方案,并对比布隆过滤器与缓存空值。","acceptedAnswer":{"@type":"Answer","text":"穿透 vs 击穿 vs 雪崩、布隆过滤器、互斥锁、TTL 抖动"}},{"@type":"Question","name":"手撕令牌桶限流器(滑动窗口)","text":"实现一个限流器,要求「任一连续 1 小时窗口内不超过 N 个请求」。要求并发安全、支持分布式。","acceptedAnswer":{"@type":"Answer","text":"滑动窗口、令牌桶 refill、Lua 原子、ZSET、时钟依赖"}},{"@type":"Question","name":"设计一个限流计数器(滑动窗口+令牌桶)","text":"设计支持「每用户每分钟 100 次」的分布式限流器,给出两种算法实现与原子性保证。","acceptedAnswer":{"@type":"Answer","text":"ZSET 滑动窗口、令牌桶 refill、Lua 原子、时钟依赖"}},{"@type":"Question","name":"设计一个高可用 Redis 集群方案","text":"为公司设计 Redis 集群方案,要求支持 1TB 数据、QPS 10万、可用性 99.99%,讲分片/哨兵/复制。","acceptedAnswer":{"@type":"Answer","text":"Redis Cluster、16384 slot、failover、跨 AZ"}},{"@type":"Question","name":"Go:实现 IP 限流器","text":"用 Go + Redis 实现滑动窗口 IP 限流,支持多维度。","acceptedAnswer":{"@type":"Answer","text":"ZSET 滑动窗口、TxPipeline、多维度、兜底"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Redis 面试题</h1>
+<p>共 <b>13</b> 道,高频考点 7 个。</p>
+<div class="stats">
+  <div class="stat"><b>13</b><span>题目数</span></div>
+  <div class="stat"><b>8</b><span>中级</span></div><div class="stat"><b>3</b><span>初级</span></div><div class="stat"><b>2</b><span>高级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">Lua 原子</span><span class="tag">ZSET 滑动窗口</span><span class="tag">令牌桶 refill</span><span class="tag">时钟依赖</span><span class="tag">ZSET</span><span class="tag">时间轮</span><span class="tag">滑动窗口</span></div>
+<h2>题目列表</h2>
+<h2>1. Redis 持久化 RDB 与 AOF 对比</h2>
+<p>对比 Redis 的 RDB 和 AOF 两种持久化方式的原理、优缺点,以及混合持久化如何工作?</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">RDB fork</span><span class="tag">AOF 重写</span><span class="tag">混合持久化</span><span class="tag">everysec</span></div><h2>2. 设计一个简单的限流器</h2>
+<p>实现一个 API 限流器,要求每个用户每分钟最多调用 100 次。给出算法选型和数据结构。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">令牌桶</span><span class="tag">滑动窗口</span><span class="tag">Redis+Lua</span><span class="tag">临界突刺</span></div><h2>3. 设计一个秒杀系统</h2>
+<p>设计一个商品秒杀系统,QPS 10万级,库存 1000 件。要求不超卖、防黄牛、低延迟。给出完整架构与关键流程。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Redis 原子扣减</span><span class="tag">MQ 异步下单</span><span class="tag">乐观锁兜底</span><span class="tag">风控</span></div><h2>4. 设计一个延迟队列</h2>
+<p>设计一个支持百万级任务的延迟队列,任务到期自动触发。给出至少两种方案并对比。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">ZSET 轮询</span><span class="tag">死信队列</span><span class="tag">时间轮</span><span class="tag">分片</span></div><h2>5. 你如何学习新技术</h2>
+<p>举一个最近学习的技术的例子,说明你的学习路径和如何把它用到项目里。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">学习方法</span><span class="tag">原理先行</span><span class="tag">落地+监控</span><span class="tag">知识沉淀</span></div><h2>6. 手撕实现一个限流器(滑动窗口+令牌桶)</h2>
+<p>实现分布式安全的限流器:(1) 滑动窗口计数(2) 令牌桶。要求并发安全。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">Lua 原子</span><span class="tag">ZSET 滑动窗口</span><span class="tag">令牌桶 refill</span><span class="tag">时钟依赖</span></div><h2>7. 设计一个分布式延迟队列</h2>
+<p>设计支持亿级任务的分布式延迟队列,涵盖投递、触发、可靠、消费。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">ZSET</span><span class="tag">时间轮</span><span class="tag">多层轮</span><span class="tag">死信</span></div><h2>8. 实现分布式锁(Redis)</h2>
+<p>用 Redis 实现分布式锁,考虑可重入、续约、安全性。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">SET NX</span><span class="tag">Lua 原子</span><span class="tag">看门狗续约</span><span class="tag">Redlock</span></div><h2>9. 缓存穿透、击穿、雪崩的区别与解决</h2>
+<p>讲一下缓存穿透、缓存击穿、缓存雪崩各自的现象、区别和解决方案,并对比布隆过滤器与缓存空值。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">穿透 vs 击穿 vs 雪崩</span><span class="tag">布隆过滤器</span><span class="tag">互斥锁</span><span class="tag">TTL 抖动</span></div><h2>10. 手撕令牌桶限流器(滑动窗口)</h2>
+<p>实现一个限流器,要求「任一连续 1 小时窗口内不超过 N 个请求」。要求并发安全、支持分布式。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">滑动窗口</span><span class="tag">令牌桶 refill</span><span class="tag">Lua 原子</span><span class="tag">ZSET</span><span class="tag">时钟依赖</span></div><h2>11. 设计一个限流计数器(滑动窗口+令牌桶)</h2>
+<p>设计支持「每用户每分钟 100 次」的分布式限流器,给出两种算法实现与原子性保证。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">ZSET 滑动窗口</span><span class="tag">令牌桶 refill</span><span class="tag">Lua 原子</span><span class="tag">时钟依赖</span></div><h2>12. 设计一个高可用 Redis 集群方案</h2>
+<p>为公司设计 Redis 集群方案,要求支持 1TB 数据、QPS 10万、可用性 99.99%,讲分片/哨兵/复制。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Redis Cluster</span><span class="tag">16384 slot</span><span class="tag">failover</span><span class="tag">跨 AZ</span></div><h2>13. Go:实现 IP 限流器</h2>
+<p>用 Go + Redis 实现滑动窗口 IP 限流,支持多维度。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">ZSET 滑动窗口</span><span class="tag">TxPipeline</span><span class="tag">多维度</span><span class="tag">兜底</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

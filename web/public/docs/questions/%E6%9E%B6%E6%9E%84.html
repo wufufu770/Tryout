@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>架构 面试题 · 15 道</title>
+<meta name="description" content="架构 相关面试题共 15 道,高频考点:技术债、架构演进、团队赋能、技术栈、架构。涵盖 senior/mid 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"架构 面试题 · 15 道","description":"架构 相关面试题共 15 道,高频考点:技术债、架构演进、团队赋能、技术栈、架构。涵盖 senior/mid 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"设计一个亿级 DAU 的消息推送系统","text":"设计一个支持亿级 DAU、千万级并发的消息推送系统(如 IM 离线推送),要求端到端低延迟、消息不丢、可扩展。给出整体架构、关键模块、数据流。","acceptedAnswer":{"@type":"Answer","text":"长连接网关、读写扩散、outbox、ACK 重传、分库分表"}},{"@type":"Question","name":"团队的技术债和技术规划","text":"建议反问:技术规划、技术债、架构演进方向。","acceptedAnswer":{"@type":"Answer","text":"技术规划、技术债、架构演进"}},{"@type":"Question","name":"团队架构的天花板和技术影响力","text":"建议反问:架构复杂度、技术决策权、跨团队影响力。","acceptedAnswer":{"@type":"Answer","text":"架构决策、技术影响力、业务投入"}},{"@type":"Question","name":"技术栈与架构演进","text":"建议反问:技术栈选型、架构演进、技术债。","acceptedAnswer":{"@type":"Answer","text":"技术栈、架构、技术债"}},{"@type":"Question","name":"微前端架构方案对比","text":"对比 iframe、qiankun、module federation、Web Components 等微前端方案的原理与优劣,并说明选型。","acceptedAnswer":{"@type":"Answer","text":"iframe、qiankun 沙箱、MF 共享、Web Components"}},{"@type":"Question","name":"团队架构与前端地位","text":"建议反问:前端团队规模、架构演进、技术决策权。","acceptedAnswer":{"@type":"Answer","text":"团队规模、架构演进、技术决策权"}},{"@type":"Question","name":"讲一次你主导架构迁移","text":"用 STAR 描述一次你主导前端架构迁移(如 Vue2→Vue3、Webpack→Vite)。","acceptedAnswer":{"@type":"Answer","text":"架构迁移、渐进式、风险对齐、团队赋能"}},{"@type":"Question","name":"前端架构与技术栈","text":"建议反问:前端架构、技术栈选型、技术债。","acceptedAnswer":{"@type":"Answer","text":"架构、技术栈、技术债"}},{"@type":"Question","name":"讲一次你主导的前端架构演进","text":"用 STAR 描述一次你主导的前端架构演进(如 Webpack→Vite、Vue2→Vue3、SPA→SSR)。","acceptedAnswer":{"@type":"Answer","text":"架构演进、渐进迁移、风险对齐、团队赋能"}},{"@type":"Question","name":"设计一个公司级数据中台","text":"设计一个支撑全公司数据需求的数据中台,涵盖采集、计算、服务、治理。","acceptedAnswer":{"@type":"Answer","text":"数据中台、分层规范、数据服务、治理"}},{"@type":"Question","name":"零信任架构","text":"讲零信任(Zero Trust)的核心思想、NIST 800-207 模型、与边界安全的区别、落地组件。","acceptedAnswer":{"@type":"Answer","text":"NIST 800-207、PE/PA、微隔离、BeyondCorp、SDP"}},{"@type":"Question","name":"设计一个组件化架构","text":"为大型 App 设计组件化架构,解决多团队协作与编译效率。","acceptedAnswer":{"@type":"Answer","text":"路由、服务接口、事件总线、独立调试"}},{"@type":"Question","name":"讲一次你主导的架构升级","text":"用 STAR 描述一次你主导的移动端架构升级,如组件化或重构。","acceptedAnswer":{"@type":"Answer","text":"组件化、渐进、培训、量化"}},{"@type":"Question","name":"移动端架构演进 MVC→MVP→MVVM→MVI","text":"讲 Android 架构从 MVC 到 MVP/MVVM/MVI 的演进动机、核心思想、优劣。","acceptedAnswer":{"@type":"Answer","text":"MVC 痛点、MVP 接口爆炸、MVVM 数据驱动、MVI 单向流"}},{"@type":"Question","name":"设计超级 App 架构","text":"设计微信/支付宝类超级 App 架构,涵盖模块化、插件化、动态化、通信。","acceptedAnswer":{"@type":"Answer","text":"模块化、ARouter、插件化、小程序容器、SPI"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>架构 面试题</h1>
+<p>共 <b>15</b> 道,高频考点 6 个。</p>
+<div class="stats">
+  <div class="stat"><b>15</b><span>题目数</span></div>
+  <div class="stat"><b>7</b><span>高级</span></div><div class="stat"><b>8</b><span>中级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">技术债</span><span class="tag">架构演进</span><span class="tag">团队赋能</span><span class="tag">技术栈</span><span class="tag">架构</span><span class="tag">风险对齐</span></div>
+<h2>题目列表</h2>
+<h2>1. 设计一个亿级 DAU 的消息推送系统</h2>
+<p>设计一个支持亿级 DAU、千万级并发的消息推送系统(如 IM 离线推送),要求端到端低延迟、消息不丢、可扩展。给出整体架构、关键模块、数据流。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">长连接网关</span><span class="tag">读写扩散</span><span class="tag">outbox</span><span class="tag">ACK 重传</span><span class="tag">分库分表</span></div><h2>2. 团队的技术债和技术规划</h2>
+<p>建议反问:技术规划、技术债、架构演进方向。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">技术规划</span><span class="tag">技术债</span><span class="tag">架构演进</span></div><h2>3. 团队架构的天花板和技术影响力</h2>
+<p>建议反问:架构复杂度、技术决策权、跨团队影响力。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">架构决策</span><span class="tag">技术影响力</span><span class="tag">业务投入</span></div><h2>4. 技术栈与架构演进</h2>
+<p>建议反问:技术栈选型、架构演进、技术债。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">技术栈</span><span class="tag">架构</span><span class="tag">技术债</span></div><h2>5. 微前端架构方案对比</h2>
+<p>对比 iframe、qiankun、module federation、Web Components 等微前端方案的原理与优劣,并说明选型。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">iframe</span><span class="tag">qiankun 沙箱</span><span class="tag">MF 共享</span><span class="tag">Web Components</span></div><h2>6. 团队架构与前端地位</h2>
+<p>建议反问:前端团队规模、架构演进、技术决策权。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">团队规模</span><span class="tag">架构演进</span><span class="tag">技术决策权</span></div><h2>7. 讲一次你主导架构迁移</h2>
+<p>用 STAR 描述一次你主导前端架构迁移(如 Vue2→Vue3、Webpack→Vite)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">架构迁移</span><span class="tag">渐进式</span><span class="tag">风险对齐</span><span class="tag">团队赋能</span></div><h2>8. 前端架构与技术栈</h2>
+<p>建议反问:前端架构、技术栈选型、技术债。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">架构</span><span class="tag">技术栈</span><span class="tag">技术债</span></div><h2>9. 讲一次你主导的前端架构演进</h2>
+<p>用 STAR 描述一次你主导的前端架构演进(如 Webpack→Vite、Vue2→Vue3、SPA→SSR)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">架构演进</span><span class="tag">渐进迁移</span><span class="tag">风险对齐</span><span class="tag">团队赋能</span></div><h2>10. 设计一个公司级数据中台</h2>
+<p>设计一个支撑全公司数据需求的数据中台,涵盖采集、计算、服务、治理。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">数据中台</span><span class="tag">分层规范</span><span class="tag">数据服务</span><span class="tag">治理</span></div><h2>11. 零信任架构</h2>
+<p>讲零信任(Zero Trust)的核心思想、NIST 800-207 模型、与边界安全的区别、落地组件。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">NIST 800-207</span><span class="tag">PE/PA</span><span class="tag">微隔离</span><span class="tag">BeyondCorp</span><span class="tag">SDP</span></div><h2>12. 设计一个组件化架构</h2>
+<p>为大型 App 设计组件化架构,解决多团队协作与编译效率。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">路由</span><span class="tag">服务接口</span><span class="tag">事件总线</span><span class="tag">独立调试</span></div><h2>13. 讲一次你主导的架构升级</h2>
+<p>用 STAR 描述一次你主导的移动端架构升级,如组件化或重构。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">组件化</span><span class="tag">渐进</span><span class="tag">培训</span><span class="tag">量化</span></div><h2>14. 移动端架构演进 MVC→MVP→MVVM→MVI</h2>
+<p>讲 Android 架构从 MVC 到 MVP/MVVM/MVI 的演进动机、核心思想、优劣。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">MVC 痛点</span><span class="tag">MVP 接口爆炸</span><span class="tag">MVVM 数据驱动</span><span class="tag">MVI 单向流</span></div><h2>15. 设计超级 App 架构</h2>
+<p>设计微信/支付宝类超级 App 架构,涵盖模块化、插件化、动态化、通信。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">模块化</span><span class="tag">ARouter</span><span class="tag">插件化</span><span class="tag">小程序容器</span><span class="tag">SPI</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

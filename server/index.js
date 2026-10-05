@@ -7,11 +7,15 @@ import express from "express";
 import cors from "cors";
 import multer from "multer";
 import mammoth from "mammoth";
+import * as questionBank from "./services/questionBank.js";
+import { createRateLimiter } from "./rateLimiter.js";
+import { secondsUntilUtcMidnight } from "./budget.js";
+import { analyzeWeaknessCore } from "./services/weaknessCore.js";
 import path from "path";
 import fs from "fs";
 import dns from "dns";
 import {
-  listAgents, getAgent, createAgent, createAgentVersion, updateAgentBasic, deleteAgent,
+  listAgents, getAgent, createAgent, createAgentVersion, updateAgentBasic, updateAgentWithVersion, deleteAgent,
   createSession, getSession, listSessions, updateSessionModel, updateSessionStage, addSessionAgent, listSessionAgents,
   addMessage, listMessages,
   createMaterial, listMaterials, getMaterialContent, deleteMaterial,
@@ -23,6 +27,7 @@ import {
   createSessionReview, getSessionReview, listAllSessionReviews,
   createSessionGroup, getSessionGroup, listSessionGroups, updateSessionGroup, deleteSessionGroup,
   setSessionGroup, listSessionsByGroup, listUngroupedSessions,
+  markQuestionAsked, listAskedQuestions, listAskedQuestionIds,
   saveAgentIcon, getAgentIconPath,
   ValidationError, NotFoundError,
   dbHealthCheck, DB_DIR_EXPORT,
@@ -110,33 +115,9 @@ app.use(responseHelpers);
 // ---- 结构化请求日志(替代 console.log) ----
 app.use(requestLogger);
 
-// ---- Rate limit 中间件(零依赖,基于内存 Map) ----
-// v10:key 改用 req.ip(配合 app.set("trust proxy", 1) 取真实客户端 IP)
-// 原实现用 XFF 第一段可伪造,攻击者可绕过限流
-function createRateLimiter({ windowMs, max, label }) {
-  const hits = new Map();
-  setInterval(() => {
-    const now = Date.now();
-    for (const [k, v] of hits) if (v.resetAt <= now) hits.delete(k);
-  }, windowMs).unref();
-  return (req, res, next) => {
-    // v10:用 req.ip(BEHIND_PROXY=1 时取 XFF 最后一段,否则取 TCP 连接地址,均不可伪造)
-    const ip = req.ip || "unknown";
-    const now = Date.now();
-    let rec = hits.get(ip);
-    if (!rec || rec.resetAt <= now) {
-      rec = { count: 0, resetAt: now + windowMs };
-      hits.set(ip, rec);
-    }
-    rec.count++;
-    if (rec.count > max) {
-      const retry = Math.ceil((rec.resetAt - now) / 1000);
-      res.setHeader("Retry-After", retry);
-      return res.status(429).json({ error: `请求过于频繁,请 ${retry} 秒后重试(${label})`, code: "RATE_LIMITED" });
-    }
-    next();
-  };
-}
+// ---- Rate limit 中间件 ----
+// R49:实现已移到 server/rateLimiter.js —— index.js 是入口,import 即启动服务,
+// 单测拿不到这里的函数;抽出去才能用**短窗口**对 Retry-After 的时间契约做行为断言。
 app.use("/api", createRateLimiter({ windowMs: 60_000, max: 120, label: "general" }));
 app.use("/api/chat", createRateLimiter({ windowMs: 60_000, max: 20, label: "chat" }));
 // v11:分析路由(语音转写 / 逐题反馈 / 押题),LLM 调用共享 chat 限流语义
@@ -505,14 +486,69 @@ app.put("/api/agents/:id/current-version", (req, res) => {
   res.ok(setAgentCurrentVersion(req.params.id, req.body.versionId));
 });
 app.post("/api/agents/:id/versions", (req, res) => {
-  // 版本创建:仅 promptTemplate + 可选 name
+  /*
+   * R32(ISSUE-064):此前这里只有 `{ name, promptTemplate }` 两个字段。
+   * 但 `createAgentVersion()` 读的是 tone / focusAreas / difficulty / changelog,
+   * 前端 AgentPage.handleSave 传的也正是这五个字段。
+   * 本项目自研 `s.object()` 默认 `_stripUnknown = true` —— 未知字段**静默丢弃**,
+   * 不报错、不警告。实测(见 scripts/e2e-agents-keys.mjs 的对应断言):
+   *   tone 期望 aggressive 实得 neutral / difficulty 期望 8 实得 5
+   *   focusAreas 期望含「缓存一致性」实得 [] / changelog 实得 null
+   * 即用户在页面上改的语气、难度、关注领域、变更说明**保存后全部消失**。
+   * 与 ISSUE-013(stage-agents 静默剥字段)是同一反模式的不同落点。
+   *
+   * 一律 optional 而非 default():undefined 表示"调用方没给"，
+   * 由 createAgentVersion 现有的 `|| "neutral"` / `|| 5` 兜底。
+   * 用 default() 会让"只改 promptTemplate"也把语气重置成 neutral。
+   */
   const input = s.object({
     name: s.string().max(100).optional(),
     promptTemplate: s.string().min(1, "promptTemplate 为必填").max(20000),
+    // enum 与 AgentSchema.tone 同源(前端 api/types.ts 的 Tone)
+    tone: s.enum(["gentle", "direct", "aggressive", "professional", "neutral", "pragmatic"]).optional(),
+    difficulty: s.number().int().min(1).max(10).optional(),
+    focusAreas: s.array(s.string().max(30)).max(10).optional(),
+    // 变更说明无既有长度约定(列是 TEXT);取 500 与 name 的量级相当,
+    // 超出即报错而不是静默截断 —— 静默截断会让人以为完整保存了。
+    changelog: s.string().max(500).optional(),
   }).parse(req.body);
   res.ok(createAgentVersion(req.params.id, input));
 });
 app.delete("/api/agents/:id", (req, res) => { deleteAgent(req.params.id); res.ok({ ok: true }); });
+
+/*
+ * R32(ISSUE-065):Agent 的一次性保存(基本信息 + 新版本),单事务完成。
+ *
+ * 取代前端原先"先 PUT basic 再 POST versions"的两步写法 —— 那两步之间没有回滚,
+ * 第二步失败就会留下"基本信息已改、版本没建"的半状态(详见 db.js 里该函数的注释)。
+ *
+ * 两个旧端点保留不动:它们仍是合法的细粒度 API,只是不再被前端的主保存路径使用。
+ */
+app.put("/api/agents/:id", (req, res) => {
+  const body = req.body || {};
+  // basic 侧刻意**不**声明 tone/focusAreas/difficulty:
+  // 它们只存在于 agent_versions 表(见 createAgentVersion),
+  // updateAgentBasic() 从来不读这三个字段。此前 basic 的 pick 列表里列着它们,
+  // 属于"契约声明了但实现不处理"的骗人声明,会让人以为改 basic 就能改语气。
+  const basic = s.object({
+    name: s.string().min(1).max(50).optional(),
+    avatar: s.string().max(20).optional(),
+    role: s.enum(["hr", "tech", "ceo", "candidate", "custom"]).optional(),
+    iconType: s.enum(["emoji", "preset", "uploaded"]).optional(),
+    iconValue: s.string().max(200).optional(),
+    preferredProviderId: s.string().max(100).nullable(),
+    agentKind: s.enum(["interviewer", "candidate"]).optional(),
+    candidatePersona: s.string().max(50).nullable(),
+  }).parse(body.basic || {});
+  const version = s.object({
+    promptTemplate: s.string().min(1, "promptTemplate 为必填").max(20000),
+    tone: s.enum(["gentle", "direct", "aggressive", "professional", "neutral", "pragmatic"]).optional(),
+    difficulty: s.number().int().min(1).max(10).optional(),
+    focusAreas: s.array(s.string().max(30)).max(10).optional(),
+    changelog: s.string().max(500).optional(),
+  }).parse(body.version || {});
+  res.ok(updateAgentWithVersion(req.params.id, basic, version));
+});
 
 // Agent 图标上传
 app.post("/api/agents/:id/icon", iconUpload.single("file"), (req, res) => {
@@ -587,11 +623,19 @@ app.put("/api/sessions/:id/stage-agents", (req, res) => {
   if (!getSession(req.params.id)) return res.fail(ErrorCodes.NOT_FOUND, "会话不存在", 404);
   const stage = Number(req.query.stage);
   if (!Number.isInteger(stage) || stage < 0) throw new ValidationError("stage 查询参数为必填且须为非负整数");
+  // ⚠️ 字段名必须与 表结构(role_in_stage / ask_mode / sort_order)、
+  //   db.saveStageAgents 读取的 a.roleInStage / a.askMode / a.sortOrder、
+  //   以及前端 StageAgentBinding 类型**完全一致**(ISSUE-025)。
+  //   此前这里错写成 roleInSession —— 白名单 schema 会把它与 askMode/sortOrder
+  //   一并**静默剥离**,导致 saveStageAgents 永远拿到 undefined,
+  //   所有阶段绑定的角色被强制成 "primary"、askMode 强制成 "sequential"、顺序强制成 0。
+  //   表现是:用户切了"同时提问/顺序提问",接口返回 200,但设置毫无作用。
   const { agents } = s.object({ agents: s.array(s.object({
     agentId: s.string().min(1).max(50),
-    agentVersionId: s.string().max(50).optional(),
-    roleInSession: s.string().max(50).optional(),
-  })).max(20) }).parse(req.body);
+    roleInStage: s.string().min(1).max(50).optional(),
+    askMode: s.enum(["sequential", "simultaneous"]).optional(),
+    sortOrder: s.number().int().min(0).max(999).optional(),
+  }).passthrough()).max(20) }).parse(req.body);
   res.ok(saveStageAgents(req.params.id, stage, agents));
 });
 app.delete("/api/sessions/:id/stage-agents", (req, res) => {
@@ -640,9 +684,8 @@ app.post("/api/materials/upload", upload.single("file"), wrapAsync(async (req, r
     let text = "";
 
     if (ext === "pdf") {
-      const pdfParse = (await import("pdf-parse")).default;
-      const data = await pdfParse(buf);
-      text = data.text;
+      const { extractPdfText } = await import("./services/pdf.js");
+      text = await extractPdfText(buf);
     } else if (ext === "docx") {
       const result = await mammoth.extractRawText({ buffer: buf });
       text = result.value;
@@ -664,12 +707,108 @@ app.post("/api/materials/upload", upload.single("file"), wrapAsync(async (req, r
     });
   } catch (e) {
     const msg = e?.message || "";
-    if (/pdf|zip|central directory|invalid/i.test(msg)) {
+    // 扫描件 / 无文字层:给出可操作的提示,而不是笼统的"解析失败"
+    if (e?.code === "PDF_NO_TEXT") {
+      return res.fail(ErrorCodes.VALIDATION_ERROR, msg, 400);
+    }
+    if (/已加密|需要密码/.test(msg)) {
+      return res.fail(ErrorCodes.VALIDATION_ERROR, msg, 400);
+    }
+    if (/pdf|zip|central directory|invalid|解析失败/i.test(msg)) {
       return res.fail(ErrorCodes.VALIDATION_ERROR, "文件损坏或格式不正确,请检查文件", 400);
     }
     next(e);
   }
 }));
+
+// ---- Question Bank(W3-1) ----
+/*
+ * 题库此前只在前端内存里(909 KB 全进主 bundle),服务端读不到 referenceAnswer。
+ * 现由 web/scripts/export-questionbank.mjs 生成 server/data/questionbank.json,
+ * 服务端在此提供检索能力。
+ *
+ * 🔴 安全约束:**列表接口一律剔除 referenceAnswer**。
+ *    它是"正确答案",暴露给前端等于让用户背答案,评估随即失去意义。
+ *    只有 getReferenceForScoring() 在服务端内部调用时才会带上。
+ */
+app.get("/api/questionbank/stats", (req, res) => {
+  res.ok(questionBank.getBankStats());
+});
+
+// 某场面试已问了哪些题(前端据此避免重复出题)
+app.get("/api/sessions/:id/asked-questions", (req, res) => {
+  if (!getSession(req.params.id)) return res.fail(ErrorCodes.NOT_FOUND, "会话不存在", 404);
+  res.ok(listAskedQuestions(req.params.id));
+});
+
+// 记录某题已被问过
+app.post("/api/sessions/:id/asked-questions", (req, res) => {
+  if (!getSession(req.params.id)) return res.fail(ErrorCodes.NOT_FOUND, "会话不存在", 404);
+  const { questionId, industry, type, difficulty } = req.body || {};
+  if (!questionId || typeof questionId !== "string") {
+    return res.fail(ErrorCodes.VALIDATION_ERROR, "questionId 为必填", 400);
+  }
+  markQuestionAsked({ sessionId: req.params.id, questionId, industry, type, difficulty });
+  res.ok({ ok: true });
+});
+
+app.get("/api/questionbank", (req, res) => {
+  const stats = questionBank.getBankStats();
+  if (!stats.available) {
+    return res.fail(
+      ErrorCodes.VALIDATION_ERROR,
+      "题库未生成,请在 web/ 下执行 npm run export:questionbank",
+      503
+    );
+  }
+  const industry = typeof req.query.industry === "string" ? req.query.industry : "";
+  if (!industry) {
+    return res.fail(ErrorCodes.VALIDATION_ERROR, "industry 为必填", 400);
+  }
+  const list = questionBank.selectQuestions({
+    industry,
+    sessionDifficulty: req.query.difficulty,
+    type: req.query.type,
+    excludeIds: req.query.exclude ? String(req.query.exclude).split(",").filter(Boolean) : [],
+    resumeTags: req.query.tags ? String(req.query.tags).split(",") : [],
+    limit: req.query.limit ? parseInt(String(req.query.limit), 10) : undefined,
+  });
+  // 逐条剔除参考答案
+  res.ok(list.map(questionBank.toLite));
+});
+
+/*
+ * R32(ISSUE-038):**单题**的参考答案,供评分器构造题目级判据。
+ *
+ * 为什么这个端点存在(与上方"列表接口一律剔除"并不矛盾):
+ *   评分器(scoringEngine)整体跑在浏览器端 —— prompt 在前端拼、LLM 调用也在前端发。
+ *   参考答案不到前端就进不了 prompt。而 R18 的配对消融(唯一变量=是否注入每题
+ *   rubric)实测:不注入命中率 40%/偏移 −0.55,注入后 65%/偏移 −0.05。
+ *   也就是说缺这一块,评分器就是在没有题目基准的情况下打分。
+ *
+ * 🔴 安全权衡(**如实记录,不要当成"安全"**):
+ *   这个端点确实把答案送到了浏览器。它防住的只是"一次拉走 808 题全部答案"
+ *   (列表接口仍严格剔除),防不住已认证用户对当前这一题的直接读取 ——
+ *   而这在本地优先架构下本就不是安全边界:题库 JSON 就躺在用户自己的磁盘上
+ *   (server/data/questionbank.json),任何人读得到。
+ *   要真正堵住,只能把评分搬到后端(ADR-002 级重构),不在本轮范围。
+ *   缓解措施:受全局 authMiddleware 保护 + 60 次/分限流 + 只按 id 单查不批量。
+ */
+app.get("/api/questionbank/:id/reference", (req, res) => {
+  if (!questionBank.loadQuestionBank()) {
+    return res.fail(
+      ErrorCodes.VALIDATION_ERROR,
+      "题库未生成,请在 web/ 下执行 npm run export:questionbank",
+      503
+    );
+  }
+  const id = String(req.params.id || "");
+  if (!id) return res.fail(ErrorCodes.VALIDATION_ERROR, "id 为必填", 400);
+  const ref = questionBank.getReferenceForScoring(id);
+  // 题不存在 / 该题没有参考答案 —— 两者前端都只能降级为"无基准评估",故同码
+  if (!ref) return res.fail(ErrorCodes.NOT_FOUND, "该题无可用参考答案", 404);
+  res.ok(ref);
+});
 
 // ---- Evaluations ----
 app.get("/api/sessions/:id/evaluations", (req, res) => {
@@ -693,39 +832,10 @@ app.get("/api/analysis/weakness", (req, res) => {
   // v10.2.5(P2-1):limit 范围约束,防 limit=-1 加载全表 DoS
   const limit = Math.min(Math.max(parseInt(req.query.limit) || 5, 1), 100);
   const all = listAllEvaluations(limit);
-  if (all.length === 0) {
-    return res.ok({ hasData: false, message: "暂无评估数据,完成一次面试后再来查看" });
-  }
-
-  const dimScores = {};
-  for (const evalRow of all) {
-    for (const d of (evalRow.dimensions || [])) {
-      if (!dimScores[d.dimensionName]) dimScores[d.dimensionName] = [];
-      dimScores[d.dimensionName].push(d.score);
-    }
-  }
-
-  const dimAvgs = Object.entries(dimScores).map(([name, scores]) => ({
-    dimensionName: name,
-    avgScore: scores.reduce((a, b) => a + b, 0) / scores.length,
-    count: scores.length,
-  }));
-
-  dimAvgs.sort((a, b) => a.avgScore - b.avgScore);
-
-  const weakest = dimAvgs.slice(0, 2);
-  const advice = weakest.length > 0
-    ? `建议加强练习【${weakest.map(w => w.dimensionName).join("】和【")}】方向的题目。`
-    : "数据不足";
-
-  res.ok({
-    hasData: true,
-    totalEvaluations: all.length,
-    dimensionStats: dimAvgs,
-    weakestDimensions: weakest,
-    advice,
-    recentScores: all.reverse().map(e => ({ score: e.overallScore, date: e.generatedAt, sessionId: e.sessionId })),
-  });
+  // R25:核心逻辑抽到 services/weaknessCore.js 以便单测。
+  // 保留原有正确行为:无数据时 hasData:false,**不编造建议**。
+  // 新增:维度样本量门槛(默认 3 次)—— 1 个样本的 3 分是运气,不是弱项。
+  res.ok(analyzeWeaknessCore(all));
 });
 
 // ---- v5:整场面试回顾评价 ----
@@ -735,10 +845,25 @@ app.get("/api/sessions/:id/review", (req, res) => {
   res.ok(review || null);
 });
 app.post("/api/sessions/:id/review", (req, res) => {
+  // ⚠️ 这段 schema 此前与**表结构 / db 层 / 前端**三方完全对不上(ISSUE-018):
+  //   路由层声明 reviewText(必填) / summary / overallRating —— 这三个字段
+  //     在 session_reviews 表里**都不存在**,永远存不进去;
+  //   而真正的字段 overallScore 被白名单 schema **静默剥离**,
+  //     导致 createSessionReview 的 `overallScore 为必填` 必然触发。
+  //   结果:该路由**任何载荷都无法写入成功**(整场面试回顾功能完全不可用)。
+  // 现按 表结构(session_reviews)+ db.createSessionReview + 前端 reviewGenerator
+  // 三方一致的契约重新声明。
   const input = s.object({
-    reviewText: s.string().min(1).max(50000),
-    summary: s.string().max(2000).optional(),
-    overallRating: s.number().min(0).max(10).optional(),
+    overallScore: s.number().min(0).max(10, "overallScore 必须在 0-10 之间"),
+    strengths: s.array(s.string().max(500)).max(50).optional(),
+    weaknesses: s.array(s.string().max(500)).max(50).optional(),
+    improvements: s.array(s.object({
+      area: s.string().max(200).optional(),
+      suggestion: s.string().max(1000).optional(),
+      priority: s.enum(["high", "medium", "low"]).optional(),
+    }).passthrough()).max(50).optional(),
+    performance: s.string().max(10000).optional(),
+    nextFocus: s.string().max(2000).optional(),
   }).parse(req.body);
   res.ok(createSessionReview({ ...input, sessionId: req.params.id }));
 });
@@ -778,7 +903,20 @@ app.post("/api/chat", wrapAsync(async (req, res, next) => {
     const used = getTodayTokenUsage();
     if (used > DAILY_TOKEN_BUDGET) {
       logger.warn("chat.budget_exceeded", { used, budget: DAILY_TOKEN_BUDGET });
-      return res.fail(ErrorCodes.RATE_LIMITED, `已达日 token 预算(${DAILY_TOKEN_BUDGET}),请明天再试`, 429);
+      // v16(ISSUE-030):与短窗口限流区分开。
+      // getTodayTokenUsage 用 `date(created_at)=date('now')` 分日,而 SQLite 的
+      // date('now') 是 **UTC**,所以预算在 UTC 零点重置(本地 UTC+8 即早上 8 点)。
+      // Retry-After 给到下一个 UTC 零点,让客户端知道"重试也没用,等到那时"。
+      // R50:计算逻辑移到 server/budget.js —— 原先内联在此,只有源码正则测试护着,
+      // 把 getUTCDate() 改成 getDate() 那种语义退化它抓不住(见 qa/ISSUES.md R49)。
+      const retryAfterSeconds = secondsUntilUtcMidnight();
+      res.setHeader("Retry-After", String(retryAfterSeconds));
+      return res.fail(
+        ErrorCodes.TOKEN_BUDGET_EXCEEDED,
+        `已达日 token 预算(${DAILY_TOKEN_BUDGET}),请明天再试`,
+        429,
+        { retryAfterSeconds, i18nKey: "error.budget.exceeded", i18nParams: { budget: DAILY_TOKEN_BUDGET } },
+      );
     }
     // v10.2.4(P0-3):onUsage 回调 - 改为记录到独立 token_usage 表(不依赖 sessionId)
     // 原方案:onUsage 依赖 sessionId,无 sessionId 时 onUsage=null → usage 不入库 → 预算绕过
@@ -1058,6 +1196,23 @@ app.use((err, req, res, next) => {
   }
   if (err instanceof NotFoundError) {
     return res.fail(ErrorCodes.NOT_FOUND, err.message, 404);
+  }
+  // multer 错误(体积/字段数/文件数超限、字段名不符)本质是**客户端错误**。
+  // 不处理的话会落到下面的 `err.status || 500`,导致:
+  //   1. 用户上传超大文件时看到"服务器内部错误"(生产模式下连原因都看不到)
+  //   2. 日志里记成 request.error,监控侧把客户端误操作误报成服务故障
+  // LIMIT_FILE_SIZE 用 413(Payload Too Large)语义最贴切,其余用 400。
+  if (err instanceof multer.MulterError) {
+    const MULTER_ERROR_MAP = {
+      LIMIT_FILE_SIZE: (e) => [`文件体积超过上限${e.limit ? `(${Math.round(e.limit / 1024 / 1024)}MB)` : ""},请压缩后重试`, 413],
+      LIMIT_FILE_COUNT: () => ["上传文件数超过上限", 400],
+      LIMIT_FIELD_COUNT: () => ["表单字段数超过上限", 400],
+      LIMIT_UNEXPECTED_FILE: (e) => [`非预期的文件字段名「${e.field}」`, 400],
+      LIMIT_PART_COUNT: () => ["multipart 分段数超过上限", 400],
+    };
+    const mapped = MULTER_ERROR_MAP[err.code];
+    const [message, status] = mapped ? mapped(err) : ["文件上传参数不合法", 400];
+    return res.fail(ErrorCodes.VALIDATION_ERROR, message, status, { multerCode: err.code });
   }
   const status = err.status || 500;
   logError(err, "request.error", {

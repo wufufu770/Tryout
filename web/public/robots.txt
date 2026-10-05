@@ -1,0 +1,9 @@
+# Tryout —— 本地优先的 AI 面试模拟平台
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# 本地优先产品:无账号、无用户数据,爬取无隐私顾虑
+
+Sitemap: https://wufufu770.github.io/Tryout/sitemap.xml
+

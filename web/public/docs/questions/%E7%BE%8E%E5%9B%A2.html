@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>美团 面试题 · 17 道</title>
+<meta name="description" content="美团 相关面试题共 17 道,高频考点:STAR。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"美团 面试题 · 17 道","description":"美团 相关面试题共 17 道,高频考点:STAR。涵盖 junior/mid/senior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"缓存穿透、击穿、雪崩的区别与解决","text":"讲一下缓存穿透、缓存击穿、缓存雪崩各自的现象、区别和解决方案,并对比布隆过滤器与缓存空值。","acceptedAnswer":{"@type":"Answer","text":"穿透 vs 击穿 vs 雪崩、布隆过滤器、互斥锁、TTL 抖动"}},{"@type":"Question","name":"JVM 内存模型与 GC 全流程","text":"讲 JVM 内存区域划分、对象分配流程、GC Roots、可达性分析,以及 G1 与 CMS 的对比。","acceptedAnswer":{"@type":"Answer","text":"JVM 内存、GC Roots、G1 vs CMS、可达性分析"}},{"@type":"Question","name":"设计美团点餐系统(订单+支付+库存)","text":"设计一个支持点餐、支付、库存扣减的高并发系统,QPS 万级,要求不超卖、防重复支付、对账可追溯。","acceptedAnswer":{"@type":"Answer","text":"状态机、Redis 原子扣减、幂等、T+1 对账、防重支付"}},{"@type":"Question","name":"手撕令牌桶限流器(滑动窗口)","text":"实现一个限流器,要求「任一连续 1 小时窗口内不超过 N 个请求」。要求并发安全、支持分布式。","acceptedAnswer":{"@type":"Answer","text":"滑动窗口、令牌桶 refill、Lua 原子、ZSET、时钟依赖"}},{"@type":"Question","name":"Vue 与 React 响应式原理对比","text":"对比 Vue3 与 React 的响应式实现差异、依赖收集方式,以及在 Vue 中 reactive 解构丢响应的原因。","acceptedAnswer":{"@type":"Answer","text":"Proxy 响应式、track/trigger、解构丢响应、细粒度"}},{"@type":"Question","name":"浏览器跨域与 CORS、JSONP、代理","text":"讲同源策略、CORS 完整流程(预检请求)、JSONP 原理与局限、开发代理与生产 Nginx 反代方案。","acceptedAnswer":{"@type":"Answer","text":"同源策略、CORS 预检、JSONP、Nginx 反代"}},{"@type":"Question","name":"设计一个前端性能监控平台(类 ARMS/Sentry)","text":"设计公司级前端性能监控平台,涵盖 Web Vitals 采集、JS 错误、API 监控、SourceMap 解析与告警。","acceptedAnswer":{"@type":"Answer","text":"Web Vitals、sendBeacon、SourceMap、指纹分组、告警"}},{"@type":"Question","name":"手撕 promisePool 并发控制","text":"实现 promisePool(limit, tasks):最多同时执行 limit 个异步任务,完成一个补一个,返回所有结果(保序)。","acceptedAnswer":{"@type":"Answer","text":"队列调度、worker 池、保序、并发控制"}},{"@type":"Question","name":"讲一次你主导的前端架构演进","text":"用 STAR 描述一次你主导的前端架构演进(如 Webpack→Vite、Vue2→Vue3、SPA→SSR)。","acceptedAnswer":{"@type":"Answer","text":"架构演进、渐进迁移、风险对齐、团队赋能"}},{"@type":"Question","name":"讲一次你主导的数据驱动业务决策","text":"用 STAR 描述一次你用数据推动业务决策的经历,有量化的业务收益。","acceptedAnswer":{"@type":"Answer","text":"数据驱动、RFM、A/B、ROI、STAR"}},{"@type":"Question","name":"讲一次你推动产品落地的经历","text":"用 STAR 描述一次你主导推动产品落地的经历,讲清楚如何说服 stakeholder 与跨部门。","acceptedAnswer":{"@type":"Answer","text":"STAR、推动落地、跨部门、数据说服"}},{"@type":"Question","name":"Linux 文件描述符与 ulimit 排查","text":"线上服务报错 `Too many open files`,如何排查与解决?讲 ulimit / file-max / nofile 的关系。","acceptedAnswer":{"@type":"Answer","text":"EMFILE、ulimit、limits.conf、file-max、lsof"}},{"@type":"Question","name":"设计一个高可用 Redis 集群方案","text":"为公司设计 Redis 集群方案,要求支持 1TB 数据、QPS 10万、可用性 99.99%,讲分片/哨兵/复制。","acceptedAnswer":{"@type":"Answer","text":"Redis Cluster、16384 slot、failover、跨 AZ"}},{"@type":"Question","name":"讲一次你主导的算法项目落地","text":"用 STAR 描述一次你主导的算法项目从研究到上线全流程,有量化的业务收益。","acceptedAnswer":{"@type":"Answer","text":"算法落地、召回排序、STAR、量化收益"}},{"@type":"Question","name":"测试用例设计:登录页面","text":"为一个登录页面设计测试用例,讲清楚覆盖维度与边界值。","acceptedAnswer":{"@type":"Answer","text":"等价类、边界值、安全测试、性能测试"}},{"@type":"Question","name":"讲一次你发现的严重线上 Bug","text":"用 STAR 描述一次你发现并定位的严重线上 Bug,有量化的影响范围与修复时间。","acceptedAnswer":{"@type":"Answer","text":"线上 Bug、MTTR、契约测试、STAR"}},{"@type":"Question","name":"美团「EBSC」文化与人才密度","text":"讲美团「EBSC」战略与文化框架,以及「人才密度」理念在招聘中的体现。","acceptedAnswer":{"@type":"Answer","text":"EBSC、人才密度、宁缺毋滥、美团文化"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>美团 面试题</h1>
+<p>共 <b>17</b> 道,高频考点 1 个。</p>
+<div class="stats">
+  <div class="stat"><b>17</b><span>题目数</span></div>
+  <div class="stat"><b>4</b><span>初级</span></div><div class="stat"><b>7</b><span>中级</span></div><div class="stat"><b>6</b><span>高级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">STAR</span></div>
+<h2>题目列表</h2>
+<h2>1. 缓存穿透、击穿、雪崩的区别与解决</h2>
+<p>讲一下缓存穿透、缓存击穿、缓存雪崩各自的现象、区别和解决方案,并对比布隆过滤器与缓存空值。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">穿透 vs 击穿 vs 雪崩</span><span class="tag">布隆过滤器</span><span class="tag">互斥锁</span><span class="tag">TTL 抖动</span></div><h2>2. JVM 内存模型与 GC 全流程</h2>
+<p>讲 JVM 内存区域划分、对象分配流程、GC Roots、可达性分析,以及 G1 与 CMS 的对比。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">JVM 内存</span><span class="tag">GC Roots</span><span class="tag">G1 vs CMS</span><span class="tag">可达性分析</span></div><h2>3. 设计美团点餐系统(订单+支付+库存)</h2>
+<p>设计一个支持点餐、支付、库存扣减的高并发系统,QPS 万级,要求不超卖、防重复支付、对账可追溯。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">状态机</span><span class="tag">Redis 原子扣减</span><span class="tag">幂等</span><span class="tag">T+1 对账</span><span class="tag">防重支付</span></div><h2>4. 手撕令牌桶限流器(滑动窗口)</h2>
+<p>实现一个限流器,要求「任一连续 1 小时窗口内不超过 N 个请求」。要求并发安全、支持分布式。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">滑动窗口</span><span class="tag">令牌桶 refill</span><span class="tag">Lua 原子</span><span class="tag">ZSET</span><span class="tag">时钟依赖</span></div><h2>5. Vue 与 React 响应式原理对比</h2>
+<p>对比 Vue3 与 React 的响应式实现差异、依赖收集方式,以及在 Vue 中 reactive 解构丢响应的原因。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">Proxy 响应式</span><span class="tag">track/trigger</span><span class="tag">解构丢响应</span><span class="tag">细粒度</span></div><h2>6. 浏览器跨域与 CORS、JSONP、代理</h2>
+<p>讲同源策略、CORS 完整流程(预检请求)、JSONP 原理与局限、开发代理与生产 Nginx 反代方案。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">同源策略</span><span class="tag">CORS 预检</span><span class="tag">JSONP</span><span class="tag">Nginx 反代</span></div><h2>7. 设计一个前端性能监控平台(类 ARMS/Sentry)</h2>
+<p>设计公司级前端性能监控平台,涵盖 Web Vitals 采集、JS 错误、API 监控、SourceMap 解析与告警。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Web Vitals</span><span class="tag">sendBeacon</span><span class="tag">SourceMap</span><span class="tag">指纹分组</span><span class="tag">告警</span></div><h2>8. 手撕 promisePool 并发控制</h2>
+<p>实现 promisePool(limit, tasks):最多同时执行 limit 个异步任务,完成一个补一个,返回所有结果(保序)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">队列调度</span><span class="tag">worker 池</span><span class="tag">保序</span><span class="tag">并发控制</span></div><h2>9. 讲一次你主导的前端架构演进</h2>
+<p>用 STAR 描述一次你主导的前端架构演进(如 Webpack→Vite、Vue2→Vue3、SPA→SSR)。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">架构演进</span><span class="tag">渐进迁移</span><span class="tag">风险对齐</span><span class="tag">团队赋能</span></div><h2>10. 讲一次你主导的数据驱动业务决策</h2>
+<p>用 STAR 描述一次你用数据推动业务决策的经历,有量化的业务收益。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">数据驱动</span><span class="tag">RFM</span><span class="tag">A/B</span><span class="tag">ROI</span><span class="tag">STAR</span></div><h2>11. 讲一次你推动产品落地的经历</h2>
+<p>用 STAR 描述一次你主导推动产品落地的经历,讲清楚如何说服 stakeholder 与跨部门。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">STAR</span><span class="tag">推动落地</span><span class="tag">跨部门</span><span class="tag">数据说服</span></div><h2>12. Linux 文件描述符与 ulimit 排查</h2>
+<p>线上服务报错 `Too many open files`,如何排查与解决?讲 ulimit / file-max / nofile 的关系。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">EMFILE</span><span class="tag">ulimit</span><span class="tag">limits.conf</span><span class="tag">file-max</span><span class="tag">lsof</span></div><h2>13. 设计一个高可用 Redis 集群方案</h2>
+<p>为公司设计 Redis 集群方案,要求支持 1TB 数据、QPS 10万、可用性 99.99%,讲分片/哨兵/复制。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">Redis Cluster</span><span class="tag">16384 slot</span><span class="tag">failover</span><span class="tag">跨 AZ</span></div><h2>14. 讲一次你主导的算法项目落地</h2>
+<p>用 STAR 描述一次你主导的算法项目从研究到上线全流程,有量化的业务收益。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">算法落地</span><span class="tag">召回排序</span><span class="tag">STAR</span><span class="tag">量化收益</span></div><h2>15. 测试用例设计:登录页面</h2>
+<p>为一个登录页面设计测试用例,讲清楚覆盖维度与边界值。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">等价类</span><span class="tag">边界值</span><span class="tag">安全测试</span><span class="tag">性能测试</span></div><h2>16. 讲一次你发现的严重线上 Bug</h2>
+<p>用 STAR 描述一次你发现并定位的严重线上 Bug,有量化的影响范围与修复时间。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">线上 Bug</span><span class="tag">MTTR</span><span class="tag">契约测试</span><span class="tag">STAR</span></div><h2>17. 美团「EBSC」文化与人才密度</h2>
+<p>讲美团「EBSC」战略与文化框架,以及「人才密度」理念在招聘中的体现。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">EBSC</span><span class="tag">人才密度</span><span class="tag">宁缺毋滥</span><span class="tag">美团文化</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>

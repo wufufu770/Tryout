@@ -229,18 +229,28 @@ router.post("/analysis/predict-questions", async (req, res, next) => {
     const { provider, materialId, resumeText, jdText } = req.body;
     if (!provider) throw new ValidationError("provider 为必填");
 
+    // W4-4:与服务端/前端统一的长度上限。
+    // 此前这里是硬编码 20000/10000,而主链路无上限 —— 两条路径标准不一致,
+    // 导致同一份资料在押题时被截断、在正式面试时却全量注入。
+    const RESUME_LIMIT = 20000;
+    const JD_LIMIT = 10000;
+    const clip = (s, max) => {
+      const src = String(s || "");
+      return src.length <= max ? src : `${src.slice(0, max)}\n…(已省略 ${src.length - max} 字符)`;
+    };
+
     let resume = resumeText || "";
     if (!resume && materialId) {
       const mat = getMaterialContent(materialId);
-      if (mat?.rawText) resume = mat.rawText.slice(0, 20000);
+      if (mat?.rawText) resume = clip(mat.rawText, RESUME_LIMIT);
     }
     if (!resume || !resume.trim()) throw new ValidationError("需要简历文本(materialId 或 resumeText)");
     assertBudget();
 
     const jd = (jdText || "").trim();
     const prompt = `你是一位资深面试官,根据候选人的简历${jd ? "和目标岗位 JD" : ""},预测面试最可能被问到的问题。
-简历: ${resume.slice(0, 20000)}
-${jd ? `岗位 JD: ${jd.slice(0, 10000)}` : ""}
+简历: ${clip(resume, RESUME_LIMIT)}
+${jd ? `岗位 JD: ${clip(jd, JD_LIMIT)}` : ""}
 
 输出 6-8 道押题,严格输出 JSON 数组(不要输出其他内容,不要 markdown 代码块,不要输出思考过程/think 标签,字符串内不要使用换行):
 [

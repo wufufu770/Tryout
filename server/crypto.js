@@ -7,8 +7,15 @@
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
+import { MASTER_KEY_FILE } from "./paths.js";
 
-const KEY_FILE = path.join(process.env.DB_DIR || process.cwd(), ".master_key");
+// ⚠️ R22(ISSUE-051):这里原先是 `process.env.DB_DIR || process.cwd()`,
+//   而 db.js 的默认值是 `cwd + "/data"` —— 两者不一致。
+//   不设 DB_DIR 启动时(即 `npm start` 的默认)数据库在 data/、密钥在 data/ **外面**,
+//   后果有三:备份不含密钥、日后设了 DB_DIR 会切到另一个密钥导致已存 API Key 静默失效、
+//   同一台机器上凭空多出两个不同主密钥(本机实测到)。
+//   现统一从 paths.js 取值,让「数据目录」有且只有一个定义。
+const KEY_FILE = MASTER_KEY_FILE;
 const ALGO = "aes-256-gcm";
 const IV_LEN = 12; // GCM 推荐 12 字节 IV
 

@@ -2,6 +2,8 @@
 // 从 InterviewPage.tsx 抽取,职责单一,便于单独测试与复用
 import { AgentAvatar } from "@/components/AgentAvatar";
 import type { Agent } from "@/types/agent";
+import { makeRestorer, type PiiMapping } from "@/lib/piiPlaceholder";
+import { stripStageMarkers } from "@/lib/evaluation/stageAdvance";
 
 // 面试会话内的消息结构(与后端 message 表对齐,额外携带多 Agent 组合字段)
 export interface Message {
@@ -15,6 +17,11 @@ export interface Message {
   agentRole?: string;
   isMultiAgentGroup?: boolean; // 同时提问模式:组合消息标记
   groupItems?: Array<{ agentId: string; agentName: string; agentRole: string; content: string }>;
+  /**
+   * v11.3 本条消息对应的 PII 占位符 → 明文 映射(仅内存,不落库)。
+   * AI 复述用户简历里的敏感信息时,界面还原为明文而非 [PHONE_xxxxxxxx]。
+   */
+  piiMapping?: PiiMapping[];
 }
 
 // 角色徽章
@@ -25,6 +32,8 @@ export const ROLE_LABELS: Record<string, string> = {
 export function MessageBubble({ message, agents }: { message: Message; agents: Agent[] }) {
   const isUser = message.role === "user";
   const isSystem = message.role === "system";
+  // v11.3:还原 PII 占位符。映射随消息传入、不落库;无映射时为恒等函数。
+  const restorePii = makeRestorer(message.piiMapping || []);
 
   // 同时提问组合消息(多个角色行 + 内容)
   if (message.isMultiAgentGroup && message.groupItems) {
@@ -68,7 +77,7 @@ export function MessageBubble({ message, agents }: { message: Message; agents: A
               <span className="text-ide-fg">{message.agentName || agent?.name}</span>
               {message.agentRole && <span className="text-ide-fg-muted">[{ROLE_LABELS[message.agentRole] || message.agentRole}]</span>}
             </div>
-            <div className="text-ide-fg">{message.content}</div>
+            <div className="text-ide-fg">{restorePii(stripStageMarkers(message.content))}</div>
           </div>
         </div>
       </div>

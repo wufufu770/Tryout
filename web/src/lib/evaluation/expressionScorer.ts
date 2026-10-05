@@ -1,4 +1,11 @@
-// expressionScorer:表达能力评分
+// expressionScorer:表达的可观察指标
+//
+// ⚠️ W5-1:本模块**不再输出 expressionScore 合成 0-100 分**。
+//   合成权重(流畅度 0.3 / 语速 0.2 / 结构 0.25 / 逻辑 0.25)是拍脑袋定的,
+//   把四类性质不同的指标加权成一个数字,给出的是伪精度。
+//   现在只输出**可观察、可解释的原始指标**,由用户自己判断。
+//   —— 参见 baseline.ts 顶部的 HireVue 教训引用。
+import { countFillers } from "./fillerDetector";
 // 从第一原理:表达能力 = 语速 + 填充词频率 + 句子结构 + 逻辑连接词
 // 纯文本分析,零依赖,无需 LLM
 
@@ -17,9 +24,15 @@ export interface ExpressionMetrics {
   sentenceCount: number;
   /** 逻辑连接词数量 */
   connectorCount: number;
-  /** 综合表达能力评分(0-100) */
+  /**
+   * @deprecated 综合表达能力评分(0-100)。
+   * ⚠️ W5-1 起**不再计算也不再使用** —— 权重(0.3/0.2/0.25/0.25)是拍脑袋定的,
+   * 把四类性质不同的指标加权成一个数字,给出的是伪精度。
+   * 各人语速基线差异很大,合成一个分对用户没有可解释的意义。
+   * 保留字段仅为向后兼容,恒为 0。新代码请只用上面的可观察指标。
+   */
   expressionScore: number;
-  /** 评分维度细分 */
+  /** @deprecated 同 expressionScore,细分维度也不再对外使用 */
   breakdown: {
     fluency: number;      // 流畅度(填充词越少越高)
     pace: number;         // 语速适宜度
@@ -28,13 +41,6 @@ export interface ExpressionMetrics {
   };
 }
 
-// 中英文填充词
-const FILLER_WORDS = [
-  // 中文
-  "嗯", "啊", "呃", "那个", "这个", "就是", "然后", "其实", "我觉得",
-  // 英文
-  "um", "uh", "like", "you know", "i mean", "actually", "basically", "literally", "sort of", "kind of",
-];
 
 // 逻辑连接词
 const CONNECTORS = [
@@ -61,15 +67,15 @@ export function scoreExpression(text: string, durationSeconds?: number): Express
   const sentenceCount = Math.max(1, sentences.length);
   const avgSentenceLength = charCount / sentenceCount;
 
-  // 填充词统计
-  const lowerText = trimmed.toLowerCase();
-  let fillerCount = 0;
-  for (const w of FILLER_WORDS) {
-    const matches = lowerText.split(w.toLowerCase()).length - 1;
-    fillerCount += Math.max(0, matches);
-  }
+  // 填充词统计 —— W5-1 改用词边界感知的检测器。
+  // 原实现是 `text.split(w).length - 1` 子串计数,实测:
+  //   "I also think that some people like this" → "like" 误判
+  //   "这个方案我觉得非常好,因为它解决了那个问题"(零填充词) → 误判 3 次
+  const fillers = countFillers(trimmed);
+  const fillerCount = fillers.total;
   const fillerFrequency = charCount > 0 ? (fillerCount / charCount) * 100 : 0;
 
+  const lowerText = trimmed.toLowerCase();
   // 连接词统计
   let connectorCount = 0;
   for (const c of CONNECTORS) {
@@ -111,10 +117,8 @@ export function scoreExpression(text: string, durationSeconds?: number): Express
   const expectedConnectors = Math.max(1, charCount / 50);
   const logic = Math.max(0, Math.min(100, (connectorCount / expectedConnectors) * 100));
 
-  // 综合:加权平均
-  const expressionScore = Math.round(
-    fluency * 0.3 + pace * 0.2 + structure * 0.25 + logic * 0.25,
-  );
+  // W5-1:不再计算综合分。伪精度,已弃用。
+  const expressionScore = 0;
 
   return {
     speakingSpeed,

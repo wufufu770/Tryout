@@ -7,7 +7,7 @@ import dns from "dns";
 // v11.1:统一用 undici 的 fetch + Agent(Node 24 原生 fetch 无法识别外部 undici Agent 的 dispatcher,
 // 导致 SSRF 防护 Agent 静默失效,所有 LLM 请求报 "fetch failed")
 import { Agent, fetch as undiciFetch } from "undici";
-import { getProvider, getActiveProvider, getFailoverQueue, getApiKey, listProviders } from "./db.js";
+import { getProvider, getActiveProvider, getFailoverQueue, getApiKey, listProviders, NotFoundError, ValidationError } from "./db.js";
 import { redactPii, restorePii } from "./pii.js";
 import { logger } from "./logger.js";
 import {
@@ -279,6 +279,20 @@ function buildPayload(provider, body, messages) {
 // 重试逻辑在 chatProxy 层处理,这里只发一次
 // v10:onUsage 回调 - 当获取到 LLM usage 信息时调用(用于更新 sessions.tokens_total)
 async function sendRequest(provider, payload, stream, res, ctx = {}, onUsage) {
+  // ⚠️ 日志安全副本(ISSUE-026):`ctx` 里带着 `piiMatches` —— 那是**含明文 PII**的映射
+  //   (手机号/邮箱/身份证原文)。而下面有 8 处 `logger.xxx({ ..., ...logCtx })` 会把它整包写进日志,
+  //   直接违反本文件 381 行"该映射不落库、不写入日志"的安全声明。
+  //
+  //   注:v11.3 曾特意把 piiMatches 从 ctx 拆到 streamPiiCtx,注释也写明"不进 ctx,
+  //   因为 ctx 被展开进 8 处 logger";但 callCtx = { ...ctx, ...streamPiiCtx } 又把它合了回去,
+  //   拆分的意图在接线处被抵消。
+  //
+  //   修法:在函数入口剥出 `logCtx`,所有 logger 只用 logCtx,并把映射替换为**条数**
+  //   (条数有运维价值,明文没有)。
+  const { piiMatches, ...ctxRest } = ctx;
+  const logCtx = piiMatches?.length
+    ? { ...ctxRest, piiMatchCount: piiMatches.length }
+    : ctxRest;
   const isAnthropic = provider.apiFormat === "anthropic";
   const url = isAnthropic
     ? `${provider.baseUrl}/messages`
@@ -336,7 +350,7 @@ async function sendRequest(provider, payload, stream, res, ctx = {}, onUsage) {
     );
     err.status = isTimeout ? 504 : 502;
     err.isTimeout = isTimeout;
-    logger.warn("llm.fetch.error", { provider: provider.name, error: err.message, ...ctx });
+    logger.warn("llm.fetch.error", { provider: provider.name, error: err.message, ...logCtx });
     throw err;
   }
 
@@ -346,7 +360,7 @@ async function sendRequest(provider, payload, stream, res, ctx = {}, onUsage) {
   if (resp.status >= 300 && resp.status < 400) {
     clearTimeout(totalTimer);
     const loc = resp.headers.get("location") || "(no location)";
-    logger.warn("llm.redirect.blocked", { provider: provider.name, status: resp.status, location: loc, ...ctx });
+    logger.warn("llm.redirect.blocked", { provider: provider.name, status: resp.status, location: loc, ...logCtx });
     throw new SsrfBlockedError(`LLM 上游返回重定向(${resp.status}),已阻止`, {
       code: SsrfCodes.REDIRECT_BLOCKED, host: provider.baseUrl,
     });
@@ -361,7 +375,14 @@ async function sendRequest(provider, payload, stream, res, ctx = {}, onUsage) {
     err.status = resp.status;
     err.upstreamBody = text.slice(0, 500); // 供日志诊断使用,不返回客户端
     logger.warn("llm.upstream.error", {
-      provider: provider.name, status: resp.status, ...ctx,
+      // ⚠️ R20(ISSUE-043):此处原先展开的是 `...ctx`,而 sendRequest 的 ctx 里带着
+      //   `piiMatches`(明文手机号/邮箱/身份证映射)—— 同一个函数里另外 4 处 logger
+      //   都用 logCtx,唯独这一处漏了。它只在 `!resp.ok` 分支执行,
+      //   而所有既有 PII 测试用的 mock 上游恒返 200,**这行一次都没被跑到**,
+      //   于是 ISSUE-026 的修复静默漏网 6 轮。
+      //   实测:上游返 500 时,明文手机号与邮箱直接出现在服务端日志,
+      //   日志字段里能看到 `piiMatches` 整包。
+      provider: provider.name, status: resp.status, ...logCtx,
       bodyPreview: text.slice(0, 200),
     });
     throw err;
@@ -374,6 +395,16 @@ async function sendRequest(provider, payload, stream, res, ctx = {}, onUsage) {
     res.setHeader("Connection", "keep-alive");
     // 关闭代理缓冲(Nginx 等反代下也需要禁用 buffering,这里 SSE 头已足够)
     res.setHeader("X-Accel-Buffering", "no");
+
+    // v11.3:流式 PII 占位符映射下发
+    // 流式内容无法回填明文(已逐块写出),因此把"占位符→明文"映射作为
+    // 首个 SSE 事件下发给前端,由前端在渲染时还原。
+    // 安全:该映射只含本次请求的 PII,不落库、不写入日志、不外传给第三方模型。
+    if (ctx.piiMatches && ctx.piiMatches.length > 0) {
+      try {
+        res.write(`data: ${JSON.stringify({ pii_mapping: ctx.piiMatches })}\n\n`);
+      } catch { /* 客户端可能已断开 */ }
+    }
 
     const reader = resp.body.getReader();
     const decoder = new TextDecoder();
@@ -496,7 +527,7 @@ async function sendRequest(provider, payload, stream, res, ctx = {}, onUsage) {
       const errMsg = isAbort && !firstTokenReceived
         ? `LLM 首 token 超时(${FIRST_TOKEN_TIMEOUT_MS}ms):${provider.name}`
         : e.message;
-      logger.warn("llm.stream.error", { provider: provider.name, error: errMsg, ...ctx, isAbort, firstTokenReceived });
+      logger.warn("llm.stream.error", { provider: provider.name, error: errMsg, ...logCtx, isAbort, firstTokenReceived });
       if (!res.writableEnded) sendStreamError(errMsg);
       return null;
     } finally {
@@ -513,7 +544,7 @@ async function sendRequest(provider, payload, stream, res, ctx = {}, onUsage) {
         try { onUsage(total); } catch (e) { logger.warn("llm.onUsage.error", { error: e.message }); }
       }
     }
-    logger.info("llm.stream.done", { provider: provider.name, ms: Date.now() - startMs, ...ctx });
+    logger.info("llm.stream.done", { provider: provider.name, ms: Date.now() - startMs, ...logCtx });
     return null;
   }
 
@@ -563,11 +594,21 @@ async function sendRequest(provider, payload, stream, res, ctx = {}, onUsage) {
 export async function chatProxy(providerId, body, res, onUsage) {
   const provider = resolveProvider(providerId);
   if (!provider) {
-    throw new Error(`未知供应商: ${providerId}`);
+    // ⚠️ 用 ValidationError 而非裸 Error(ISSUE-028):
+    //   裸 Error 会被全局处理器兜底成 500,客户端传错 provider 就看到"服务器内部错误",
+    //   既误导排查方向,又把客户端错误计入服务端 5xx 指标。
+    //   注意:前端很容易误传 provider **名称**而非 id(如传 "minimax" 而非 "prov_xxx"),
+    //   所以这条路径在实际使用中会被频繁触发。
+    throw new ValidationError(`供应商不存在: ${providerId}(请使用 provider id,而非名称)`);
   }
 
   if (!provider.apiKey && !provider.isLocal) {
-    throw new Error(`供应商 ${provider.name} 未配置 API Key`);
+    // ⚠️ R20(ISSUE-044):原先是裸 `new Error(...)` → 被 index.js 的全局处理器兜底成
+    //   500「服务器内部错误」。但这是**客户端配置问题**:供应商在系统里存在,
+    //   只是还没配 key(典型场景:刚加了 provider 就点发送)。
+    //   报 500 会把排查方向带偏,并把客户端错误计入服务端 5xx 指标。
+    //   与上面「供应商不存在」统一用 ValidationError(ISSUE-028 的同源问题)。
+    throw new ValidationError(`供应商「${provider.name}」未配置 API Key,请先在设置里填写`);
   }
 
   // PII 脱敏(system 消息中也可能含简历/JD 中的 PII,同样需要脱敏)
@@ -587,7 +628,16 @@ export async function chatProxy(providerId, body, res, onUsage) {
 
   const payload = buildPayload(provider, body, messages);
   const stream = body.stream && res;
+  // v11.3:PII 映射单独放在 piiMatches 变量,不进 ctx。
+  // 原因:ctx 被展开进 8 处 logger 调用,含明文 PII 会污染日志。
+  // ⚠️ 本函数内的 logger 一律展开 **ctx**,不要写 logCtx。
+  //   `logCtx` 是 sendRequest 内部的局部变量(由它从 ctx 里剥掉 piiMatches 后生成),
+  //   在 chatProxy / callWithRetry 作用域**根本不存在** —— 展开它会抛
+  //   `ReferenceError: logCtx is not defined`,把整条重试与 failover 路径打成 500。
+  //   而这里用 ctx 是安全的:v11.3 刻意把含明文 PII 的 allMatches 拆到
+  //   streamPiiCtx,不与 ctx 混用(见下方 callCtx 合并处)。
   const ctx = { provider: provider.name, stream: !!stream };
+  const streamPiiCtx = { piiMatches: allMatches };
 
   // v9:主供应商 5xx 重试(超时/网关错误/服务不可用),最多 MAX_RETRY 次
   // v10:onUsage 透传到 sendRequest
@@ -596,8 +646,11 @@ export async function chatProxy(providerId, body, res, onUsage) {
     let lastErr;
     for (let attempt = 0; attempt <= MAX_RETRY; attempt++) {
       try {
-        const result = await sendRequest(p, pl, st, rs, { ...ctx, attempt }, usageCb);
-        // 非流式回复:把占位符反向还原为原始 PII(流式已写入 response,无法回退)
+        // v11.3:piiMatches 走独立字段传给 sendRequest,保证不与 ctx(会进日志)混用
+        const callCtx = { ...ctx, attempt, ...streamPiiCtx };
+        const result = await sendRequest(p, pl, st, rs, callCtx, usageCb);
+        // 非流式回复:把占位符反向还原为原始 PII
+        // (流式无法回填,改为在 SSE 首个事件下发映射,由前端还原)
         if (!st && result && typeof result.content === "string" && allMatches.length > 0) {
           result.content = restorePii(result.content, allMatches);
         }
@@ -663,7 +716,14 @@ export async function chatProxy(providerId, body, res, onUsage) {
 // v10.2:fetch 加 redirect:"manual" + 3xx 阻断 + SsrfBlockedError 透传 ssrfCode
 export async function testProviderLatency(providerId) {
   const provider = resolveProvider(providerId);
-  if (!provider) throw new Error(`未知供应商: ${providerId}`);
+  // 用 NotFoundError 而不是裸 Error:裸 Error 会被全局处理器当成 500,
+  // 导致用户传了个不存在的 providerId 却只看到"服务器内部错误"(生产模式),
+  // 既误导排查方向,又会把客户端错误计入服务端 5xx 指标。
+  if (!provider) {
+    const e = new NotFoundError("供应商");
+    e.message = `供应商不存在: ${providerId}`;
+    throw e;
+  }
 
   const start = Date.now();
   try {

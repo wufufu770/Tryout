@@ -8,7 +8,8 @@
 //   NOT_FOUND          - 404 资源不存在
 //   AUTH_MISSING       - 401 未提供认证
 //   AUTH_INVALID       - 401 认证无效
-//   RATE_LIMITED       - 429 限流
+//   RATE_LIMITED       - 429 限流(短窗口,Retry-After 秒级,重试有意义)
+//   TOKEN_BUDGET_EXCEEDED - 429 日 token 预算耗尽(重试无意义,要等跨日重置)
 //   CONFLICT           - 409 资源冲突(如重复创建)
 //   UPSTREAM_ERROR     - 502 LLM 上游错误
 //   TIMEOUT            - 504 超时
@@ -20,6 +21,12 @@ export const ErrorCodes = {
   AUTH_MISSING: "AUTH_MISSING",
   AUTH_INVALID: "AUTH_INVALID",
   RATE_LIMITED: "RATE_LIMITED",
+  // v16(ISSUE-030):必须与 RATE_LIMITED 区分。两者都是 429,但语义相反:
+  //   RATE_LIMITED        → 短窗口限流,Retry-After 秒级,立即重试有意义
+  //   TOKEN_BUDGET_EXCEEDED → 日预算耗尽,当天不可能恢复,重试必然失败
+  //   之前两者复用同一 code 且不带 Retry-After,导致客户端无法判断该重试还是该停,
+  //   自动化客户端会陷入无限重试(见 web/scripts/eval-accuracy.mjs 的实际教训)。
+  TOKEN_BUDGET_EXCEEDED: "TOKEN_BUDGET_EXCEEDED",
   CONFLICT: "CONFLICT",
   UPSTREAM_ERROR: "UPSTREAM_ERROR",
   TIMEOUT: "TIMEOUT",

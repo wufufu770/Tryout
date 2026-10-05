@@ -3,7 +3,7 @@
 // 面经广场:筛选区(公司/岗位/轮次/难度/结果/搜索),卡片网格,问答弹窗,社区分享
 // 题库:筛选区(行业/题型/难度/搜索),题目卡片,题目详情弹窗(参考答案 + 关键要点 + 模拟此题)
 // 社区分享:支持从 GitHub URL/文件导入 .ix-experience.json,导出当前面经为社区分享文件
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Newspaper, Search, Star, Clock, X, Play, ChevronDown, Link2, Github, Download, BookOpen, Tag, Lightbulb, Timer, CheckCircle2 } from "lucide-react";
 import { cn } from "@/shared";
@@ -25,13 +25,12 @@ import {
   type ShareableExperience,
 } from "@/lib/community";
 import {
-  QUESTION_BANK,
-  INDUSTRIES,
-  QUESTION_TYPES,
-  DIFFICULTIES,
-  filterQuestions,
-  type Question,
-} from "@/data/questionBank";
+  fetchQuestionBank,
+  fetchQuestionBankStats,
+  type QuestionLite as Question,
+} from "@/lib/questionBankClient";
+import { selectQuestions } from "@/lib/questionSelector";
+import { INDUSTRIES, QUESTION_TYPES, DIFFICULTIES, type QuestionType } from "@/data/questionMeta";
 import { useModalA11y } from "@/lib/useModalA11y";
 
 // 将内置 Experience 转换为社区分享格式 ShareableExperience
@@ -630,13 +629,19 @@ function QuestionDetailModal({
             <p className="whitespace-pre-wrap text-sm leading-relaxed text-ide-fg">{q.content}</p>
           </section>
 
-          {/* 参考答案 */}
+          {/* 参考答案
+              W3-1 起参考答案是"正确答案",不再下发到前端 ——
+              展示它等于让用户背答案,评估随即失去意义。
+              评估时由服务端在 prompt 内注入为「满分参考示例」。 */}
           <section className="mb-4">
             <h3 className="mb-1.5 flex items-center gap-1 text-xs font-semibold uppercase text-ide-fg-muted">
               <CheckCircle2 size={12} className="text-ide-success" /> {t("questionBank.referenceAnswer")}
             </h3>
-            <div className="border-l-2 border-ide-success/40 bg-ide-success/5 px-3 py-2">
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-ide-fg">{q.referenceAnswer}</p>
+            <div className="border-l-2 border-ide-border bg-ide-bg/40 px-3 py-2">
+              <p className="text-xs leading-relaxed text-ide-fg-muted">
+                {t("questionBank.referenceAnswerHidden") ||
+                  "参考答案仅在评估时由服务端注入,不在此处展示,以免背答案而非练表达。"}
+              </p>
             </div>
           </section>
 
@@ -743,33 +748,60 @@ export function ExperiencePage() {
   }, [query, companies, positions, round, difficulty, result, allExperiences]);
 
   // ===== 题库 state =====
+  // W3-1:题库改为运行时拉取(此前 909 KB 静态 import 进主 bundle,首屏白下载)
+  const [questionBank, setQuestionBank] = useState<Question[]>([]);
+  const [questionBankLoaded, setQuestionBankLoaded] = useState(false);
+  const [questionBankSource, setQuestionBankSource] = useState<"api" | "static" | "empty">("empty");
   const [qQuery, setQQuery] = useState("");
   const [qIndustry, setQIndustry] = useState<string>("");
   const [qType, setQType] = useState<string>("");
   const [qDifficulty, setQDifficulty] = useState<string>("");
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
 
-  // 题库筛选:industry/type/difficulty + 关键词搜索(标题/内容/标签/要点)
+  // 首次进入题库页时拉取(题库约 900 KB,不该在首屏下载)
+  const [qbTabActive, setQbTabActive] = useState(false);
+  useEffect(() => {
+    if (!qbTabActive || questionBankLoaded) return;
+    let cancelled = false;
+    fetchQuestionBank({ industry: "" })
+      .then((r) => {
+        if (cancelled) return;
+        setQuestionBank(r.questions);
+        setQuestionBankSource(r.source);
+        setQuestionBankLoaded(true);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setQuestionBankLoaded(true); // 失败也标记为已加载,避免无限重试
+      });
+    return () => { cancelled = true; };
+  }, [qbTabActive, questionBankLoaded]);
+
+  // 题库筛选:W3-1 起题库改为运行时从服务端拉取(此前 909 KB 静态 import 进主 bundle)
   const filteredQuestions = useMemo(() => {
-    const list = filterQuestions({
-      industry: qIndustry || undefined,
-      type: qType || undefined,
-      difficulty: qDifficulty || undefined,
-    });
+    if (!questionBankLoaded) return [];
+    // 无筛选时用服务端全量;有筛选时按维度取候选再本地过滤
+    const list = qIndustry
+      ? selectQuestions(questionBank, {
+          industry: qIndustry,
+          sessionDifficulty: "normal",
+          type: qType as QuestionType | undefined,
+        })
+      : questionBank;
     const q = qQuery.trim().toLowerCase();
-    if (!q) return list;
+    if (!q) return qType || qDifficulty ? list.filter((i) => (!qType || i.type === qType) && (!qDifficulty || i.difficulty === qDifficulty)) : list;
     return list.filter((item) => {
       const inTitle = item.title.toLowerCase().includes(q);
       const inContent = item.content.toLowerCase().includes(q);
-      const inTags = item.tags.some((tg) => tg.toLowerCase().includes(q));
-      const inKeyPoints = item.keyPoints.some((kp) => kp.toLowerCase().includes(q));
-      const inAnswer = item.referenceAnswer.toLowerCase().includes(q);
-      return inTitle || inContent || inTags || inKeyPoints || inAnswer;
+      const inTags = (item.tags || []).some((tg) => tg.toLowerCase().includes(q));
+      const inKeyPoints = (item.keyPoints || []).some((kp) => kp.toLowerCase().includes(q));
+      // ⚠️ 不再搜索 referenceAnswer —— 它已不下发到前端(那是"正确答案")
+      return inTitle || inContent || inTags || inKeyPoints;
     });
-  }, [qQuery, qIndustry, qType, qDifficulty]);
+  }, [qQuery, qIndustry, qType, qDifficulty, questionBank, questionBankLoaded]);
 
   const selectedQuestion = selectedQuestionId
-    ? QUESTION_BANK.find((q) => q.id === selectedQuestionId) || null
+    ? questionBank.find((q) => q.id === selectedQuestionId) || null
     : null;
 
   const hasQuestionFilters = !!(qQuery || qIndustry || qType || qDifficulty);
@@ -907,7 +939,7 @@ export function ExperiencePage() {
           <>
             <InfoTip text={t("experience.questionBankTip")} />
             <span className="ml-2 truncate text-[11px] text-ide-fg-muted">
-              {t("experience.questionsCount", { n: QUESTION_BANK.length })} · {t("experience.showingQuestions", { n: filteredQuestions.length })}
+              {t("experience.questionsCount", { n: questionBank.length })} · {t("experience.showingQuestions", { n: filteredQuestions.length })}
             </span>
           </>
         )}
@@ -1115,7 +1147,13 @@ export function ExperiencePage() {
               <div className="flex items-center gap-1.5 text-sm font-medium text-ide-fg">
                 <Link2 size={14} className="text-ide-accent" /> {t("experience.importCommunityExp")}
               </div>
-              <button onClick={() => setImportDialogOpen(false)} className="text-ide-fg-muted hover:text-ide-fg">
+              {/* R32(ISSUE-022):纯图标按钮 24×24 + aria-label(与 InterviewPage/MarketPage 同类,一次性修) */}
+              <button
+                onClick={() => setImportDialogOpen(false)}
+                className="flex min-h-6 min-w-6 shrink-0 items-center justify-center text-ide-fg-muted hover:text-ide-fg"
+                aria-label={t("common.close")}
+                title={t("common.close")}
+              >
                 <X size={14} />
               </button>
             </div>

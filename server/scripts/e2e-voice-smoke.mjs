@@ -2,6 +2,8 @@
 // 验证: 建会话 → transcribe(降级) → scoreAnswer(LLM mock) → question_feedback 入库 → predictQuestions
 // 前置: 服务端已启动(PORT 环境变量或 3001),DB 可写
 import http from "node:http";
+// R56:诊断信息安全格式化 —— JSON.stringify(undefined) 不是字符串,`.slice` 会崩
+import { brief } from "./lib/brief.mjs";
 
 const BASE = process.env.API_BASE || "http://127.0.0.1:3001";
 const TOKEN = process.env.API_TOKEN || "";
@@ -79,7 +81,7 @@ try {
     apiFormat: "openai_chat",
   });
   const providerId = pv.body?.data?.providerId || pv.body?.data?.id;
-  check("provider 创建", !!providerId, JSON.stringify(pv.body).slice(0, 120));
+  check("provider 创建", !!providerId, brief(pv.body, 120));
 
   console.log("[e2e] 2. 建会话");
   const sess = await req("POST", "/api/sessions", { title: "e2e-smoke", modelId: providerId, flowTemplate: null });
@@ -94,13 +96,13 @@ try {
   form.append("question", "介绍自己");
   const tr = await fetch(`${BASE}/api/transcribe`, { method: "POST", headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}, body: form });
   const trJson = await tr.json();
-  check("transcribe 返回降级错误(模型未装)", trJson?.data?.ok === false && !!trJson?.data?.error, JSON.stringify(trJson.data).slice(0, 120));
+  check("transcribe 返回降级错误(模型未装)", trJson?.data?.ok === false && !!trJson?.data?.error, brief(trJson.data, 120));
 
   console.log("[e2e] 4. 逐题评分(mock LLM)");
   const sc = await req("POST", `/api/sessions/${sessionId}/answers/score`, {
     provider: providerId, question: "介绍你最有挑战的项目", answer: "我在项目中负责核心模块…",
   });
-  check("评分成功", sc.body?.data?.ok === true && typeof sc.body?.data?.score === "number", JSON.stringify(sc.body).slice(0, 150));
+  check("评分成功", sc.body?.data?.ok === true && typeof sc.body?.data?.score === "number", brief(sc.body, 150));
   check("评分 JSON 解析正确", sc.body?.data?.score === 7.5);
 
   console.log("[e2e] 5. 反馈入库 + 列表");
@@ -119,7 +121,7 @@ try {
   const pq = await req("POST", "/api/analysis/predict-questions", {
     provider: providerId, resumeText: "5 年后端经验,精通 Redis/MySQL,主导过秒杀系统",
   });
-  check("押题成功", pq.body?.data?.ok === true && Array.isArray(pq.body?.data?.questions), JSON.stringify(pq.body).slice(0, 150));
+  check("押题成功", pq.body?.data?.ok === true && Array.isArray(pq.body?.data?.questions), brief(pq.body, 150));
   check("押题数量", pq.body?.data?.questions?.length === 2);
 
   console.log("[e2e] 8. 清理 provider");
@@ -129,5 +131,27 @@ try {
   mockLLM.close();
 }
 
+// ---- 统一清理守卫 ----
+// 与 e2e-pii-mapping 同理:只靠 finally 不足以覆盖 uncaughtException /
+// 未处理的 Promise 拒绝。残留的 mock server 会占端口,让后续 E2E 随机失败。
+let cleaned = false;
+function cleanup() {
+  if (cleaned) return;
+  cleaned = true;
+  try { mockLLM.close(); } catch { /* 已关闭 */ }
+}
+process.on("exit", cleanup);
+process.on("uncaughtException", (e) => {
+  console.error("\n[未捕获异常]", e?.message || e);
+  cleanup();
+  process.exit(1);
+});
+process.on("unhandledRejection", (e) => {
+  console.error("\n[未处理的 Promise 拒绝]", e?.message || e);
+  cleanup();
+  process.exit(1);
+});
+
 console.log(`\n[e2e] 结果: ${pass} 通过, ${fail} 失败`);
+cleanup();
 process.exit(fail > 0 ? 1 : 0);

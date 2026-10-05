@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SRE 面试题 · 8 道</title>
+<meta name="description" content="SRE 相关面试题共 8 道,高频考点:SLI/SLO、SLO、无 blame。涵盖 senior/mid/junior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","name":"SRE 面试题 · 8 道","description":"SRE 相关面试题共 8 道,高频考点:SLI/SLO、SLO、无 blame。涵盖 senior/mid/junior 难度。本题库只提供题目与考察点,参考答案仅用于评估,不对外公开。","mainEntity":[{"@type":"Question","name":"OpenTelemetry 与可观测性体系","text":"讲可观测性三支柱(Metrics/Logs/Traces)、OpenTelemetry 标准、与 Prometheus/ELK/Jaeger 集成。","acceptedAnswer":{"@type":"Answer","text":"三支柱、OTLP、traceID 关联、采样"}},{"@type":"Question","name":"你如何带 SRE 团队","text":"描述你如何建立一支 SRE 团队,涵盖人员、机制、文化。","acceptedAnswer":{"@type":"Answer","text":"SRE 文化、无 blame、工程化、成长路径"}},{"@type":"Question","name":"SRE 文化与故障机制","text":"建议反问:SRE 实践、故障复盘文化、错误预算。","acceptedAnswer":{"@type":"Answer","text":"SLO、无 blame、On-call、混沌"}},{"@type":"Question","name":"讲一次你推动 SRE 文化","text":"用 STAR 描述一次你推动 SRE 文化(错误预算/SLI/SLO)落地的经历。","acceptedAnswer":{"@type":"Answer","text":"SLO、错误预算、复盘、GameDay"}},{"@type":"Question","name":"Linux 文件描述符与 ulimit 排查","text":"线上服务报错 `Too many open files`,如何排查与解决?讲 ulimit / file-max / nofile 的关系。","acceptedAnswer":{"@type":"Answer","text":"EMFILE、ulimit、limits.conf、file-max、lsof"}},{"@type":"Question","name":"TCP TIME_WAIT 过多怎么解决","text":"服务器大量 TIME_WAIT 占满端口,导致新连接失败。讲原因与解决方案。","acceptedAnswer":{"@type":"Answer","text":"TIME_WAIT、2MSL、tcp_tw_reuse、长连接"}},{"@type":"Question","name":"设计 Google SRE 误差预算体系","text":"参考 Google SRE Book,为公司设计 SLO/SLI/误差预算(Error Budget)体系,讲清楚如何落地到发布决策。","acceptedAnswer":{"@type":"Answer","text":"SLI/SLO、Error Budget、Burn Rate、Google SRE"}},{"@type":"Question","name":"讲一次你主导的稳定性治理项目","text":"用 STAR 描述一次你主导的稳定性治理项目,有量化指标(MTTR/可用性/告警数)。","acceptedAnswer":{"@type":"Answer","text":"SLI/SLO、burn rate、金丝雀回滚、告警治理"}}]}
+</script>
+<style>
+:root{--bg:#0d1117;--fg:#c9d1d9;--muted:#8b949e;--accent:#7ee787;--border:#30363d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:2rem 1.2rem 4rem}
+h1{color:var(--accent);font-size:1.5rem;margin:0 0 .3rem}
+h2{font-size:1.02rem;margin:1.8rem 0 .5rem;color:var(--accent);font-weight:600}
+.stats{display:flex;gap:1.4rem;flex-wrap:wrap;margin:1rem 0 1.6rem;padding:.9rem 1rem;background:#161b22;border-left:2px solid var(--accent);border-radius:3px}
+.stat b{display:block;font-size:1.3rem;color:var(--accent)}
+.stat span{color:var(--muted);font-size:.78rem}
+ul{padding-left:1.2rem}li{margin:.35rem 0}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin:.5rem 0}
+.tag{font-size:.75rem;padding:.12rem .5rem;background:#161b22;border:1px solid var(--border);border-radius:2px;color:var(--muted)}
+.note{margin-top:2.5rem;padding:.8rem 1rem;background:#161b22;border-left:2px solid #d29922;font-size:.85rem;color:var(--muted)}
+a{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:.5rem 0}
+td,th{padding:.4rem .2rem;text-align:left}
+</style>
+</head>
+<body><div class="wrap">
+<h1>SRE 面试题</h1>
+<p>共 <b>8</b> 道,高频考点 3 个。</p>
+<div class="stats">
+  <div class="stat"><b>8</b><span>题目数</span></div>
+  <div class="stat"><b>5</b><span>高级</span></div><div class="stat"><b>1</b><span>中级</span></div><div class="stat"><b>2</b><span>初级</span></div>
+</div>
+<h2>高频考点(被多题同时考察)</h2>
+<div class="tags"><span class="tag">SLI/SLO</span><span class="tag">SLO</span><span class="tag">无 blame</span></div>
+<h2>题目列表</h2>
+<h2>1. OpenTelemetry 与可观测性体系</h2>
+<p>讲可观测性三支柱(Metrics/Logs/Traces)、OpenTelemetry 标准、与 Prometheus/ELK/Jaeger 集成。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">三支柱</span><span class="tag">OTLP</span><span class="tag">traceID 关联</span><span class="tag">采样</span></div><h2>2. 你如何带 SRE 团队</h2>
+<p>描述你如何建立一支 SRE 团队,涵盖人员、机制、文化。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">SRE 文化</span><span class="tag">无 blame</span><span class="tag">工程化</span><span class="tag">成长路径</span></div><h2>3. SRE 文化与故障机制</h2>
+<p>建议反问:SRE 实践、故障复盘文化、错误预算。</p>
+<div class="tags"><span class="tag">中级</span>
+<span class="tag">SLO</span><span class="tag">无 blame</span><span class="tag">On-call</span><span class="tag">混沌</span></div><h2>4. 讲一次你推动 SRE 文化</h2>
+<p>用 STAR 描述一次你推动 SRE 文化(错误预算/SLI/SLO)落地的经历。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">SLO</span><span class="tag">错误预算</span><span class="tag">复盘</span><span class="tag">GameDay</span></div><h2>5. Linux 文件描述符与 ulimit 排查</h2>
+<p>线上服务报错 `Too many open files`,如何排查与解决?讲 ulimit / file-max / nofile 的关系。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">EMFILE</span><span class="tag">ulimit</span><span class="tag">limits.conf</span><span class="tag">file-max</span><span class="tag">lsof</span></div><h2>6. TCP TIME_WAIT 过多怎么解决</h2>
+<p>服务器大量 TIME_WAIT 占满端口,导致新连接失败。讲原因与解决方案。</p>
+<div class="tags"><span class="tag">初级</span>
+<span class="tag">TIME_WAIT</span><span class="tag">2MSL</span><span class="tag">tcp_tw_reuse</span><span class="tag">长连接</span></div><h2>7. 设计 Google SRE 误差预算体系</h2>
+<p>参考 Google SRE Book,为公司设计 SLO/SLI/误差预算(Error Budget)体系,讲清楚如何落地到发布决策。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">SLI/SLO</span><span class="tag">Error Budget</span><span class="tag">Burn Rate</span><span class="tag">Google SRE</span></div><h2>8. 讲一次你主导的稳定性治理项目</h2>
+<p>用 STAR 描述一次你主导的稳定性治理项目,有量化指标(MTTR/可用性/告警数)。</p>
+<div class="tags"><span class="tag">高级</span>
+<span class="tag">SLI/SLO</span><span class="tag">burn rate</span><span class="tag">金丝雀回滚</span><span class="tag">告警治理</span></div>
+<p><a href="./">← 返回题库索引</a></p>
+<div class="note">
+本页由 <a href="https://github.com/wufufu770/Tryout">Tryout</a> 自动生成。
+题库共 808 道,覆盖 12 个技术行业。<br>
+<b>本页只提供题目与考察点,参考答案不在此公开</b> —— 它用于 AI 评估技术回答的正确性,
+公开后用户可以直接背答案,练习就失去意义了。
+</div>
+</div></body></html>
